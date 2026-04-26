@@ -23,7 +23,7 @@ Pelorus exists to create a reliable, open marine data network. We value technica
 - Be clear, direct, and technically accurate
 - Focus on the merits of the work, not the person
 - Give and receive constructive feedback
-- Respect the locked architectural decisions in `ARCHITECTURE.md` and documents 02–10
+- Respect the locked architectural decisions in `ARCHITECTURE.md` and the specification files in `core/` (especially the trusted core **01–04**)
 - Prioritize reliability, simplicity, and debuggability for v1.0
 - Acknowledge uncertainty rather than guess
 

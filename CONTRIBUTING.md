@@ -12,9 +12,9 @@
 
 Thank you for considering a contribution to Pelorus.
 
-This is an open, sailor-first project. The specification (documents 01–16) is the single source of truth. All code, hardware, and documentation must follow it exactly.
+This is an open, sailor-first project. The specification (`core/00-document-index.md` through `core/16-…`) is the single source of truth. All code, hardware, and documentation must follow it exactly.
 
-**Locked rule (do not relitigate):** The architectural decisions in `ARCHITECTURE.md` and documents 02–10 are final for v1.0. Do not propose changes to bit rates, connector type, power-management model, instance binding strategy, or any other locked item unless the project maintainer explicitly invites reconsideration.
+**Locked rule (do not relitigate):** The architectural decisions in `ARCHITECTURE.md` and the trusted core under `core/` (especially **01–04**) are final for v1.0 unless the project maintainer explicitly invites reconsideration.
 
 ---
 
@@ -61,7 +61,7 @@ All pull requests must include:
 ## Specification Changes
 
 - Specification changes are treated as normative and require careful review.
-- If your change affects any numbered document (01–16), you must also update the corresponding section in `00-document-index.md`.
+- If your change affects any numbered document (01–16), you must also update the corresponding section in `core/00-document-index.md`.
 - Major architectural proposals must be discussed in an issue first.
 
 ---

@@ -3,21 +3,21 @@
 **Last Updated:** April 26, 2026  
 **Status:** Living (non-normative)
 
-Locked requirements live in [01-overview.md](./01-overview.md) §9 and documents **02–16**. This file records **why** decisions were made, what was rejected, and what is still open.
+Locked requirements live in [01-overview.md](./core/01-overview.md) §9 and documents **02–16** in [`core/`](./core/). This file records **why** decisions were made, what was rejected, and what is still open.
 
 ---
 
 ## 1. Project
 
 - **Mission:** Open marine data network; CAN FD core; Rust-first reference code; reliability offshore.
-- **Terminology:** **Legacy Marine Data Ecosystem (LMDE)** — project code name for the incumbent certification-gated fieldbus and physical plant (see [01-overview.md](./01-overview.md) **Terminology**). No third-party trademarks for that ecosystem in this repo.
+- **Terminology:** **Legacy Marine Data Ecosystem (LMDE)** — project code name for the incumbent certification-gated fieldbus and physical plant (see [01-overview.md](./core/01-overview.md) **Terminology**). No third-party trademarks for that ecosystem in this repo.
 - **Presence:** Specification hub **https://sevenseas.io/pelorus** · org **https://github.com/pelorus-marine** · community face Seven Seas (`sevenseas.io`).
 
 ---
 
 ## 2. Problem Pelorus targets
 
-Weaknesses of the **Legacy Marine Data Ecosystem** that Pelorus addresses: closed protocol and certification wall; always-on power; classical CAN at 250 kbit/s locked in by install base; single-segment fragility; poor sailor-side debuggability; vendor-specific extensions. **Bandwidth is not the main issue** for typical navigation/engine PGNs at 250 kbit/s — openness, power, reliability, and behavior matter more.
+Weaknesses of the **Legacy Marine Data Ecosystem** that Pelorus addresses: closed protocol and certification wall; **always-on power** (full suite energized even when passage or context makes much of it useless for days); classical CAN at 250 kbit/s locked in by install base; single-segment fragility; poor sailor-side debuggability; vendor-specific extensions. **Bandwidth is not the main issue** for typical navigation/engine PGNs at 250 kbit/s — openness, power, reliability, and behavior matter more.
 
 ---
 
@@ -30,7 +30,7 @@ Weaknesses of the **Legacy Marine Data Ecosystem** that Pelorus addresses: close
 
 ## 4. Locked Pelorus Core decisions (summary)
 
-*(Detail and testable numbers: [02-physical-layer.md](./02-physical-layer.md), [03-data-link-layer.md](./03-data-link-layer.md), [04-power-management.md](./04-power-management.md), [01-overview.md](./01-overview.md) §9.)*
+*(Detail and testable numbers: [02-physical-layer.md](./core/02-physical-layer.md), [03-data-link-layer.md](./core/03-data-link-layer.md), [04-power-management.md](./core/04-power-management.md), [01-overview.md](./core/01-overview.md) §9.)*
 
 | Area | Decision |
 |------|----------|
@@ -78,10 +78,10 @@ Prototype current and wake latency; EMC on cable plants; maritime IP review befo
 
 ## 7. Reading order (cold start)
 
-1. [01-overview.md](./01-overview.md)  
-2. [02-physical-layer.md](./02-physical-layer.md), [03-data-link-layer.md](./03-data-link-layer.md), [04-power-management.md](./04-power-management.md)  
-3. [00-document-index.md](./00-document-index.md) for trust on **05–16**
+1. [01-overview.md](./core/01-overview.md)  
+2. [02-physical-layer.md](./core/02-physical-layer.md), [03-data-link-layer.md](./core/03-data-link-layer.md), [04-power-management.md](./core/04-power-management.md)  
+3. [00-document-index.md](./core/00-document-index.md) for trust on **05–16**
 
 ---
 
-Working rules: **Normative** requirements live in [01-overview.md](./01-overview.md) §9 and documents **02–16**; this file is background only. Do not relitigate **§5** rejections without maintainer direction. Prefer simplicity and static profiles for v1.0. Cite external claims. Update this file when decisions change.
+Working rules: **Normative** requirements live in [01-overview.md](./core/01-overview.md) §9 and documents **02–16** under [`core/`](./core/); this file is background only. Do not relitigate **§5** rejections without maintainer direction. Prefer simplicity and static profiles for v1.0. Cite external claims. Update this file when decisions change.

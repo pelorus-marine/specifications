@@ -511,4 +511,4 @@ The following items are not yet specified and will be addressed in future revisi
 
 ## License
 
-This document is licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](./LICENSE.md).
+This document is licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](../LICENSE.md).

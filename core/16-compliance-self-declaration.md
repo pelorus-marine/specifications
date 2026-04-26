@@ -9,7 +9,7 @@
 
 ## About This Document
 
-This document provides the manufacturer self-declaration template for Pelorus Core conformance. The attestation model is summarized in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary); use this file for the **exact** declaration text and checklist once `15-conformance-test-plan.md` is authored.
+This document provides the manufacturer self-declaration template for Pelorus Core conformance. The attestation model is summarized in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary); use this file for the **exact** declaration text and checklist once [15-conformance-test-plan.md](./15-conformance-test-plan.md) is fully authored (stub today).
 
 ---
 
@@ -26,25 +26,25 @@ This document provides the manufacturer self-declaration template for Pelorus Co
 
 We, the undersigned, declare that the above-identified product meets the requirements of the Pelorus Core specification version 0.1 and is therefore **Pelorus Core conformant**.
 
-Specifically, the product has been verified to comply with:
+Specifically, the product has been verified to comply with the Pelorus Core documents in the repository **`core/`** directory:
 
-- Physical Layer (`02-physical-layer.md`)
-- Data Link Layer (`03-data-link-layer.md`)
-- Addressing (`05-addressing.md`)
-- Power Management (`04-power-management.md`)
-- Signal Catalog and Binding (`06-signal-catalog.md`)
-- PGN Registry (`07-pgn-registry.md`)
-- Network Architecture (`08-network-architecture.md`)
-- Gateway Behavior (`09-gateway-specification.md`)
-- Repeater Behavior (`10-repeater-specification.md`)
-- Reference Implementation Rules (`11-reference-implementations.md`)
-- Hardware Design Requirements (`12-hardware-design-guide.md`)
-- Firmware Design Requirements (`13-firmware-design-guide.md`)
-- Installation Requirements (`14-installation-guide.md`)
-- Conformance Test Plan (`15-conformance-test-plan.md`)
+- Physical Layer (`core/02-physical-layer.md`)
+- Data Link Layer (`core/03-data-link-layer.md`)
+- Addressing (`core/05-addressing.md`)
+- Power Management (`core/04-power-management.md`)
+- Signal Catalog and Binding (`core/06-signal-catalog.md`)
+- PGN Registry (`core/07-pgn-registry.md`)
+- Network Architecture (`core/08-network-architecture.md`)
+- Gateway Behavior (`core/09-gateway-specification.md`)
+- Repeater Behavior (`core/10-repeater-specification.md`)
+- Reference Implementation Rules (`core/11-reference-implementations.md`)
+- Hardware Design Requirements (`core/12-hardware-design-guide.md`)
+- Firmware Design Requirements (`core/13-firmware-design-guide.md`)
+- Installation Requirements (`core/14-installation-guide.md`)
+- Conformance Test Plan (`core/15-conformance-test-plan.md`)
 
 **Test Results**  
-All mandatory tests in `15-conformance-test-plan.md` were executed and passed. Test logs and results are available upon request.
+All mandatory tests in `core/15-conformance-test-plan.md` were executed and passed. Test logs and results are available upon request.
 
 **Signature**  
 

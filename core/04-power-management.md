@@ -11,7 +11,7 @@
 
 This document is the **normative** reference for Pelorus power management on CAN FD: selective wake-up, partial networking, functional groups, power states, network management behavior, and related electrical details. It cites only freely accessible reference materials.
 
-For **why** Pelorus treats power as architecture (always-on loads on typical LMDE networks, anchor Ah budgets, sailor-first goals), see [01-overview.md §2](./01-overview.md#2-the-problem) and [§6](./01-overview.md#6-design-principles). For locked decisions that span multiple documents, see [§9](./01-overview.md#9-locked-decisions-authoritative-summary).
+For **why** Pelorus treats power as architecture (always-on loads on typical LMDE networks, Ah budgets on battery, sailor-first goals), see [01-overview.md §2](./01-overview.md#2-the-problem) and [§6](./01-overview.md#6-design-principles). For locked decisions that span multiple documents, see [§9](./01-overview.md#9-locked-decisions-authoritative-summary).
 
 **ISO 11898-2:2016 Validation Note:** Sections 1–5 of this document have been cross-checked against the full ISO 11898-2:2016 standard (Sections 5.9 and 5.10, Tables 18–20, Figures 6–11). All WUF format, matching rules, frame error counter, bus biasing, and timing claims are accurate and normative. Sections 6 onward describe Pelorus-specific allocations (functional group bit assignments, reserved identifiers, NM cadence) which are v0.1 proposals subject to revision after prototype validation.
 
@@ -20,6 +20,17 @@ For **why** Pelorus treats power as architecture (always-on loads on typical LMD
 ## 1. Problem statement (reference)
 
 The marine power-management problem Pelorus addresses is stated in [01-overview.md §2](./01-overview.md#2-the-problem). **This document** specifies the mechanisms — partial networking, Wake-Up Frames, functional groups / PNC-style behavior, power states, and coordination — that implement that design goal.
+
+### 1.1 Operational context (not “anchor only”)
+
+Selective sleep and wake apply whenever **the vessel’s operational mode** means specific devices or subsystems are not required. Examples (non-exhaustive):
+
+- **At anchor or on a mooring** — anchor watch may need GNSS, depth, and alarms; other navigation sensors may sleep.
+- **Coastal or harbor maneuvering** — different subset than mid-ocean; gear that matters for pilotage stays active.
+- **Ocean passage** — a depth sounder may be unnecessary for days until shelf or land approach; radar or AIS subsets may follow watch bill and COLREG context.
+- **Heavy weather / storm mode** — a deliberately reduced group (e.g. wind, AIS receive, GNSS) may be the only cluster kept warm.
+
+The **gateway** (or crew) selects or transitions **functional groups** / PNC masks to match that context. Anchor watch is one important group name in this document; it is **not** the only scenario for power management.
 
 ---
 
@@ -478,4 +489,4 @@ These remain unresolved:
 
 ## License
 
-This document is licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](./LICENSE.md).
+This document is licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](../LICENSE.md).

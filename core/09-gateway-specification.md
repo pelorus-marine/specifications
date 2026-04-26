@@ -9,7 +9,7 @@
 
 ## About This Document
 
-This document defines the **normative** functional specification for Pelorus Core gateway nodes: bridging, binding-table authority, and role in recommended topologies. A one-paragraph summary of locked gateway policy is in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary). Non-gateway-specific binding and instance rules remain in [06-signal-catalog.md](./06-signal-catalog.md) and [ARCHITECTURE.md](./ARCHITECTURE.md).
+This document defines the **normative** functional specification for Pelorus Core gateway nodes: bridging, binding-table authority, and role in recommended topologies. A one-paragraph summary of locked gateway policy is in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary). Non-gateway-specific binding and instance rules remain in [06-signal-catalog.md](./06-signal-catalog.md) and [ARCHITECTURE.md](../ARCHITECTURE.md).
 
 ---
 

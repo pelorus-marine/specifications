@@ -24,7 +24,7 @@ Sailors deserve better. **Pelorus** exists to provide it.
 
 - **Open** — full specification freely available, no NDAs, no licensing fees
 - **Reliable** — built on CAN FD with deterministic real-time guarantees, designed for safety-critical use
-- **Power-aware** — selective node sleep and wake, dramatically reducing overnight current draw at anchor
+- **Power-aware** — selective node sleep and wake so the network draws only what the current voyage context needs (not only at anchor — e.g. ocean passage may shed depth, radar, or other gear until coastal work again)
 - **Interoperable** — bridges cleanly to the existing Legacy Marine Data Ecosystem and the older legacy serial marine protocol networks
 - **Modern** — Rust reference implementations, IPv6 link-local where applicable, mDNS service discovery
 
@@ -36,28 +36,28 @@ This is the umbrella organization for the **Pelorus** Marine project. Repositori
 
 ### Current Documents
 
-Start with the overview, then read by topic. The full document map is in [00-document-index.md](./00-document-index.md).
+Start with the overview, then read by topic. The full document map is in [core/00-document-index.md](./core/00-document-index.md). All numbered specification files (**00–16**) live under [`core/`](./core/).
 
 | # | Document | Description | Status |
 |---|---|---|---|
-| 01 | [01-overview.md](./01-overview.md) | What **Pelorus** is, two-layer architecture, v1.0 scope, reading guide. | v0.1 — trusted |
-| 02 | [02-physical-layer.md](./02-physical-layer.md) | **Pelorus Core** physical layer: bit rates, cabling, connectors, topology, transceivers, power, termination, isolation. | v0.1 — trusted |
-| 03 | [03-data-link-layer.md](./03-data-link-layer.md) | CAN FD frame format usage, 29-bit identifier and PGN structure, multi-frame transport, error handling. | v0.1 — trusted |
-| 04 | [04-power-management.md](./04-power-management.md) | Partial networking, selective wake-up, marine functional groups, power states, NM behavior, frame error counter, and bus biasing. Cross-checked against ISO 11898-2:2016. | v0.4 — trusted (§1–5 ISO-validated; §6+ proposals subject to validation) |
-| 05 | [05-addressing.md](./05-addressing.md) | Source address claiming, conflict resolution, device identification. | v0.1 — unverified draft |
-| 06 | [06-signal-catalog.md](./06-signal-catalog.md) | VSS-syntax catalog format, `Vessel.*` data model, instance handling. | v0.1 — unverified draft |
-| 07 | [07-pgn-registry.md](./07-pgn-registry.md) | Specific PGN assignments and definitions. | v0.1 — unverified draft |
-| 08 | [08-network-architecture.md](./08-network-architecture.md) | Segmentation, multi-segment networks, scaling. | v0.1 — unverified draft |
-| 09 | [09-gateway-specification.md](./09-gateway-specification.md) | LMDE-to-**Pelorus** gateway behavior. | v0.1 — unverified draft |
-| 10 | [10-repeater-specification.md](./10-repeater-specification.md) | **Pelorus Core** repeater functional spec. | v0.1 — unverified draft |
-| 11 | [11-reference-implementations.md](./11-reference-implementations.md) | Pointers to canonical Rust crates, version compatibility. | v0.1 — unverified draft |
-| 12 | [12-hardware-design-guide.md](./12-hardware-design-guide.md) | Schematic patterns, component selection, layout, EMC. | v0.1 — unverified draft |
-| 13 | [13-firmware-design-guide.md](./13-firmware-design-guide.md) | State machines, embedded Rust patterns, testing. | v0.1 — unverified draft |
-| 14 | [14-installation-guide.md](./14-installation-guide.md) | Wiring guide, segment planning, troubleshooting. | v0.1 — unverified draft |
-| 15 | [15-conformance-test-plan.md](./15-conformance-test-plan.md) | Conformance test plan (stub — procedures TBD). | v0.1 — unverified draft |
-| 16 | [16-compliance-self-declaration.md](./16-compliance-self-declaration.md) | Manufacturer attestation template. | v0.1 — unverified draft |
+| 01 | [01-overview.md](./core/01-overview.md) | What **Pelorus** is, two-layer architecture, v1.0 scope, reading guide. | v0.1 — trusted |
+| 02 | [02-physical-layer.md](./core/02-physical-layer.md) | **Pelorus Core** physical layer: bit rates, cabling, connectors, topology, transceivers, power, termination, isolation. | v0.1 — trusted |
+| 03 | [03-data-link-layer.md](./core/03-data-link-layer.md) | CAN FD frame format usage, 29-bit identifier and PGN structure, multi-frame transport, error handling. | v0.1 — trusted |
+| 04 | [04-power-management.md](./core/04-power-management.md) | Partial networking, selective wake-up, marine functional groups, power states, NM behavior, frame error counter, and bus biasing. Cross-checked against ISO 11898-2:2016. | v0.4 — trusted (§1–5 ISO-validated; §6+ proposals subject to validation) |
+| 05 | [05-addressing.md](./core/05-addressing.md) | Source address claiming, conflict resolution, device identification. | v0.1 — unverified draft |
+| 06 | [06-signal-catalog.md](./core/06-signal-catalog.md) | VSS-syntax catalog format, `Vessel.*` data model, instance handling. | v0.1 — unverified draft |
+| 07 | [07-pgn-registry.md](./core/07-pgn-registry.md) | Specific PGN assignments and definitions. | v0.1 — unverified draft |
+| 08 | [08-network-architecture.md](./core/08-network-architecture.md) | Segmentation, multi-segment networks, scaling. | v0.1 — unverified draft |
+| 09 | [09-gateway-specification.md](./core/09-gateway-specification.md) | LMDE-to-**Pelorus** gateway behavior. | v0.1 — unverified draft |
+| 10 | [10-repeater-specification.md](./core/10-repeater-specification.md) | **Pelorus Core** repeater functional spec. | v0.1 — unverified draft |
+| 11 | [11-reference-implementations.md](./core/11-reference-implementations.md) | Pointers to canonical Rust crates, version compatibility. | v0.1 — unverified draft |
+| 12 | [12-hardware-design-guide.md](./core/12-hardware-design-guide.md) | Schematic patterns, component selection, layout, EMC. | v0.1 — unverified draft |
+| 13 | [13-firmware-design-guide.md](./core/13-firmware-design-guide.md) | State machines, embedded Rust patterns, testing. | v0.1 — unverified draft |
+| 14 | [14-installation-guide.md](./core/14-installation-guide.md) | Wiring guide, segment planning, troubleshooting. | v0.1 — unverified draft |
+| 15 | [15-conformance-test-plan.md](./core/15-conformance-test-plan.md) | Conformance test plan (stub — procedures TBD). | v0.1 — unverified draft |
+| 16 | [16-compliance-self-declaration.md](./core/16-compliance-self-declaration.md) | Manufacturer attestation template. | v0.1 — unverified draft |
 
-Documents 01–04 are the trusted core; 05–16 are unverified provisional drafts pending review against the core. See [00-document-index.md](./00-document-index.md) for trust definitions and tier groupings.
+Documents 01–04 are the trusted core; 05–16 are unverified provisional drafts pending review against the core. See [core/00-document-index.md](./core/00-document-index.md) for trust definitions and tier groupings.
 
 ### Recent Progress
 
@@ -65,7 +65,7 @@ Documents 01–04 are the trusted core; 05–16 are unverified provisional draft
 - Document index added to track specification completeness.
 - Physical layer specification drafted to v0.1 (CAN FD profile, LMDE-compatible cabling and connectors, segmentation strategy, isolation tiers).
 - Data link layer specification drafted to v0.1 (29-bit J1939-style identifiers, J1939 TP for multi-frame messages, no Fast Packet, no Remote Frames, reserved **Pelorus** identifier ranges).
-- Power management specification completed to v0.4 (functional group bit allocations, four-state power model with state machine, NM cadence, FEC and bus biasing rules, implementation checklist). PGN allocations for WUF (0x0FF80) and NM (0x0FF81) are candidate values pending ratification in 07-pgn-registry.md.
+- Power management specification completed to v0.4 (functional group bit allocations, four-state power model with state machine, NM cadence, FEC and bus biasing rules, implementation checklist). PGN allocations for WUF (0x0FF80) and NM (0x0FF81) are candidate values pending ratification in [core/07-pgn-registry.md](./core/07-pgn-registry.md).
 
 ### Planned Repositories
 
@@ -83,7 +83,7 @@ Documents 01–04 are the trusted core; 05–16 are unverified provisional draft
 
 **Reliability over features.** A device that works for ten years is more valuable than a device with twenty features that fails after three. **Pelorus** targets longevity and field repairability as first-class requirements.
 
-**Power awareness as architecture.** Boats are not connected to the grid. Every milliamp matters at anchor. **Pelorus** treats power management as part of the protocol, not an afterthought.
+**Power awareness as architecture.** Boats are not on unlimited shore power. **Pelorus** treats power management as part of the protocol: nodes and functional groups sleep when the passage plan, watch, or conditions mean they are not needed — not only when lying at anchor.
 
 **Open all the way down.** From the wire format to the reference implementation to the documentation to the test fixtures, everything is open source. The specification is written from freely accessible reference materials so contributors never need to purchase standards documents to participate.
 

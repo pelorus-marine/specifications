@@ -43,7 +43,7 @@ Pelorus uses standard VSS `.vspec` (YAML) format. Key elements:
 
 ## 3. Instance Handling and Binding (Critical)
 
-**Instance Binding Problem** ([ARCHITECTURE.md](./ARCHITECTURE.md) §6.2) is solved here.
+**Instance Binding Problem** ([ARCHITECTURE.md](../ARCHITECTURE.md) §6.2) is solved here.
 
 Pelorus uses **numeric indexed arrays** as the canonical form in the catalog:
 
@@ -60,7 +60,7 @@ The mapping `(Source Address + 64-bit NAME + PGN + PGN-internal instance field v
 
 ## 4. Fault Tolerance — No Single Point of Failure
 
-The binding table **must not** create a single point of failure (consistent with the rejection of a sole gateway authority in [ARCHITECTURE.md](./ARCHITECTURE.md) §5).
+The binding table **must not** create a single point of failure (consistent with the rejection of a sole gateway authority in [ARCHITECTURE.md](../ARCHITECTURE.md) §5).
 
 - The binding table is **published on the bus** via a dedicated Pelorus PGN (defined later in `07-pgn-registry.md`).
 - Any authorized node (primary gateway, secondary display head, diagnostic tool, etc.) can act as binding authority and publish updates.

@@ -50,7 +50,7 @@ Pelorus Core uses CAN FD frames per ISO 11898-1:2015 with the following constrai
 
 Pelorus Core nodes shall not transmit Classical CAN data frames except where ISO 11898-2:2016 requires Classical CAN encoding for Wake-Up Frames (see [04-power-management.md §5](./04-power-management.md)). All application traffic uses CAN FD format.
 
-This is a deliberate divergence from a coexistence-on-the-same-wire mindset. Legacy marine traffic lives on a separate physical bus per [01-overview.md §4](./01-overview.md); Pelorus Core does not need to emit Classical CAN data frames for any compatibility purpose.
+This is a deliberate divergence from a coexistence-on-the-same-wire mindset. LMDE traffic lives on a separate physical bus per [01-overview.md §4](./01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem); Pelorus Core does not need to emit Classical CAN data frames for any compatibility purpose.
 
 ### 2.2 No Remote Frames
 
@@ -287,4 +287,4 @@ Pelorus Core preserves LMDE / J1939 identifier semantics exactly. The difference
 
 ## License
 
-This document is licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](./LICENSE.md).
+This document is licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](../LICENSE.md).

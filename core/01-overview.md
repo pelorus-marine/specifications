@@ -23,7 +23,7 @@ Read this first. Then go to [02-physical-layer.md](./02-physical-layer.md) for h
 
 ## 1. What Pelorus Is
 
-Pelorus is an open marine data network standard. It is CAN FD-based for safety-critical instrumentation and Ethernet-based for high-bandwidth media. It is designed to install on existing LMDE cabling and connectors, to operate cleanly without an internet connection, and to draw single-digit milliamps at anchor.
+Pelorus is an open marine data network standard. It is CAN FD-based for safety-critical instrumentation and Ethernet-based for high-bandwidth media. It is designed to install on existing LMDE cabling and connectors, to operate cleanly without an internet connection, and to minimize aggregate network current whenever large parts of the suite are legitimately unused — not only when lying at anchor, but whenever voyage context makes that gear irrelevant (e.g. mid-ocean passage with no need for a depth sounder until landfall).
 
 Pelorus is a specification, not a product. Reference implementations exist in Rust. Commercial products that comply with the specification can use the "Pelorus Core Compatible" branding without a license fee, an NDA, or third-party certification.
 
@@ -36,7 +36,7 @@ The specification, the reference implementations, the test fixtures, and the doc
 The Legacy Marine Data Ecosystem is technically sound at its core but trapped by twenty years of backward compatibility and closed-ecosystem incentives. The specific weaknesses Pelorus addresses:
 
 - **Closed protocol** — proprietary PGNs, paid certification, NDA requirements to obtain the specification
-- **Always-on power** — no selective device sleep; instrument suite draws 2-3 A continuously even at anchor, consuming 24-36 Ah overnight on a typical vessel
+- **Always-on power** — no selective device sleep; the suite draws 2–3 A continuously even when much of it is unused for hours or days (overnight at the dock, long passages with irrelevant sensors still powered), consuming 24–36 Ah overnight on a typical vessel
 - **Single-segment topology** — backbone failure takes down the entire network
 - **Aging physical layer** — locked to classical CAN at 250 kbit/s; cannot migrate without breaking installed equipment
 - **No diagnostic transparency** — sailors cannot debug their own networks
@@ -101,7 +101,7 @@ Tier 2 (network architecture, gateway, repeater) and Tier 3 (implementation guid
 
 ### Explicitly Deferred From v1.0
 
-The following were considered and held for later versions. Rationale is captured in [ARCHITECTURE.md](./ARCHITECTURE.md) §5.
+The following were considered and held for later versions. Rationale is captured in [ARCHITECTURE.md](../ARCHITECTURE.md) §5.
 
 - Higher data phase rates (1 Mbit/s, 2 Mbit/s) — held for v2.0+
 - Auto-negotiation of bit rates — held indefinitely; static profile is correct for v1.0
@@ -118,7 +118,7 @@ These guide every concrete decision in downstream documents.
 
 - **Sailor-first.** Every design decision asks "what is best for the sailor at sea" before "what is best for the manufacturer."
 - **Reliability over features.** A device that works for ten years beats a device with twenty features that fails after three.
-- **Power awareness as architecture.** Boats are not connected to the grid. Power management is part of the protocol, not an afterthought.
+- **Power awareness as architecture.** Boats are not on unlimited shore power. Power management matches **operational context** — which devices matter for this leg, this watch, this weather — not a single "anchor vs underway" caricature.
 - **Open all the way down.** Specification, reference implementations, test fixtures, documentation. No purchases required to participate.
 - **Static and debuggable for v1.0.** Auto-negotiation, dynamic reconfiguration, and complex state machines are deferred. Static profiles, fixed bit rates, and simple state machines win.
 - **Honest about tradeoffs.** Patent encumbrances, unresolved questions, and design limitations are documented openly in each specification document's Open Items section.
@@ -127,7 +127,7 @@ These guide every concrete decision in downstream documents.
 
 ## 7. Status and Stability
 
-The v0.1 specification is pre-release. **Normative** locked decisions are in [§9](#9-locked-decisions-authoritative-summary) below and in **02–04**; [ARCHITECTURE.md](./ARCHITECTURE.md) §4 restates them as background. Document text is still under revision and field validation has not begun. Hardware prototypes do not yet exist.
+The v0.1 specification is pre-release. **Normative** locked decisions are in [§9](#9-locked-decisions-authoritative-summary) below and in **02–04**; [ARCHITECTURE.md](../ARCHITECTURE.md) §4 restates them as background. Document text is still under revision and field validation has not begun. Hardware prototypes do not yet exist.
 
 Compatibility commitment for v1.0:
 
@@ -147,8 +147,8 @@ Implementations targeting v0.x should expect to update before v1.0 ships.
 |---|---|
 | Understand the hardware-level requirements | [02-physical-layer.md](./02-physical-layer.md) |
 | Implement selective wake-up and power management | [04-power-management.md](./04-power-management.md) |
-| See what is decided and why | [ARCHITECTURE.md](./ARCHITECTURE.md) |
-| See what is open and unresolved | [ARCHITECTURE.md](./ARCHITECTURE.md) §6 |
+| See what is decided and why | [ARCHITECTURE.md](../ARCHITECTURE.md) |
+| See what is open and unresolved | [ARCHITECTURE.md](../ARCHITECTURE.md) §6 |
 | Track specification document status | [00-document-index.md](./00-document-index.md) |
 
 ---
@@ -161,7 +161,7 @@ Downstream documents (02–16) state **normative requirements** and rationale. T
 
 - **Data link (03):** J1939-style 29-bit identifiers and PGN encoding; 64-byte CAN FD payloads; **no** Fast Packet; multi-frame payloads use J1939 Transport Protocol; application data is push or request-via-PGN — **no** Remote Transmission Request frames on Pelorus Core.
 
-- **Power management (04):** Partial networking and selective wake-up per ISO 11898-2:2016 (with the patent considerations documented there). Marine functional groups / PNC-style behavior are defined in 04, not re-listed here.
+- **Power management (04):** Partial networking and selective wake-up per ISO 11898-2:2016 (with the patent considerations documented there). Functional groups / PNC-style behavior let the network shed nodes that are **not needed for the current voyage context** (anchoring, coastal, offshore, storm, etc.), not only for "at anchor" scenarios. Detail is in 04.
 
 - **Addressing (05):** Source addressing, address claiming, and the NAME field follow **SAE J1939-81 / ISO 11783-5** with **no** Pelorus-specific deviations in v1.0.
 
@@ -189,4 +189,4 @@ Downstream documents (02–16) state **normative requirements** and rationale. T
 
 ## 10. License
 
-This document is licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](./LICENSE.md).
+This document is licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](../LICENSE.md).
