@@ -29,7 +29,7 @@ Prerequisites: [02-physical-layer.md](./02-physical-layer.md), [08-network-archi
 
 ## 2. Cabling and Connectors
 
-- Use only cable and connectors specified in [02-physical-layer.md](./02-physical-layer.md) (typically legacy-marine-compatible micro cable, M12 A-coded 5-pin).
+- Use only cable and connectors specified in [02-physical-layer.md](./02-physical-layer.md) (typically LMDE-compatible micro cable, M12 A-coded 5-pin).
 - Backbone runs between terminators; drops use T-connectors.
 - Observe stub and backbone length limits in [08-network-architecture.md](./08-network-architecture.md).
 - All connectors must be fully mated and sealed (IP67/IP68).
@@ -91,7 +91,7 @@ Prerequisites: [02-physical-layer.md](./02-physical-layer.md), [08-network-archi
 - Recommended tools and test equipment list
 - Step-by-step commissioning checklist with pass/fail criteria
 - Common failure modes and sailor-level fixes
-- Integration with existing legacy marine cabling (bridge notes)
+- Integration with existing LMDE cabling (bridge notes)
 
 ---
 

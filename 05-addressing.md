@@ -29,7 +29,7 @@ Every node must successfully claim a unique SA before it may transmit applicatio
 
 Every device is identified by a unique 64-bit NAME (J1939 format). The NAME is the primary identifier for address conflict resolution and is transmitted in every Address Claimed message.
 
-The NAME structure follows legacy marine data ecosystem exactly (8 bytes):
+The NAME structure follows the Legacy Marine Data Ecosystem exactly (8 bytes):
 
 - Byte 0–7: Arbitrary Address Capable (1 bit), Industry Group (3 bits, Marine = 4), Device Class, Function, Function Instance, Device Class Instance, Manufacturer Code, Unique Number, etc.
 
@@ -39,7 +39,7 @@ Exact bit field allocations and preferred address ranges per device class/functi
 
 ## 3. Address Claim Procedure
 
-Nodes follow the exact J1939-81 / legacy marine data ecosystem address claim procedure:
+Nodes follow the same J1939-81 address-claim procedure as on the Legacy Marine Data Ecosystem:
 
 On power-up, reset, or when joining the network a node shall:
 1. Listen for 250 ms for any existing Address Claimed messages.
@@ -47,7 +47,7 @@ On power-up, reset, or when joining the network a node shall:
 3. Transmit an "Address Claimed" message (PGN 0x0EE00, priority 6) containing its full 64-bit NAME and the desired SA.
 4. Monitor the bus for conflicting claims.
 
-**Conflict resolution rule (identical to the legacy marine data ecosystem):**
+**Conflict resolution rule (identical to the Legacy Marine Data Ecosystem):**
 - The node with the **numerically lower NAME** (treated as a 64-bit unsigned integer) wins the address.
 - The losing node must select a new address and re-claim (with random back-off timing per J1939-81 to avoid storms).
 
@@ -71,7 +71,7 @@ Support for the Commanded Address PGN (0xFED8) is **required**. This allows gate
 
 ## 6. Relationship to Signal Catalog Instance Binding
 
-Source Address alone does not carry semantic meaning (same limitation as legacy marine data ecosystem). The mapping from SA + PGN + instance fields to semantic paths in the Vessel.* catalog is handled in `06-signal-catalog.md` (instance binding problem). Address claiming itself remains purely about uniqueness on the bus.
+Source Address alone does not carry semantic meaning (same limitation as the Legacy Marine Data Ecosystem). The mapping from SA + PGN + instance fields to semantic paths in the Vessel.* catalog is handled in `06-signal-catalog.md` (instance binding problem). Address claiming itself remains purely about uniqueness on the bus.
 
 ---
 

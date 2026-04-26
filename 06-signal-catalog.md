@@ -43,7 +43,7 @@ Pelorus uses standard VSS `.vspec` (YAML) format. Key elements:
 
 ## 3. Instance Handling and Binding (Critical)
 
-**Instance Binding Problem** (ARCHITECTURE.md §6.2) is solved here.
+**Instance Binding Problem** ([ARCHITECTURE.md](./ARCHITECTURE.md) §6.2) is solved here.
 
 Pelorus uses **numeric indexed arrays** as the canonical form in the catalog:
 
@@ -60,7 +60,7 @@ The mapping `(Source Address + 64-bit NAME + PGN + PGN-internal instance field v
 
 ## 4. Fault Tolerance — No Single Point of Failure
 
-The binding table **must not** create a single point of failure (consistent with the rejection of a sole gateway authority in ARCHITECTURE.md §5.9).
+The binding table **must not** create a single point of failure (consistent with the rejection of a sole gateway authority in [ARCHITECTURE.md](./ARCHITECTURE.md) §5).
 
 - The binding table is **published on the bus** via a dedicated Pelorus PGN (defined later in `07-pgn-registry.md`).
 - Any authorized node (primary gateway, secondary display head, diagnostic tool, etc.) can act as binding authority and publish updates.
@@ -74,11 +74,11 @@ The binding table **must not** create a single point of failure (consistent with
 
 ---
 
-## 5. Legacy Marine Network Compatibility
+## 5. LMDE network compatibility
 
-Pelorus signals are designed to carry the same semantic information that sailors already see on existing marine instrumentation networks.  
+Pelorus signals are designed to carry the same semantic information that sailors already see on **LMDE** instrumentation networks.  
 
-Where a Pelorus PGN transports data equivalent to fields commonly observed on legacy marine buses, the correspondence is documented in `07-pgn-registry.md`. These mappings are derived from public observation of live networks and open-source reverse-engineering efforts (such as the canboat project). Proprietary or vendor-specific extensions are not carried forward.
+Where a Pelorus PGN transports data equivalent to fields commonly observed on LMDE buses, the correspondence is documented in `07-pgn-registry.md`. These mappings are derived from public observation of live networks and open-source reverse-engineering efforts (such as the canboat project). Proprietary or vendor-specific extensions are not carried forward.
 
 This approach enables clean bridging via gateways while keeping Pelorus itself a fully independent, open standard.
 

@@ -187,7 +187,7 @@ A receiver requesting a specific PGN sends PGN 0x0EA00 with the requested PGN en
 
 ### 5.4 No Fast Packet
 
-Pelorus Core does not implement legacy marine data ecosystem Fast Packet. Senders shall not use Fast Packet framing. Gateways translating from legacy-marine-to-Pelorus Core must reassemble Fast Packet payloads into single CAN FD frames where possible, or fall back to J1939 TP for payloads exceeding 64 bytes.
+Pelorus Core does not implement the LMDE Fast Packet protocol. Senders shall not use Fast Packet framing. Gateways translating from LMDE to Pelorus Core must reassemble Fast Packet payloads into single CAN FD frames where possible, or fall back to J1939 TP for payloads exceeding 64 bytes.
 
 ---
 
@@ -258,7 +258,7 @@ The full 29-bit identifier (priority + reserved + DP + PF + PS + SA) must be uni
 
 ## 8. Open Items
 
-The following are unresolved and tracked in [TODO.md](../TODO.md):
+The following remain unresolved:
 
 - Final priority assignments for specific PGNs (in [07-pgn-registry.md](./07-pgn-registry.md))
 - Diagnostic PGN definitions for error counter exposure
@@ -268,20 +268,20 @@ The following are unresolved and tracked in [TODO.md](../TODO.md):
 
 ---
 
-## Appendix A: Comparison with the legacy marine data ecosystem Data Link
+## Appendix A: Comparison with the Legacy Marine Data Ecosystem data link
 
-| Aspect | legacy marine data ecosystem | Pelorus Core |
+| Aspect | Legacy Marine Data Ecosystem | Pelorus Core |
 |---|---|---|
 | Frame format | Classical CAN | CAN FD |
 | Identifier length | 29 bit | 29 bit (identical layout) |
 | Maximum single-frame payload | 8 bytes | 64 bytes |
-| Multi-frame protocol | legacy marine data ecosystem Fast Packet | J1939 TP |
+| Multi-frame protocol | LMDE Fast Packet | J1939 TP |
 | Remote frames | Permitted | Not used |
 | Priority field | 3 bits | 3 bits (identical) |
 | PDU1/PDU2 split | At PF=0xF0 | At PF=0xF0 (identical) |
 | Source address | 8 bit | 8 bit (identical) |
 
-Pelorus Core preserves the legacy marine data ecosystem / J1939 identifier semantics exactly. The differences are the underlying frame format (CAN FD) and the multi-frame protocol (J1939 TP rather than Fast Packet).
+Pelorus Core preserves LMDE / J1939 identifier semantics exactly. The differences are the underlying frame format (CAN FD) and the multi-frame protocol (J1939 TP rather than Fast Packet).
 
 ---
 

@@ -9,7 +9,7 @@
 
 ## About This Document
 
-This document specifies the physical layer for Pelorus Core: bit rates, cabling, connectors, topology, transceiver requirements, power distribution, termination, and isolation. For stack context, coexistence with legacy marine buses, and cross-document locked decisions, see [01-overview.md](./01-overview.md) ([§3 Two-layer architecture](./01-overview.md#3-two-layer-architecture), [§4 Coexistence](./01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem), [§6 Design principles](./01-overview.md#6-design-principles), [§9 Locked decisions](./01-overview.md#9-locked-decisions-authoritative-summary)).
+This document specifies the physical layer for Pelorus Core: bit rates, cabling, connectors, topology, transceiver requirements, power distribution, termination, and isolation. For stack context, coexistence with LMDE buses, and cross-document locked decisions, see [01-overview.md](./01-overview.md) ([§3 Two-layer architecture](./01-overview.md#3-two-layer-architecture), [§4 Coexistence](./01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem), [§6 Design principles](./01-overview.md#6-design-principles), [§9 Locked decisions](./01-overview.md#9-locked-decisions-authoritative-summary)).
 
 ---
 
@@ -19,8 +19,8 @@ This document defines the **normative** physical requirements for Pelorus Core s
 
 Pelorus Core segments shall:
 
-- Use legacy-marine-compatible cabling, connectors, and installation practices where this document specifies them
-- Operate as a **separate** electrical bus from classical-CAN legacy marine networks (see [01-overview §4](./01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem))
+- Use LMDE-compatible cabling, connectors, and installation practices where this document specifies them
+- Operate as a **separate** electrical bus from classical-CAN LMDE networks (see [01-overview §4](./01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem))
 - Support scaling via repeater-isolated segments per [08-network-architecture.md](./08-network-architecture.md)
 
 ---
@@ -31,7 +31,7 @@ Pelorus Core segments shall:
 
 | Phase | Rate | Notes |
 |---|---|---|
-| Arbitration phase | 250 kbit/s | Identical to the legacy marine data ecosystem |
+| Arbitration phase | 250 kbit/s | Identical to the Legacy Marine Data Ecosystem |
 | Data phase | 500 kbit/s | CAN FD speed boost |
 
 ### 2.2 Frame Format
@@ -45,17 +45,17 @@ Pelorus Core uses CAN FD frames per ISO 11898-1:2015:
 
 ### 2.3 No Fast Packet
 
-Pelorus Core does not implement legacy marine data ecosystem's Fast Packet protocol. Multi-frame messages exceeding 64 bytes use the J1939 Transport Protocol (TP) or are restructured into single-frame messages where possible. The vast majority of legacy marine PGNs (including all signals up to 100 bytes) fit in a single CAN FD frame, eliminating Fast Packet's complexity.
+Pelorus Core does not implement the Legacy Marine Data Ecosystem's Fast Packet protocol. Multi-frame messages exceeding 64 bytes use the J1939 Transport Protocol (TP) or are restructured into single-frame messages where possible. The vast majority of LMDE PGNs (including all signals up to 100 bytes) fit in a single CAN FD frame, eliminating Fast Packet's complexity.
 
 ### 2.4 Rationale
 
 The 250k/500k profile was chosen for the following reasons:
 
-- Arbitration phase identical to the legacy marine data ecosystem preserves all legacy marine physical layer characteristics including 6m stub tolerance
-- 500 kbit/s data phase provides ~4-5× effective throughput improvement over the legacy marine data ecosystem for substantial messages
+- Arbitration phase identical to the Legacy Marine Data Ecosystem preserves all LMDE physical layer characteristics including 6 m stub tolerance
+- 500 kbit/s data phase provides ~4-5× effective throughput improvement over the Legacy Marine Data Ecosystem for substantial messages
 - Signal integrity is well-margined at 500 kbit/s data phase, eliminating the need for Signal Improvement Capability (SIC) transceivers
 - Standard CAN FD transceivers from multiple vendors support this profile
-- 64-byte frames eliminate Fast Packet for all current legacy marine message types
+- 64-byte frames eliminate Fast Packet for all current LMDE message types
 
 Higher data phase rates (1 Mbit/s, 2 Mbit/s) are reserved for future Pelorus Core profiles. v1.0 specifies 250k/500k as the single mandatory profile.
 
@@ -65,9 +65,9 @@ Higher data phase rates (1 Mbit/s, 2 Mbit/s) are reserved for future Pelorus Cor
 
 ### 3.1 Standard Cable
 
-Pelorus Core uses legacy marine micro cable as the standard cable specification. This cable is:
+Pelorus Core uses LMDE micro cable as the standard cable specification. This cable is:
 
-- Specified per DeviceNet thin cable / legacy marine micro
+- Specified per DeviceNet thin cable / LMDE micro
 - 24 AWG twisted pair for CAN signals
 - 22 AWG conductors for power and ground
 - Foil shield with drain wire
@@ -79,8 +79,8 @@ Pelorus Core uses legacy marine micro cable as the standard cable specification.
 
 For installations with extended power requirements, the following cable variants are permitted:
 
-- **legacy marine mid cable** — 20 AWG signal pair, 18 AWG power, 4A current capacity
-- **legacy marine mini cable** — 18 AWG signal pair, 16 AWG power, 8A current capacity
+- **LMDE mid cable** — 20 AWG signal pair, 18 AWG power, 4A current capacity
+- **LMDE mini cable** — 18 AWG signal pair, 16 AWG power, 8A current capacity
 
 Mid and mini cable use different connector sizes than micro and require appropriate adapters at backbone-to-drop transitions. Implementers should default to micro cable unless specific power distribution requirements justify the larger sizes.
 
@@ -98,19 +98,19 @@ For typical recreational vessel installations, micro cable is sufficient through
 
 ### 4.1 Connector Type
 
-Pelorus Core uses M12 A-coded 5-pin connectors throughout, identical to legacy marine micro:
+Pelorus Core uses M12 A-coded 5-pin connectors throughout, identical to LMDE micro:
 
 - IEC 61076-2-101 compliant
 - A-coded keying
-- 5 contacts arranged per legacy marine micro standard
+- 5 contacts arranged per LMDE micro standard
 - IP67/IP68 rated when mated and properly torqued
 - Threaded coupling, 14mm thread pitch
 
 ### 4.2 Pinout
 
-The pinout matches legacy marine micro exactly:
+The pinout matches LMDE micro exactly:
 
-| Pin | Signal | Wire Color (per legacy marine data ecosystem) |
+| Pin | Signal | Wire color (per LMDE field practice) |
 |---|---|---|
 | 1 | Shield / Drain | Bare drain wire |
 | 2 | NET-S (Power positive) | Red |
@@ -120,17 +120,17 @@ The pinout matches legacy marine micro exactly:
 
 ### 4.3 Cross-Connection Considerations
 
-Because Pelorus Core uses identical connectors and pinout to the legacy marine data ecosystem, cables physically interchange between the two networks. Cross-connection between Pelorus Core and legacy marine data ecosystem buses results in a non-functional network (different bit rates, CAN FD frames not recognized by classical CAN transceivers) but does not damage equipment.
+Because Pelorus Core uses identical connectors and pinout to the Legacy Marine Data Ecosystem, cables physically interchange between the two networks. Cross-connection between Pelorus Core and Legacy Marine Data Ecosystem buses results in a non-functional network (different bit rates, CAN FD frames not recognized by classical CAN transceivers) but does not damage equipment.
 
 ### 4.4 Recommended Visual Differentiation
 
-To reduce cross-connection errors, Pelorus Core devices and cables should be visually distinguishable from the legacy marine data ecosystem:
+To reduce cross-connection errors, Pelorus Core devices and cables should be visually distinguishable from the Legacy Marine Data Ecosystem:
 
 - Pelorus Core ports on devices should be labeled "Pelorus Core" or "Pelorus" adjacent to each connector
 - Pelorus-branded cables and accessories should use distinctive coloring (Pelorus marine blue recommended) on connector bodies, cable jackets, or strain relief boots
-- Pelorus terminator caps should be visually distinct from legacy marine terminator caps
+- Pelorus terminator caps should be visually distinct from LMDE terminator caps
 
-These are recommendations rather than mandates. Sailors using generic legacy marine data ecosystem cables on Pelorus networks will see no visual differentiation, which is an accepted tradeoff for cable inventory compatibility.
+These are recommendations rather than mandates. Sailors using generic Legacy Marine Data Ecosystem cables on Pelorus networks will see no visual differentiation, which is an accepted tradeoff for cable inventory compatibility.
 
 ---
 
@@ -138,7 +138,7 @@ These are recommendations rather than mandates. Sailors using generic legacy mar
 
 ### 5.1 Standard Topology
 
-Pelorus Core uses linear bus topology with T-connector drops, identical to legacy marine micro:
+Pelorus Core uses linear bus topology with T-connector drops, identical to LMDE micro:
 
 ```
 [Term] ─── Backbone ─── [T] ─── Backbone ─── [T] ─── Backbone ─── [Term]
@@ -160,7 +160,7 @@ A single Pelorus Core segment shall not exceed:
 | Maximum nodes per segment | 50 |
 | Termination | 120Ω at each physical end |
 
-These limits match legacy marine micro for backbone length above 100m would require mini cable, which is permitted but not standard for Pelorus.
+These limits match LMDE micro for backbone length above 100m would require mini cable, which is permitted but not standard for Pelorus.
 
 ### 5.3 Segmentation for Larger Vessels
 
@@ -211,7 +211,7 @@ Termination is provided by:
 - Dedicated terminator caps that screw onto T-connectors at the bus ends
 - Built into devices that occupy bus ends (less common, generally discouraged because it requires that specific device to remain connected)
 
-Simple 120Ω terminator caps from the legacy marine ecosystem will work on Pelorus Core networks but do not provide the EMC benefits of split termination. Sailors using existing terminator inventory will have functional but suboptimal networks. New Pelorus installations should use split-termination caps.
+Simple 120Ω terminator caps from the Legacy Marine Data Ecosystem will work on Pelorus Core networks but do not provide the EMC benefits of split termination. Sailors using existing terminator inventory will have functional but suboptimal networks. New Pelorus installations should use split-termination caps.
 
 ### 6.4 Total Bus Resistance
 
@@ -243,7 +243,7 @@ The following parts are known to meet Pelorus Core requirements (non-exhaustive)
 
 ### 7.3 SIC Not Required
 
-Pelorus Core does not require Signal Improvement Capability (SIC) transceivers. The 500 kbit/s data phase provides sufficient signal integrity headroom on legacy-marine-style topologies including 6m drops without active ringing suppression. SIC may be specified in future Pelorus Core profiles if higher data phase rates are introduced.
+Pelorus Core does not require Signal Improvement Capability (SIC) transceivers. The 500 kbit/s data phase provides sufficient signal integrity headroom on LMDE-style topologies including 6 m drops without active ringing suppression. SIC may be specified in future Pelorus Core profiles if higher data phase rates are introduced.
 
 ### 7.4 Patent Considerations
 
@@ -288,7 +288,7 @@ These declarations enable installers to calculate segment power budgets accurate
 
 ### 8.4 LEN Compatibility
 
-Pelorus Core adopts the legacy marine data ecosystem LEN (Load Equivalency Number) system for compatibility with existing installer practice:
+Pelorus Core adopts the Legacy Marine Data Ecosystem LEN (Load Equivalency Number) system for compatibility with existing installer practice:
 
 - 1 LEN = 50 mA at 12V
 - Devices declare their LEN value in their device description
@@ -464,25 +464,25 @@ The Pelorus project will maintain a reference implementation and compatibility t
 The following items are not yet specified and will be addressed in future revisions:
 
 - Specific PGN number assignments for Pelorus Core (currently under design)
-- legacy marine data ecosystem bridge gateway functional specification
+- Legacy Marine Data Ecosystem bridge gateway functional specification
 - Pelorus Core repeater functional specification (filtering rules, fault handling)
 - Specific power tee implementations (single, center, dual injection)
 - Mechanical specifications for Pelorus Core devices (mounting, form factors)
 - Detailed marking and labeling requirements
-- Backward compatibility profile for legacy CAN classical wiring
+- Backward compatibility profile for LMDE classical CAN wiring
 
 ---
 
-## Appendix A: Comparison with the legacy marine data ecosystem
+## Appendix A: Comparison with the Legacy Marine Data Ecosystem
 
-| Parameter | legacy marine data ecosystem | Pelorus Core |
+| Parameter | Legacy Marine Data Ecosystem | Pelorus Core |
 |---|---|---|
 | Arbitration bit rate | 250 kbit/s | 250 kbit/s (identical) |
 | Data bit rate | 250 kbit/s | 500 kbit/s |
 | Maximum frame payload | 8 bytes (Fast Packet to 223) | 64 bytes |
 | Multi-frame protocol | Fast Packet | None required (or J1939 TP) |
 | Connector | M12 A-coded 5-pin | M12 A-coded 5-pin (identical) |
-| Cable | DeviceNet thin/mid/thick | legacy marine micro/mid/mini (identical) |
+| Cable | DeviceNet thin/mid/thick | LMDE micro/mid/mini (identical) |
 | Maximum stub | 6 m | 6 m (identical) |
 | Maximum backbone (micro) | 100 m | 30 m per segment |
 | Termination | 120Ω simple | 120Ω split termination |
@@ -502,8 +502,8 @@ The following items are not yet specified and will be addressed in future revisi
 | **DLC** | Data Length Code, 4-bit field indicating frame data size |
 | **ESD** | Electrostatic Discharge |
 | **HBM** | Human Body Model, ESD test methodology |
-| **LEN** | Load Equivalency Number, legacy marine power unit (1 LEN = 50 mA) |
-| **PGN** | Parameter Group Number, J1939/legacy marine message identifier |
+| **LEN** | Load Equivalency Number, LMDE power unit (1 LEN = 50 mA) |
+| **PGN** | Parameter Group Number, J1939 / LMDE message identifier |
 | **SIC** | Signal Improvement Capability, CAN ringing suppression per CiA 601-4 |
 | **WUF** | Wake-Up Frame, CAN frame triggering selective node wake-up |
 

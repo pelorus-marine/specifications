@@ -44,7 +44,7 @@ Every document is annotated with a trust level so contributors know what to rely
 | # | Filename | Purpose | Status | Trust |
 |---|---|---|---|---|
 | 08 | `08-network-architecture.md` | Segmentation, multi-segment networks, scaling | v0.1 draft | Unverified |
-| 09 | `09-gateway-specification.md` | Legacy-marine-to-Pelorus gateway behavior | v0.1 draft | Unverified |
+| 09 | `09-gateway-specification.md` | LMDE-to-Pelorus gateway behavior | v0.1 draft | Unverified |
 | 10 | `10-repeater-specification.md` | Pelorus Core repeater functional spec | v0.1 draft | Unverified |
 
 ### Tier 3 — Implementation Guidance
@@ -60,7 +60,7 @@ Every document is annotated with a trust level so contributors know what to rely
 
 | # | Filename | Purpose | Status | Trust |
 |---|---|---|---|---|
-| 15 | `15-conformance-test-plan.md` | Verification procedures, expected results, edge cases | v0.1 draft | Unverified |
+| 15 | `15-conformance-test-plan.md` | Conformance test plan (stub; procedures TBD) | v0.1 draft | Unverified |
 | 16 | `16-compliance-self-declaration.md` | Manufacturer attestation template | v0.1 draft | Unverified |
 
 ### Tier 5 — Project Governance and Community
@@ -69,7 +69,7 @@ Every document is annotated with a trust level so contributors know what to rely
 |---|---|---|---|---|
 | 17 | `README.md` | GitHub org/repo landing page | v0.1 | Trusted |
 | 18 | `LICENSE.md` | Creative Commons Attribution 4.0 | Final | Final |
-| 19 | `ARCHITECTURE.md` | Durable record of architectural decisions and rationale (non-normative) | v0.2 | Trusted |
+| 19 | `ARCHITECTURE.md` | Architectural decisions, rejections, and open issues (non-normative) | v0.3 | Trusted |
 | 20 | `CONTRIBUTING.md` | How to contribute to the specification | v0.1 draft | Unverified |
 | 21 | `CODE_OF_CONDUCT.md` | Community behavior standards | v0.1 draft | Unverified |
 
@@ -77,7 +77,7 @@ Every document is annotated with a trust level so contributors know what to rely
 
 ## 3. Numbering Conventions
 
-- Tier 1-4 documents use numeric prefixes (`01-`, `02-`, etc.) so they sort in logical reading order in any file browser
+- Tier 1–4 documents use numeric prefixes (`01-`, `02-`, etc.) so they sort in logical reading order in any file browser
 - Tier 5 documents use conventional names without prefixes (README, LICENSE, etc.) because GitHub and other tools expect them at known names
 - Numbers are assigned at document creation and never reused
 - Deprecated documents keep their number but get marked deprecated in this index
@@ -93,7 +93,7 @@ Every document is annotated with a trust level so contributors know what to rely
 - 02-physical-layer.md (v0.1)
 - 03-data-link-layer.md (v0.1)
 - 04-power-management.md (v0.4)
-- ARCHITECTURE.md (v0.2)
+- ARCHITECTURE.md (v0.3)
 - LICENSE.md (final)
 - README.md (v0.1)
 
@@ -107,6 +107,6 @@ Every document is annotated with a trust level so contributors know what to rely
 
 **Next priorities for v0.1 specification:**
 
-1. Capture real legacy marine bus traffic from a representative vessel (prerequisite for instance binding design — see ARCHITECTURE.md §6.2)
+1. Capture real LMDE bus traffic from a representative vessel (prerequisite for instance binding design — see ARCHITECTURE.md §6.2)
 2. Review 05–07 against the trusted core (01–04) and either revalidate, rewrite, or delete each
 3. Reconcile cross-document conflicts: PGN range (03 vs 07), NM payload (04 vs 07), instance binding (06)

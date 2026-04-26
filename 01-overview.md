@@ -15,9 +15,15 @@ Read this first. Then go to [02-physical-layer.md](./02-physical-layer.md) for h
 
 ---
 
+## Terminology: Legacy Marine Data Ecosystem (LMDE)
+
+**Legacy Marine Data Ecosystem** is a **project code name** for the incumbent, certification-gated marine instrumentation fieldbus and its physical plant (connectors, cable families, and de facto in-use PGN set) that dominates new recreational-vessel installs. This specification **does not** use third-party trademarks for that ecosystem; **LMDE** is the abbreviated form in technical text after the first mention in a document.
+
+---
+
 ## 1. What Pelorus Is
 
-Pelorus is an open marine data network standard. It is CAN FD-based for safety-critical instrumentation and Ethernet-based for high-bandwidth media. It is designed to install on existing legacy marine cabling and connectors, to operate cleanly without an internet connection, and to draw single-digit milliamps at anchor.
+Pelorus is an open marine data network standard. It is CAN FD-based for safety-critical instrumentation and Ethernet-based for high-bandwidth media. It is designed to install on existing LMDE cabling and connectors, to operate cleanly without an internet connection, and to draw single-digit milliamps at anchor.
 
 Pelorus is a specification, not a product. Reference implementations exist in Rust. Commercial products that comply with the specification can use the "Pelorus Core Compatible" branding without a license fee, an NDA, or third-party certification.
 
@@ -27,7 +33,7 @@ The specification, the reference implementations, the test fixtures, and the doc
 
 ## 2. The Problem
 
-The legacy marine data ecosystem is technically sound at its core but trapped by twenty years of backward compatibility and closed-ecosystem incentives. The specific weaknesses Pelorus addresses:
+The Legacy Marine Data Ecosystem is technically sound at its core but trapped by twenty years of backward compatibility and closed-ecosystem incentives. The specific weaknesses Pelorus addresses:
 
 - **Closed protocol** — proprietary PGNs, paid certification, NDA requirements to obtain the specification
 - **Always-on power** — no selective device sleep; instrument suite draws 2-3 A continuously even at anchor, consuming 24-36 Ah overnight on a typical vessel
@@ -36,7 +42,7 @@ The legacy marine data ecosystem is technically sound at its core but trapped by
 - **No diagnostic transparency** — sailors cannot debug their own networks
 - **Vendor lock-in tactics** — proprietary extensions break interoperability between brands
 
-Bandwidth is **not** the headline problem. The legacy marine data ecosystem at 250 kbit/s is adequate for GPS, depth, wind, heading, AIS, and engine data. Pelorus does not exist to make instrument data faster. It exists to make it open, reliable, power-aware, and debuggable. Higher bandwidth is delivered by a separate Ethernet layer for the use cases that need it.
+Bandwidth is **not** the headline problem. The Legacy Marine Data Ecosystem at 250 kbit/s is adequate for GPS, depth, wind, heading, AIS, and engine data. Pelorus does not exist to make instrument data faster. It exists to make it open, reliable, power-aware, and debuggable. Higher bandwidth is delivered by a separate Ethernet layer for the use cases that need it.
 
 ---
 
@@ -46,12 +52,12 @@ Pelorus has two distinct physical layers serving different traffic classes. They
 
 ### 3.1 Pelorus Core (CAN FD)
 
-Safety-critical instrumentation backbone. Real-time, deterministic, reliable. Replaces legacy marine functionality on a vessel.
+Safety-critical instrumentation backbone. Real-time, deterministic, reliable. Replaces LMDE functionality on a vessel.
 
 - CAN FD at 250 kbit/s arbitration / 500 kbit/s data phase
-- 64-byte frames eliminate Fast Packet for current legacy marine message types
+- 64-byte frames eliminate Fast Packet for current LMDE message types
 - ISO 11898-2:2016 partial networking with selective wake-up
-- M12 A-coded 5-pin connectors, legacy marine micro cable, legacy-marine-style installation practice
+- M12 A-coded 5-pin connectors, LMDE micro cable, LMDE-style installation practice
 - Linear bus per segment, repeater nodes for vessels exceeding 30 m
 - Segmented architecture for fault containment
 
@@ -60,7 +66,7 @@ Safety-critical instrumentation backbone. Real-time, deterministic, reliable. Re
 High-bandwidth, non-safety-critical layer. Radar, sonar, video, cloud connectivity.
 
 - M12 D-coded 4-pin (100 Mbit/s) recommended, X-coded reserved for future Gigabit profiles
-- Connector compatibility with established industrial M12 Ethernet cabling (no protocol-level interoperability with any legacy marine Ethernet protocol)
+- Connector compatibility with established industrial M12 Ethernet cabling (no protocol-level interoperability with any incumbent proprietary marine Ethernet protocols)
 - Protocol stack, PoE strategy, and switch architecture are largely undecided as of v0.1
 
 This document and the rest of the v0.1 specification focus on Pelorus Core. Pelorus Stream design is deferred until Core is stable and validated on real hardware.
@@ -69,9 +75,9 @@ This document and the rest of the v0.1 specification focus on Pelorus Core. Pelo
 
 ## 4. Coexistence with the Legacy Marine Data Ecosystem
 
-Pelorus Core uses identical connectors and cable to legacy marine micro. The two networks are **not** electrically interoperable on the same wire — different bit rates and CAN FD frames are not recognized by classical CAN transceivers. Cross-connecting cables between the two networks results in a non-functional bus but does not damage equipment.
+Pelorus Core uses identical connectors and cable to LMDE micro. The two networks are **not** electrically interoperable on the same wire — different bit rates and CAN FD frames are not recognized by classical CAN transceivers. Cross-connecting cables between the two networks results in a non-functional bus but does not damage equipment.
 
-A vessel typically runs both networks during transition: the legacy marine data ecosystem for legacy devices, Pelorus Core for new equipment, with a gateway node bridging selected messages between them. The gateway handles PGN translation, instance binding, and rate adaptation. See [09-gateway-specification.md](./09-gateway-specification.md) when drafted.
+A vessel typically runs both networks during transition: the Legacy Marine Data Ecosystem for legacy devices, Pelorus Core for new equipment, with a gateway node bridging selected messages between them. The gateway handles PGN translation, instance binding, and rate adaptation. See [09-gateway-specification.md](./09-gateway-specification.md).
 
 Visual differentiation (Pelorus marine blue cable jackets, port labeling, distinctive terminator caps) is recommended but not mandatory.
 
@@ -85,11 +91,11 @@ The v1.0 specification covers Pelorus Core only. The minimum viable specificatio
 |---|---|---|
 | 01 | [01-overview.md](./01-overview.md) | This document |
 | 02 | [02-physical-layer.md](./02-physical-layer.md) | Bit rates, cabling, connectors, topology, transceivers, power, termination, isolation |
-| 03 | 03-data-link-layer.md | CAN FD frame format usage, message addressing, error handling |
+| 03 | [03-data-link-layer.md](./03-data-link-layer.md) | CAN FD frame format usage, message addressing, error handling |
 | 04 | [04-power-management.md](./04-power-management.md) | Selective wake-up, partial network clusters, power states, network management |
-| 05 | 05-addressing.md | Source address claiming, conflict resolution, device identification |
-| 06 | 06-signal-catalog.md | VSS-syntax catalog format, `Vessel.*` data model, instance handling |
-| 07 | 07-pgn-registry.md | Specific PGN assignments and definitions |
+| 05 | [05-addressing.md](./05-addressing.md) | Source address claiming, conflict resolution, device identification |
+| 06 | [06-signal-catalog.md](./06-signal-catalog.md) | VSS-syntax catalog format, `Vessel.*` data model, instance handling |
+| 07 | [07-pgn-registry.md](./07-pgn-registry.md) | Specific PGN assignments and definitions |
 
 Tier 2 (network architecture, gateway, repeater) and Tier 3 (implementation guidance) documents extend the core but are not required for an interoperable v1.0 device. See [00-document-index.md](./00-document-index.md) for the full document list.
 
@@ -99,7 +105,7 @@ The following were considered and held for later versions. Rationale is captured
 
 - Higher data phase rates (1 Mbit/s, 2 Mbit/s) — held for v2.0+
 - Auto-negotiation of bit rates — held indefinitely; static profile is correct for v1.0
-- Fast Packet support — not adopted; 64-byte CAN FD frames cover existing legacy marine PGNs
+- Fast Packet support — not adopted; 64-byte CAN FD frames cover existing LMDE PGNs
 - Mandated universal galvanic isolation — replaced by tiered requirement (mandatory for high-power, optional for low-power sensors)
 - Signal K as core component — treated as one possible app-level consumer, not part of the core stack
 - Pelorus Stream protocol stack — design deferred until Core is validated
@@ -121,12 +127,12 @@ These guide every concrete decision in downstream documents.
 
 ## 7. Status and Stability
 
-The v0.1 specification is pre-release. Concrete decisions are locked (see [ARCHITECTURE.md](./ARCHITECTURE.md) §4) but document text is under active revision and field validation has not begun. Hardware prototypes do not yet exist.
+The v0.1 specification is pre-release. **Normative** locked decisions are in [§9](#9-locked-decisions-authoritative-summary) below and in **02–04**; [ARCHITECTURE.md](./ARCHITECTURE.md) §4 restates them as background. Document text is still under revision and field validation has not begun. Hardware prototypes do not yet exist.
 
 Compatibility commitment for v1.0:
 
 - Bit rate profile (250 kbit/s arbitration / 500 kbit/s data) is permanent for the v1.0 line
-- Connector type and pinout (M12 A-coded, legacy marine micro) are permanent
+- Connector type and pinout (M12 A-coded, LMDE micro) are permanent
 - Frame format (CAN FD per ISO 11898-1:2015, no Fast Packet) is permanent
 - Power state model and selective wake-up behavior may refine before v1.0 is finalized
 - PGN assignments and the signal catalog are open and will change before v1.0
@@ -142,7 +148,7 @@ Implementations targeting v0.x should expect to update before v1.0 ships.
 | Understand the hardware-level requirements | [02-physical-layer.md](./02-physical-layer.md) |
 | Implement selective wake-up and power management | [04-power-management.md](./04-power-management.md) |
 | See what is decided and why | [ARCHITECTURE.md](./ARCHITECTURE.md) |
-| See what is open and unresolved | Section 6 of [ARCHITECTURE.md](./ARCHITECTURE.md) and the [TODO.md](../TODO.md) |
+| See what is open and unresolved | [ARCHITECTURE.md](./ARCHITECTURE.md) §6 |
 | Track specification document status | [00-document-index.md](./00-document-index.md) |
 
 ---
@@ -151,7 +157,7 @@ Implementations targeting v0.x should expect to update before v1.0 ships.
 
 Downstream documents (02–16) state **normative requirements** and rationale. This section is the **only** place that collects cross-cutting locked decisions in one narrative. If text elsewhere repeats this material for context, treat this section as the summary; do not maintain duplicate prose.
 
-- **Physical profile (02–04):** Pelorus Core is CAN FD on legacy-marine-style cabling and M12 A-coded 5-pin connectors; arbitration 250 kbit/s, data phase 500 kbit/s; linear bus per segment with split termination and 9–32 V DC supply. Pelorus Core and the legacy marine classical-CAN bus are **not** electrically interoperable on the same wire; they coexist on a vessel via gateways ([§4](#4-coexistence-with-the-legacy-marine-data-ecosystem)).
+- **Physical profile (02–04):** Pelorus Core is CAN FD on LMDE-style cabling and M12 A-coded 5-pin connectors; arbitration 250 kbit/s, data phase 500 kbit/s; linear bus per segment with split termination and 9–32 V DC supply. Pelorus Core and the LMDE classical-CAN bus are **not** electrically interoperable on the same wire; they coexist on a vessel via gateways ([§4](#4-coexistence-with-the-legacy-marine-data-ecosystem)).
 
 - **Data link (03):** J1939-style 29-bit identifiers and PGN encoding; 64-byte CAN FD payloads; **no** Fast Packet; multi-frame payloads use J1939 Transport Protocol; application data is push or request-via-PGN — **no** Remote Transmission Request frames on Pelorus Core.
 
@@ -165,7 +171,7 @@ Downstream documents (02–16) state **normative requirements** and rationale. T
 
 - **Network architecture (08):** Per segment: max **30 m** backbone, max **50** nodes, max **6 m** stubs; multi-segment networks use **repeaters** with **galvanic isolation** between segments; max **4** repeater hops between any two endpoints; **star topology with a central gateway** is the recommended pattern for large vessels.
 
-- **Gateway (09):** The gateway is a **convenient, not mandatory** authority (no single point of failure for the network). It bridges Pelorus Core and legacy marine traffic, publishes the binding table on the bus, and may offer a web UI — **operation without** that UI must remain possible.
+- **Gateway (09):** The gateway is a **convenient, not mandatory** authority (no single point of failure for the network). It bridges Pelorus Core and LMDE bus traffic, publishes the binding table on the bus, and may offer a web UI — **operation without** that UI must remain possible.
 
 - **Repeater (10):** Repeaters **shall** isolate segments electrically, **transparently** forward valid CAN FD frames, and **fully** participate in power management and addressing.
 

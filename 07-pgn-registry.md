@@ -50,11 +50,11 @@ These PGNs are defined exclusively for Pelorus and ratify the candidates from `0
 
 ## 2. Compatibility PGNs
 
-Pelorus re-uses selected PGN numbers from the **legacy marine data ecosystem** to enable seamless interoperability with existing legacy marine instrumentation via gateways.  
+Pelorus reuses selected PGN numbers from the **Legacy Marine Data Ecosystem** to enable seamless interoperability with existing LMDE instrumentation via gateways.  
 
 This allows Pelorus to serve as a modern, open replacement for outdated closed systems while preserving compatibility during the transition period.
 
-Detailed bit-level field layouts for these compatibility PGNs are defined by the relevant legacy marine standards and are not duplicated in this document.
+Detailed bit-level field layouts for these compatibility PGNs are defined by the relevant LMDE family standards and are not duplicated in this document.
 
 The mapping from each PGN/field to the corresponding `Vessel.*` path in the signal catalog is maintained in `06-signal-catalog.md` and the machine-readable `catalog/vessel.vspec` file.
 

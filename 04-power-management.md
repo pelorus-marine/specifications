@@ -11,7 +11,7 @@
 
 This document is the **normative** reference for Pelorus power management on CAN FD: selective wake-up, partial networking, functional groups, power states, network management behavior, and related electrical details. It cites only freely accessible reference materials.
 
-For **why** Pelorus treats power as architecture (always-on legacy loads, anchor Ah budgets, sailor-first goals), see [01-overview.md §2](./01-overview.md#2-the-problem) and [§6](./01-overview.md#6-design-principles). For locked decisions that span multiple documents, see [§9](./01-overview.md#9-locked-decisions-authoritative-summary).
+For **why** Pelorus treats power as architecture (always-on loads on typical LMDE networks, anchor Ah budgets, sailor-first goals), see [01-overview.md §2](./01-overview.md#2-the-problem) and [§6](./01-overview.md#6-design-principles). For locked decisions that span multiple documents, see [§9](./01-overview.md#9-locked-decisions-authoritative-summary).
 
 **ISO 11898-2:2016 Validation Note:** Sections 1–5 of this document have been cross-checked against the full ISO 11898-2:2016 standard (Sections 5.9 and 5.10, Tables 18–20, Figures 6–11). All WUF format, matching rules, frame error counter, bus biasing, and timing claims are accurate and normative. Sections 6 onward describe Pelorus-specific allocations (functional group bit assignments, reserved identifiers, NM cadence) which are v0.1 proposals subject to revision after prototype validation.
 
@@ -178,7 +178,7 @@ Pelorus reserves the lowest six bits of byte 0 for the standard marine functiona
 | 0 | `anchor_watch` | GNSS, depth, anchor alarm | At anchor; wakes periodically or on drift |
 | 1 | `underway` | GNSS, heading, wind, AIS, autopilot, log | Vessel moving under sail or power |
 | 2 | `engine` | Engine ECU, fuel, alternator, exhaust temp | Ignition on or engine running |
-| 3 | `comms` | VHF, AIS transmit, satellite, legacy-marine bridge | DSC inbound, scheduled poll, or user request |
+| 3 | `comms` | VHF, AIS transmit, satellite, LMDE bridge | DSC inbound, scheduled poll, or user request |
 | 4 | `domestic` | Tank levels, battery monitors, refrigeration | Periodic housekeeping or user request |
 | 5 | `storm` | Wind, AIS receive, GNSS, barometer | Severe weather mode; reduced bandwidth |
 | 6–63 | Reserved | — | Shall not be used in v1.0 |
@@ -465,7 +465,7 @@ For developers integrating Pelorus power management into a node:
 
 ## 13. Open Items
 
-These remain unresolved and are tracked in [TODO.md](../TODO.md).
+These remain unresolved:
 
 - Final PGN assignments for WUF and NM (currently candidates 0x0FF80 / 0x0FF81; ratification in [07-pgn-registry.md](./07-pgn-registry.md))
 - NM cadence values pending prototype-hardware wake-up latency measurement

@@ -59,4 +59,4 @@ The reference implementations serve as the gold standard for what “correct beh
 
 ---
 
-*This document, together with documents 01–10, completes the minimum viable specification for Pelorus Core reference implementations and hardware prototyping.*
+*This document supports the full numbered specification set (01–16); reference crates implement subsets of that set as each matures.*

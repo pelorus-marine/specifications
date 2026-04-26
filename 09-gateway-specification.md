@@ -17,7 +17,7 @@ This document defines the **normative** functional specification for Pelorus Cor
 
 A Pelorus gateway node performs three primary roles:
 
-1. **Bridge** — Translates and forwards messages between Pelorus Core and legacy marine networks.
+1. **Bridge** — Translates and forwards messages between Pelorus Core and LMDE networks.
 2. **Binding Authority** — Provides the convenient UI for editing and publishing the vessel-specific binding table.
 3. **Network Management Hub** — Acts as the recommended central point in star topologies and assists with power-management coordination.
 
@@ -28,7 +28,7 @@ A vessel may have zero, one, or multiple gateways. Multiple gateways are support
 ## 2. Bridging Requirements
 
 - Forward all valid Pelorus PGNs (including WUF 0x0FF80 and NM 0x0FF81) transparently.
-- Map selected compatibility PGNs from the legacy marine data ecosystem to the corresponding `Vessel.*` paths in the signal catalog (`06-signal-catalog.md` and `07-pgn-registry.md`).
+- Map selected compatibility PGNs from the Legacy Marine Data Ecosystem to the corresponding `Vessel.*` paths in the signal catalog (`06-signal-catalog.md` and `07-pgn-registry.md`).
 - Perform instance mapping using the current binding table.
 - Support both directions: legacy → Pelorus and Pelorus → legacy.
 - Preserve priority and timing where possible.
@@ -88,7 +88,7 @@ The gateway shall expose:
 
 - Exact PGN format for binding table publication and delta updates
 - Web UI wireframes and minimum feature set
-- Bridging conformance test plan for legacy marine compatibility PGNs
+- Bridging conformance test plan for LMDE compatibility PGNs
 - Multi-gateway conflict resolution and hand-off rules
 - Optional diagnostic logging interface
 

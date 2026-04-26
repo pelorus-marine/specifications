@@ -20,7 +20,7 @@ Every Pelorus Core segment shall observe these hard limits:
 - **Maximum segment length:** 30 m (backbone cable between terminators)
 - **Maximum nodes per segment:** 50
 - **Maximum stub length:** 6 m (drop cable from T-connector to device)
-- **Cable and connector:** M12 A-coded 5-pin, legacy marine micro standard (per `02-physical-layer.md`)
+- **Cable and connector:** M12 A-coded 5-pin, LMDE micro standard (per `02-physical-layer.md`)
 - **Termination:** Split termination at both ends of the segment
 - **Power:** 9–32 V DC, reverse polarity protected
 
@@ -75,7 +75,7 @@ Alternative linear or tree topologies are permitted but not recommended for vess
 - **Power Management:** Repeaters participate in selective wake-up using the same PNC and NM mechanisms (`04-power-management.md`).
 - **Signal Catalog & Binding:** The binding table is network-wide and is published on every segment (`06-signal-catalog.md`).
 - **PGNs:** All Pelorus PGNs (including WUF 0x0FF80 and NM 0x0FF81) are forwarded transparently by repeaters (`07-pgn-registry.md`).
-- **Gateways:** The central gateway may also bridge to legacy marine networks; its behavior is defined in the future `09-gateway-specification.md`.
+- **Gateways:** The central gateway may also bridge to LMDE networks; its behavior is defined in [09-gateway-specification.md](./09-gateway-specification.md).
 
 ---
 
