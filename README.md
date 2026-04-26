@@ -14,7 +14,7 @@ Pelorus is being designed in the open from day one. Expect rapid change, incompl
 
 ## Why Pelorus
 
-Marine electronics labeled "marine grade" are too often unreliable, expensive, and locked into closed proprietary ecosystems. NMEA 2000 — the dominant standard — is technically sound at its core but trapped by 20+ years of backward compatibility, closed specifications, and vendor incentives that prioritize differentiation over interoperability.
+Marine electronics labeled "marine grade" are too often unreliable, expensive, and locked into closed proprietary ecosystems. The legacy marine data ecosystem — the dominant standard — is technically sound at its core but trapped by 20+ years of backward compatibility, closed specifications, and vendor incentives that prioritize differentiation over interoperability.
 
 Sailors deserve better. Pelorus exists to provide it.
 
@@ -23,7 +23,7 @@ Sailors deserve better. Pelorus exists to provide it.
 - **Open** — full specification freely available, no NDAs, no licensing fees
 - **Reliable** — built on CAN FD with deterministic real-time guarantees, designed for safety-critical use
 - **Power-aware** — selective node sleep and wake, dramatically reducing overnight current draw at anchor
-- **Interoperable** — bridges cleanly to existing NMEA 2000 and NMEA 0183 networks
+- **Interoperable** — bridges cleanly to existing legacy marine data ecosystem and the older legacy serial marine protocol networks
 - **Modern** — Rust reference implementations, IPv6 link-local where applicable, mDNS service discovery
 
 ---
@@ -40,14 +40,12 @@ Start with the overview, then read by topic. The full document map is in [00-doc
 - **[02-physical-layer.md](./02-physical-layer.md)** — Pelorus Core physical layer: bit rates, cabling, connectors, topology, transceivers, power, termination, isolation (v0.1 draft).
 - **[03-data-link-layer.md](./03-data-link-layer.md)** — CAN FD frame format usage, 29-bit identifier and PGN structure, multi-frame transport, error handling (v0.1 draft).
 - **[04-power-management.md](./04-power-management.md)** — Developer reference for Pelorus power management on CAN FD networks. Covers partial networking, selective wake-up, marine functional groups, power states, NM behavior, frame error counter, and bus biasing. Cross-checked against ISO 11898-2:2016 (v0.4 draft).
-- **[../ARCHITECTURE.md](../ARCHITECTURE.md)** — Durable record of architectural decisions and the reasoning behind them. Read this before proposing changes.
-- **[../TODO.md](../TODO.md)** — Outstanding specification work and open questions.
 
 ### Recent Progress
 
 - Overview document drafted as the entry point to the specification.
 - Document index added to track specification completeness.
-- Physical layer specification drafted to v0.1 (CAN FD profile, NMEA 2000-compatible cabling and connectors, segmentation strategy, isolation tiers).
+- Physical layer specification drafted to v0.1 (CAN FD profile, legacy-marine-compatible cabling and connectors, segmentation strategy, isolation tiers).
 - Data link layer specification drafted to v0.1 (29-bit J1939-style identifiers, J1939 TP for multi-frame messages, no Fast Packet, no Remote Frames, reserved Pelorus identifier ranges).
 - Power management specification completed to v0.4 (functional group bit allocations, four-state power model with state machine, NM cadence, FEC and bus biasing rules, implementation checklist). PGN allocations for WUF (0x0FF80) and NM (0x0FF81) are candidate values pending ratification in 07-pgn-registry.md.
 
@@ -56,14 +54,14 @@ Start with the overview, then read by topic. The full document map is in [00-doc
 - `spec` — The Pelorus protocol specification
 - `pgn-rs` — Rust crate for parsing and decoding Pelorus PGNs
 - `pm` — Reference implementation of Pelorus power management (`pelorus-pm` crate)
-- `gateway` — Reference firmware for the Pelorus / NMEA 2000 / NMEA 0183 gateway node
+- `gateway` — Reference firmware for the Pelorus / legacy marine data ecosystem / the older legacy serial marine protocol gateway node
 - `signal-catalog` — VSS-syntax marine signal definitions
 
 ---
 
 ## Design Principles
 
-**Sailor-first, not vendor-first.** NMEA is an industry association whose members are vendors. Their incentive structure protects vendor revenue. Pelorus inverts this — every design decision asks "what's best for the sailor at sea" before "what's best for the manufacturer."
+**Sailor-first, not vendor-first.** The legacy marine standards body is an industry association whose members are vendors. Their incentive structure protects vendor revenue. Pelorus inverts this — every design decision asks "what's best for the sailor at sea" before "what's best for the manufacturer."
 
 **Reliability over features.** A device that works for ten years is more valuable than a device with twenty features that fails after three. Pelorus targets longevity and field repairability as first-class requirements.
 
@@ -81,7 +79,7 @@ Start with the overview, then read by topic. The full document map is in [00-doc
 - **Connectors:** M12 throughout — IP67/IP68, industrial proven, multi-source
 - **Network management:** ISO 11898-2:2016 partial networking adapted for marine operational modes
 - **Reference implementations:** Rust, `no_std` first, `forbid(unsafe_code)`
-- **Bridging:** Native bridges to NMEA 2000 (Classical CAN) and NMEA 0183 (RS-422)
+- **Bridging:** Native bridges to the legacy marine data ecosystem (Classical CAN) and the older legacy serial marine protocol (RS-422)
 
 ---
 
@@ -97,15 +95,15 @@ Start with the overview, then read by topic. The full document map is in [00-doc
 
 Pelorus is at the stage where input on direction matters more than code. Contribution paths:
 
-**Domain expertise.** Real-world experience with marine electronics, NMEA networks, racing or cruising — this informs design decisions that no amount of theoretical work can replace.
+**Domain expertise.** Real-world experience with marine electronics, legacy marine networks, racing or cruising — this informs design decisions that no amount of theoretical work can replace.
 
 **Technical review.** The specifications are open for critique. If something is wrong, incomplete, or unclear, file an issue.
 
-**Reference data.** Logged NMEA 2000 traffic from real vessels helps validate the bridge design and instance handling. If you can capture and share data from your boat (with appropriate privacy considerations), please do.
+**Reference data.** Logged legacy marine traffic from real vessels helps validate the bridge design and instance binding. If you can capture and share data from your boat (with appropriate privacy considerations), please do.
 
 **Implementation testing.** As reference implementations come online, testing on real hardware in real marine environments is what separates a working specification from a theoretical one.
 
-**Documentation.** Plain-English explanations of complex topics help adoption. If you can write clearly about CAN, NMEA, or marine networking, that's valuable.
+**Documentation.** Plain-English explanations of complex topics help adoption. If you can write clearly about CAN, legacy marine protocols, or marine networking in general, that's valuable.
 
 ---
 

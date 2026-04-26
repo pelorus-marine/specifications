@@ -10,7 +10,7 @@
 
 This document provides what an embedded developer needs to implement Pelorus-compatible power management on CAN FD networks, citing only freely accessible reference materials. The Pelorus design adopts the automotive industry's selective wake-up and partial networking mechanisms, adapted for marine use.
 
-**Core philosophy:** every Pelorus node should consume only the power it needs to do its current job. A boat at anchor with only the GNSS-driven anchor watch active should draw single-digit milliamps across the entire network, not the 2-3 amps typical of NMEA 2000.
+**Core philosophy:** every Pelorus node should consume only the power it needs to do its current job. A boat at anchor with only the GNSS-driven anchor watch active should draw single-digit milliamps across the entire network, not the 2-3 amps typical of the legacy marine data ecosystem.
 
 **ISO 11898-2:2016 Validation Note:** Sections 1–5 of this document have been cross-checked against the full ISO 11898-2:2016 standard (Sections 5.9 and 5.10, Tables 18–20, Figures 6–11). All WUF format, matching rules, frame error counter, bus biasing, and timing claims are accurate and normative. Sections 6 onward describe Pelorus-specific allocations (functional group bit assignments, reserved identifiers, NM cadence) which are v0.1 proposals subject to revision after prototype validation.
 
@@ -18,7 +18,7 @@ This document provides what an embedded developer needs to implement Pelorus-com
 
 ## 1. The Problem
 
-NMEA 2000 inherited its always-on power model from SAE J1939, designed for trucks where the alternator runs continuously. The standard provides no selective device power management.
+The legacy marine data ecosystem inherited its always-on power model from SAE J1939, designed for trucks where the alternator runs continuously. The standard provides no selective device power management.
 
 A typical sailboat instrument suite draws 2-3 A continuously. Over 12 hours at anchor that consumes 24-36 Ah — a meaningful fraction of the 200-400 Ah usable battery capacity on most cruising boats, before refrigeration, lights, and other loads compete for the same capacity.
 
@@ -181,7 +181,7 @@ Pelorus reserves the lowest six bits of byte 0 for the standard marine functiona
 | 0 | `anchor_watch` | GNSS, depth, anchor alarm | At anchor; wakes periodically or on drift |
 | 1 | `underway` | GNSS, heading, wind, AIS, autopilot, log | Vessel moving under sail or power |
 | 2 | `engine` | Engine ECU, fuel, alternator, exhaust temp | Ignition on or engine running |
-| 3 | `comms` | VHF, AIS transmit, satellite, NMEA bridge | DSC inbound, scheduled poll, or user request |
+| 3 | `comms` | VHF, AIS transmit, satellite, legacy-marine bridge | DSC inbound, scheduled poll, or user request |
 | 4 | `domestic` | Tank levels, battery monitors, refrigeration | Periodic housekeeping or user request |
 | 5 | `storm` | Wind, AIS receive, GNSS, barometer | Severe weather mode; reduced bandwidth |
 | 6–63 | Reserved | — | Shall not be used in v1.0 |

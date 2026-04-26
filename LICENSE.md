@@ -63,7 +63,7 @@ This license does **not** apply to:
 
 - Reference materials cited in the documentation (NXP datasheets, AUTOSAR specifications, ISO standards, etc.) — these remain under their respective copyrights
 - Source code in this repository — code is licensed separately under terms specified in the relevant source files (typically MIT or Apache 2.0)
-- Third-party trademarks mentioned in the documentation (NMEA 2000, CAN, AUTOSAR, etc.) — these remain the property of their respective owners
+- Third-party trademarks referenced in the documentation (CAN, AUTOSAR, etc.) — these remain the property of their respective owners
 
 ---
 

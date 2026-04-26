@@ -10,7 +10,7 @@
 
 This document specifies the data link layer for Pelorus Core: how CAN FD frames are formatted, how identifiers carry addressing and message-type information, how multi-frame messages are constructed when payloads exceed 64 bytes, and how bus errors are handled. It sits between [02-physical-layer.md](./02-physical-layer.md) (the wire) and [05-addressing.md](./05-addressing.md), [06-signal-catalog.md](./06-signal-catalog.md), [07-pgn-registry.md](./07-pgn-registry.md) (the application data).
 
-**Design philosophy:** Pelorus Core inherits J1939's identifier and PGN model with two changes — the data phase runs at 500 kbit/s, and the payload extends to 64 bytes. Everything else (priority, PDU1/PDU2 distinction, source-address claiming) is preserved so that gateway translation to NMEA 2000 stays mechanical.
+**Design philosophy:** Pelorus Core inherits J1939's identifier and PGN model with two changes — the data phase runs at 500 kbit/s, and the payload extends to 64 bytes. Everything else (priority, PDU1/PDU2 distinction, source-address claiming) is preserved so that gateway translation to the legacy marine data ecosystem stays mechanical.
 
 ---
 
@@ -51,7 +51,7 @@ Pelorus Core uses CAN FD frames per ISO 11898-1:2015 with the following constrai
 
 Pelorus Core nodes shall not transmit Classical CAN data frames except where ISO 11898-2:2016 requires Classical CAN encoding for Wake-Up Frames (see [04-power-management.md §5](./04-power-management.md)). All application traffic uses CAN FD format.
 
-This is a deliberate divergence from coexistence-with-NMEA 2000 thinking. NMEA 2000 traffic is on a separate physical bus per [01-overview.md §4](./01-overview.md); Pelorus Core does not need to emit Classical CAN data frames for any compatibility purpose.
+This is a deliberate divergence from a coexistence-on-the-same-wire mindset. Legacy marine traffic lives on a separate physical bus per [01-overview.md §4](./01-overview.md); Pelorus Core does not need to emit Classical CAN data frames for any compatibility purpose.
 
 ### 2.2 No Remote Frames
 
@@ -188,7 +188,7 @@ A receiver requesting a specific PGN sends PGN 0x0EA00 with the requested PGN en
 
 ### 5.4 No Fast Packet
 
-Pelorus Core does not implement NMEA 2000 Fast Packet. Senders shall not use Fast Packet framing. Gateways translating from NMEA 2000 to Pelorus Core must reassemble Fast Packet payloads into single CAN FD frames where possible, or fall back to J1939 TP for payloads exceeding 64 bytes.
+Pelorus Core does not implement legacy marine data ecosystem Fast Packet. Senders shall not use Fast Packet framing. Gateways translating from legacy-marine-to-Pelorus Core must reassemble Fast Packet payloads into single CAN FD frames where possible, or fall back to J1939 TP for payloads exceeding 64 bytes.
 
 ---
 
@@ -269,20 +269,20 @@ The following are unresolved and tracked in [TODO.md](../TODO.md):
 
 ---
 
-## Appendix A: Comparison with NMEA 2000 Data Link
+## Appendix A: Comparison with the legacy marine data ecosystem Data Link
 
-| Aspect | NMEA 2000 | Pelorus Core |
+| Aspect | legacy marine data ecosystem | Pelorus Core |
 |---|---|---|
 | Frame format | Classical CAN | CAN FD |
 | Identifier length | 29 bit | 29 bit (identical layout) |
 | Maximum single-frame payload | 8 bytes | 64 bytes |
-| Multi-frame protocol | NMEA 2000 Fast Packet | J1939 TP |
+| Multi-frame protocol | legacy marine data ecosystem Fast Packet | J1939 TP |
 | Remote frames | Permitted | Not used |
 | Priority field | 3 bits | 3 bits (identical) |
 | PDU1/PDU2 split | At PF=0xF0 | At PF=0xF0 (identical) |
 | Source address | 8 bit | 8 bit (identical) |
 
-Pelorus Core preserves the NMEA 2000 / J1939 identifier semantics exactly. The differences are the underlying frame format (CAN FD) and the multi-frame protocol (J1939 TP rather than Fast Packet).
+Pelorus Core preserves the legacy marine data ecosystem / J1939 identifier semantics exactly. The differences are the underlying frame format (CAN FD) and the multi-frame protocol (J1939 TP rather than Fast Packet).
 
 ---
 

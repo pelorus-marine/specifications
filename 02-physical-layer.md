@@ -8,9 +8,9 @@
 
 ## About This Document
 
-This document specifies the physical layer for Pelorus Core, the safety-critical CAN FD-based backbone of the Pelorus marine network. It defines bit rates, cabling, connectors, topology, transceiver requirements, power distribution, termination, and isolation. The design deliberately preserves NMEA 2000 installation practices and physical infrastructure compatibility while delivering the protocol-level improvements CAN FD enables.
+This document specifies the physical layer for Pelorus Core, the safety-critical CAN FD-based backbone of the Pelorus marine network. It defines bit rates, cabling, connectors, topology, transceiver requirements, power distribution, termination, and isolation. The design deliberately preserves legacy marine installation practices and physical infrastructure compatibility while delivering the protocol-level improvements CAN FD enables.
 
-**Design philosophy:** Pelorus Core should work on the wiring sailors already have, with the connectors they already use, with the installation practices they already know. The improvements over NMEA 2000 live in the protocol, the firmware, and the engineering discipline — not in forcing sailors to rewire their boats.
+**Design philosophy:** Pelorus Core should work on the wiring sailors already have, with the connectors they already use, with the installation practices they already know. The improvements over legacy marine live in the protocol, the firmware, and the engineering discipline — not in forcing sailors to rewire their boats.
 
 ---
 
@@ -18,12 +18,12 @@ This document specifies the physical layer for Pelorus Core, the safety-critical
 
 Pelorus Core defines a CAN FD-based serial communication network for marine vessel instrumentation. It is designed to:
 
-- Coexist with NMEA 2000 networks on the same vessel via gateway nodes
-- Use NMEA 2000-compatible cabling, connectors, and installation practices
-- Operate as a separate physical bus from NMEA 2000 (CAN FD frames are not compatible with classical CAN transceivers)
+- Coexist with legacy marine networks on the same vessel via gateway nodes
+- Use legacy-marine-compatible cabling, connectors, and installation practices
+- Operate as a separate physical bus from the legacy marine data ecosystem (CAN FD frames are not compatible with classical CAN transceivers)
 - Support segmentation via repeater nodes for vessels exceeding single-segment limits
 
-Pelorus Core is **not** electrically interoperable with NMEA 2000 on the same wire. The two networks use the same physical infrastructure (cable, connectors) but operate as separate buses bridged by gateway nodes.
+Pelorus Core is **not** electrically interoperable with the legacy marine data ecosystem on the same wire. The two networks use the same physical infrastructure (cable, connectors) but operate as separate buses bridged by gateway nodes.
 
 ---
 
@@ -33,7 +33,7 @@ Pelorus Core is **not** electrically interoperable with NMEA 2000 on the same wi
 
 | Phase | Rate | Notes |
 |---|---|---|
-| Arbitration phase | 250 kbit/s | Identical to NMEA 2000 |
+| Arbitration phase | 250 kbit/s | Identical to the legacy marine data ecosystem |
 | Data phase | 500 kbit/s | CAN FD speed boost |
 
 ### 2.2 Frame Format
@@ -47,17 +47,17 @@ Pelorus Core uses CAN FD frames per ISO 11898-1:2015:
 
 ### 2.3 No Fast Packet
 
-Pelorus Core does not implement NMEA 2000's Fast Packet protocol. Multi-frame messages exceeding 64 bytes use the J1939 Transport Protocol (TP) or are restructured into single-frame messages where possible. The vast majority of NMEA 2000 PGNs (including all signals up to 100 bytes) fit in a single CAN FD frame, eliminating Fast Packet's complexity.
+Pelorus Core does not implement legacy marine data ecosystem's Fast Packet protocol. Multi-frame messages exceeding 64 bytes use the J1939 Transport Protocol (TP) or are restructured into single-frame messages where possible. The vast majority of legacy marine PGNs (including all signals up to 100 bytes) fit in a single CAN FD frame, eliminating Fast Packet's complexity.
 
 ### 2.4 Rationale
 
 The 250k/500k profile was chosen for the following reasons:
 
-- Arbitration phase identical to NMEA 2000 preserves all NMEA 2000 physical layer characteristics including 6m stub tolerance
-- 500 kbit/s data phase provides ~4-5× effective throughput improvement over NMEA 2000 for substantial messages
+- Arbitration phase identical to the legacy marine data ecosystem preserves all legacy marine physical layer characteristics including 6m stub tolerance
+- 500 kbit/s data phase provides ~4-5× effective throughput improvement over the legacy marine data ecosystem for substantial messages
 - Signal integrity is well-margined at 500 kbit/s data phase, eliminating the need for Signal Improvement Capability (SIC) transceivers
 - Standard CAN FD transceivers from multiple vendors support this profile
-- 64-byte frames eliminate Fast Packet for all current NMEA 2000 message types
+- 64-byte frames eliminate Fast Packet for all current legacy marine message types
 
 Higher data phase rates (1 Mbit/s, 2 Mbit/s) are reserved for future Pelorus Core profiles. v1.0 specifies 250k/500k as the single mandatory profile.
 
@@ -67,9 +67,9 @@ Higher data phase rates (1 Mbit/s, 2 Mbit/s) are reserved for future Pelorus Cor
 
 ### 3.1 Standard Cable
 
-Pelorus Core uses NMEA 2000 micro cable as the standard cable specification. This cable is:
+Pelorus Core uses legacy marine micro cable as the standard cable specification. This cable is:
 
-- Specified per DeviceNet thin cable / NMEA 2000 micro
+- Specified per DeviceNet thin cable / legacy marine micro
 - 24 AWG twisted pair for CAN signals
 - 22 AWG conductors for power and ground
 - Foil shield with drain wire
@@ -81,8 +81,8 @@ Pelorus Core uses NMEA 2000 micro cable as the standard cable specification. Thi
 
 For installations with extended power requirements, the following cable variants are permitted:
 
-- **NMEA 2000 mid cable** — 20 AWG signal pair, 18 AWG power, 4A current capacity
-- **NMEA 2000 mini cable** — 18 AWG signal pair, 16 AWG power, 8A current capacity
+- **legacy marine mid cable** — 20 AWG signal pair, 18 AWG power, 4A current capacity
+- **legacy marine mini cable** — 18 AWG signal pair, 16 AWG power, 8A current capacity
 
 Mid and mini cable use different connector sizes than micro and require appropriate adapters at backbone-to-drop transitions. Implementers should default to micro cable unless specific power distribution requirements justify the larger sizes.
 
@@ -100,19 +100,19 @@ For typical recreational vessel installations, micro cable is sufficient through
 
 ### 4.1 Connector Type
 
-Pelorus Core uses M12 A-coded 5-pin connectors throughout, identical to NMEA 2000 micro:
+Pelorus Core uses M12 A-coded 5-pin connectors throughout, identical to legacy marine micro:
 
 - IEC 61076-2-101 compliant
 - A-coded keying
-- 5 contacts arranged per NMEA 2000 micro standard
+- 5 contacts arranged per legacy marine micro standard
 - IP67/IP68 rated when mated and properly torqued
 - Threaded coupling, 14mm thread pitch
 
 ### 4.2 Pinout
 
-The pinout matches NMEA 2000 micro exactly:
+The pinout matches legacy marine micro exactly:
 
-| Pin | Signal | Wire Color (per NMEA 2000) |
+| Pin | Signal | Wire Color (per legacy marine data ecosystem) |
 |---|---|---|
 | 1 | Shield / Drain | Bare drain wire |
 | 2 | NET-S (Power positive) | Red |
@@ -122,17 +122,17 @@ The pinout matches NMEA 2000 micro exactly:
 
 ### 4.3 Cross-Connection Considerations
 
-Because Pelorus Core uses identical connectors and pinout to NMEA 2000, cables physically interchange between the two networks. Cross-connection between Pelorus Core and NMEA 2000 buses results in a non-functional network (different bit rates, CAN FD frames not recognized by classical CAN transceivers) but does not damage equipment.
+Because Pelorus Core uses identical connectors and pinout to the legacy marine data ecosystem, cables physically interchange between the two networks. Cross-connection between Pelorus Core and legacy marine data ecosystem buses results in a non-functional network (different bit rates, CAN FD frames not recognized by classical CAN transceivers) but does not damage equipment.
 
 ### 4.4 Recommended Visual Differentiation
 
-To reduce cross-connection errors, Pelorus Core devices and cables should be visually distinguishable from NMEA 2000:
+To reduce cross-connection errors, Pelorus Core devices and cables should be visually distinguishable from the legacy marine data ecosystem:
 
 - Pelorus Core ports on devices should be labeled "Pelorus Core" or "Pelorus" adjacent to each connector
 - Pelorus-branded cables and accessories should use distinctive coloring (Pelorus marine blue recommended) on connector bodies, cable jackets, or strain relief boots
-- Pelorus terminator caps should be visually distinct from NMEA 2000 terminator caps
+- Pelorus terminator caps should be visually distinct from legacy marine terminator caps
 
-These are recommendations rather than mandates. Sailors using generic NMEA 2000 cables on Pelorus networks will see no visual differentiation, which is an accepted tradeoff for cable inventory compatibility.
+These are recommendations rather than mandates. Sailors using generic legacy marine data ecosystem cables on Pelorus networks will see no visual differentiation, which is an accepted tradeoff for cable inventory compatibility.
 
 ---
 
@@ -140,7 +140,7 @@ These are recommendations rather than mandates. Sailors using generic NMEA 2000 
 
 ### 5.1 Standard Topology
 
-Pelorus Core uses linear bus topology with T-connector drops, identical to NMEA 2000 micro:
+Pelorus Core uses linear bus topology with T-connector drops, identical to legacy marine micro:
 
 ```
 [Term] ─── Backbone ─── [T] ─── Backbone ─── [T] ─── Backbone ─── [Term]
@@ -162,7 +162,7 @@ A single Pelorus Core segment shall not exceed:
 | Maximum nodes per segment | 50 |
 | Termination | 120Ω at each physical end |
 
-These limits match NMEA 2000 micro for backbone length above 100m would require mini cable, which is permitted but not standard for Pelorus.
+These limits match legacy marine micro for backbone length above 100m would require mini cable, which is permitted but not standard for Pelorus.
 
 ### 5.3 Segmentation for Larger Vessels
 
@@ -213,7 +213,7 @@ Termination is provided by:
 - Dedicated terminator caps that screw onto T-connectors at the bus ends
 - Built into devices that occupy bus ends (less common, generally discouraged because it requires that specific device to remain connected)
 
-NMEA 2000 simple 120Ω terminator caps will work on Pelorus Core networks but do not provide the EMC benefits of split termination. Sailors using existing terminator inventory will have functional but suboptimal networks. New Pelorus installations should use split-termination caps.
+Simple 120Ω terminator caps from the legacy marine ecosystem will work on Pelorus Core networks but do not provide the EMC benefits of split termination. Sailors using existing terminator inventory will have functional but suboptimal networks. New Pelorus installations should use split-termination caps.
 
 ### 6.4 Total Bus Resistance
 
@@ -245,7 +245,7 @@ The following parts are known to meet Pelorus Core requirements (non-exhaustive)
 
 ### 7.3 SIC Not Required
 
-Pelorus Core does not require Signal Improvement Capability (SIC) transceivers. The 500 kbit/s data phase provides sufficient signal integrity headroom on NMEA 2000-style topologies including 6m drops without active ringing suppression. SIC may be specified in future Pelorus Core profiles if higher data phase rates are introduced.
+Pelorus Core does not require Signal Improvement Capability (SIC) transceivers. The 500 kbit/s data phase provides sufficient signal integrity headroom on legacy-marine-style topologies including 6m drops without active ringing suppression. SIC may be specified in future Pelorus Core profiles if higher data phase rates are introduced.
 
 ### 7.4 Patent Considerations
 
@@ -290,7 +290,7 @@ These declarations enable installers to calculate segment power budgets accurate
 
 ### 8.4 LEN Compatibility
 
-Pelorus Core adopts the NMEA 2000 LEN (Load Equivalency Number) system for compatibility with existing installer practice:
+Pelorus Core adopts the legacy marine data ecosystem LEN (Load Equivalency Number) system for compatibility with existing installer practice:
 
 - 1 LEN = 50 mA at 12V
 - Devices declare their LEN value in their device description
@@ -466,7 +466,7 @@ The Pelorus project will maintain a reference implementation and compatibility t
 The following items are not yet specified and will be addressed in future revisions:
 
 - Specific PGN number assignments for Pelorus Core (currently under design)
-- NMEA 2000 bridge gateway functional specification
+- legacy marine data ecosystem bridge gateway functional specification
 - Pelorus Core repeater functional specification (filtering rules, fault handling)
 - Specific power tee implementations (single, center, dual injection)
 - Mechanical specifications for Pelorus Core devices (mounting, form factors)
@@ -475,16 +475,16 @@ The following items are not yet specified and will be addressed in future revisi
 
 ---
 
-## Appendix A: Comparison with NMEA 2000
+## Appendix A: Comparison with the legacy marine data ecosystem
 
-| Parameter | NMEA 2000 | Pelorus Core |
+| Parameter | legacy marine data ecosystem | Pelorus Core |
 |---|---|---|
 | Arbitration bit rate | 250 kbit/s | 250 kbit/s (identical) |
 | Data bit rate | 250 kbit/s | 500 kbit/s |
 | Maximum frame payload | 8 bytes (Fast Packet to 223) | 64 bytes |
 | Multi-frame protocol | Fast Packet | None required (or J1939 TP) |
 | Connector | M12 A-coded 5-pin | M12 A-coded 5-pin (identical) |
-| Cable | DeviceNet thin/mid/thick | NMEA 2000 micro/mid/mini (identical) |
+| Cable | DeviceNet thin/mid/thick | legacy marine micro/mid/mini (identical) |
 | Maximum stub | 6 m | 6 m (identical) |
 | Maximum backbone (micro) | 100 m | 30 m per segment |
 | Termination | 120Ω simple | 120Ω split termination |
@@ -504,8 +504,8 @@ The following items are not yet specified and will be addressed in future revisi
 | **DLC** | Data Length Code, 4-bit field indicating frame data size |
 | **ESD** | Electrostatic Discharge |
 | **HBM** | Human Body Model, ESD test methodology |
-| **LEN** | Load Equivalency Number, NMEA 2000 power unit (1 LEN = 50 mA) |
-| **PGN** | Parameter Group Number, J1939/NMEA 2000 message identifier |
+| **LEN** | Load Equivalency Number, legacy marine power unit (1 LEN = 50 mA) |
+| **PGN** | Parameter Group Number, J1939/legacy marine message identifier |
 | **SIC** | Signal Improvement Capability, CAN ringing suppression per CiA 601-4 |
 | **WUF** | Wake-Up Frame, CAN frame triggering selective node wake-up |
 
