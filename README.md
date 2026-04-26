@@ -34,13 +34,16 @@ This is the umbrella organization for the Pelorus Marine project. Repositories w
 
 ### Current Documents
 
-- **[power-management.md](./power-management.md)** — Developer reference for Pelorus power management on CAN FD networks. Covers partial networking, selective wake-up, frame error counter, and the marine operational mode model. Cites only freely accessible reference materials.
+- **[power-management.md](./power-management.md)** — Developer reference for Pelorus power management on CAN FD networks (v0.3). Covers partial networking, selective wake-up, frame error counter, bus biasing, and marine operational modes. Fully cross-checked against ISO 11898-2:2016.
+
+### Recent Progress
+- Power management specification validated against the full ISO 11898-2:2016 standard (Sections 5.9–5.10). Ready for reference implementation work.
 
 ### Planned Repositories
 
 - `spec` — The Pelorus protocol specification
 - `pgn-rs` — Rust crate for parsing and decoding Pelorus PGNs
-- `pm` — Reference implementation of Pelorus power management
+- `pm` — Reference implementation of Pelorus power management (`pelorus-pm` crate)
 - `gateway` — Reference firmware for the Pelorus / NMEA 2000 / NMEA 0183 gateway node
 - `signal-catalog` — VSS-syntax marine signal definitions
 
@@ -112,5 +115,4 @@ GitHub issues are the preferred channel for technical discussion.
 
 ---
 
-**Project home:** https://sevenseas.io/pelorus
 **GitHub:** https://github.com/pelorus-marine
