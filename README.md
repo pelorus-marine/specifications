@@ -34,10 +34,22 @@ This is the umbrella organization for the Pelorus Marine project. Repositories w
 
 ### Current Documents
 
-- **[power-management.md](./power-management.md)** — Developer reference for Pelorus power management on CAN FD networks (v0.3). Covers partial networking, selective wake-up, frame error counter, bus biasing, and marine operational modes. Fully cross-checked against ISO 11898-2:2016.
+Start with the overview, then read by topic. The full document map is in [00-document-index.md](./00-document-index.md).
+
+- **[01-overview.md](./01-overview.md)** — What Pelorus is, two-layer architecture, v1.0 scope, reading guide (v0.1).
+- **[02-physical-layer.md](./02-physical-layer.md)** — Pelorus Core physical layer: bit rates, cabling, connectors, topology, transceivers, power, termination, isolation (v0.1 draft).
+- **[03-data-link-layer.md](./03-data-link-layer.md)** — CAN FD frame format usage, 29-bit identifier and PGN structure, multi-frame transport, error handling (v0.1 draft).
+- **[04-power-management.md](./04-power-management.md)** — Developer reference for Pelorus power management on CAN FD networks. Covers partial networking, selective wake-up, marine functional groups, power states, NM behavior, frame error counter, and bus biasing. Cross-checked against ISO 11898-2:2016 (v0.4 draft).
+- **[../ARCHITECTURE.md](../ARCHITECTURE.md)** — Durable record of architectural decisions and the reasoning behind them. Read this before proposing changes.
+- **[../TODO.md](../TODO.md)** — Outstanding specification work and open questions.
 
 ### Recent Progress
-- Power management specification validated against the full ISO 11898-2:2016 standard (Sections 5.9–5.10). Ready for reference implementation work.
+
+- Overview document drafted as the entry point to the specification.
+- Document index added to track specification completeness.
+- Physical layer specification drafted to v0.1 (CAN FD profile, NMEA 2000-compatible cabling and connectors, segmentation strategy, isolation tiers).
+- Data link layer specification drafted to v0.1 (29-bit J1939-style identifiers, J1939 TP for multi-frame messages, no Fast Packet, no Remote Frames, reserved Pelorus identifier ranges).
+- Power management specification completed to v0.4 (functional group bit allocations, four-state power model with state machine, NM cadence, FEC and bus biasing rules, implementation checklist). PGN allocations for WUF (0x0FF80) and NM (0x0FF81) are candidate values pending ratification in 07-pgn-registry.md.
 
 ### Planned Repositories
 
