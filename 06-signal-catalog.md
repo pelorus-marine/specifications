@@ -2,17 +2,14 @@
 
 **Version:** 0.1 Draft  
 **Last Updated:** April 26, 2026  
-**Status:** Pre-specification (normative for v1.0)
+**Status:** Pre-specification  
+**Trust:** Unverified
 
 ---
 
 ## About This Document
 
-This document defines the Pelorus Signal Catalog — the canonical semantic data model for all Pelorus Core signals.  
-
-The catalog uses **COVESA Vehicle Signal Specification (VSS)** syntax under a `Vessel.*` root. It is protocol-agnostic and serves as the single source of truth for signal meaning, type, units, and instance binding across Pelorus, bridges to legacy marine networks, gateways, and higher-layer consumers.
-
-**Design decision (locked):** Pelorus adopts VSS syntax and tooling for the signal catalog. No custom syntax will be invented for v1.0. The catalog is maintained as a standalone `Vessel.*` tree (not contributed upstream to COVESA).
+This document defines the Pelorus Signal Catalog — the canonical semantic data model for all Pelorus Core signals — using **COVESA VSS** under a **`Vessel.*`** root. It is protocol-agnostic and is the single source of truth for meaning, type, units, and instance binding. The locked catalog policy is summarized in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary); **normative** structure, overlays, and binding rules are defined in this document.
 
 ---
 
@@ -20,7 +17,7 @@ The catalog uses **COVESA Vehicle Signal Specification (VSS)** syntax under a `V
 
 **Root:** `Vessel`
 
-All signals live under `Vessel.*`. The tree is organized by marine functional areas (aligned with the power-management functional groups where applicable):
+All signals live under `Vessel.*`. The tree is organized by marine functional areas (aligned with the power-management functional groups where applicable). The catalog is maintained as a standalone `Vessel.*` tree and is **not** contributed upstream to COVESA (v1.0 project policy).
 
 - `Vessel.Propulsion` (engines, thrusters, sail drives)
 - `Vessel.Navigation`

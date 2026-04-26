@@ -2,21 +2,14 @@
 
 **Version:** 0.1 Draft  
 **Last Updated:** April 26, 2026  
-**Status:** Pre-specification (normative for v1.0)
+**Status:** Pre-specification  
+**Trust:** Unverified
 
 ---
 
 ## About This Document
 
-This document defines the functional specification for Pelorus Core gateway nodes.
-
-A gateway node provides bridging between Pelorus Core and legacy marine instrumentation networks, hosts the convenient provisioning interface for the binding table, and serves as the recommended central hub in star topologies.
-
-**Design decisions (locked):**
-- The gateway is a convenient but **not mandatory** authority (no single point of failure — per `06-signal-catalog.md` and `ARCHITECTURE.md` §5.9).
-- It must support transparent bridging of Pelorus PGNs and selected compatibility PGNs from the legacy marine data ecosystem.
-- All critical state (binding table, last-known power profile) is published on the bus and cached in NV memory by interested nodes.
-- The gateway provides a web UI for sailor provisioning but the network continues to operate without it.
+This document defines the **normative** functional specification for Pelorus Core gateway nodes: bridging, binding-table authority, and role in recommended topologies. A one-paragraph summary of locked gateway policy is in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary). Non-gateway-specific binding and instance rules remain in [06-signal-catalog.md](./06-signal-catalog.md) and [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ---
 

@@ -1,16 +1,15 @@
 # Pelorus Core — Data Link Layer Specification
 
-**Version:** 0.1 Draft
-**Last Updated:** April 26, 2026
-**Status:** Pre-specification
+**Version:** 0.1 Draft  
+**Last Updated:** April 26, 2026  
+**Status:** Pre-specification  
+**Trust:** Trusted
 
 ---
 
 ## About This Document
 
-This document specifies the data link layer for Pelorus Core: how CAN FD frames are formatted, how identifiers carry addressing and message-type information, how multi-frame messages are constructed when payloads exceed 64 bytes, and how bus errors are handled. It sits between [02-physical-layer.md](./02-physical-layer.md) (the wire) and [05-addressing.md](./05-addressing.md), [06-signal-catalog.md](./06-signal-catalog.md), [07-pgn-registry.md](./07-pgn-registry.md) (the application data).
-
-**Design philosophy:** Pelorus Core inherits J1939's identifier and PGN model with two changes — the data phase runs at 500 kbit/s, and the payload extends to 64 bytes. Everything else (priority, PDU1/PDU2 distinction, source-address claiming) is preserved so that gateway translation to the legacy marine data ecosystem stays mechanical.
+This document specifies the data link layer for Pelorus Core: CAN FD frame usage, 29-bit identifier layout, multi-frame transport when payloads exceed 64 bytes, and error handling. It sits between [02-physical-layer.md](./02-physical-layer.md) and the application-layer documents [05-addressing.md](./05-addressing.md), [06-signal-catalog.md](./06-signal-catalog.md), [07-pgn-registry.md](./07-pgn-registry.md). For the J1939-derived identifier model, Fast Packet policy, and other locked stack decisions stated once for the whole suite, see [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary).
 
 ---
 

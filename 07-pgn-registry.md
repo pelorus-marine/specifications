@@ -2,21 +2,14 @@
 
 **Version:** 0.1 Draft  
 **Last Updated:** April 26, 2026  
-**Status:** Pre-specification (normative for v1.0)
+**Status:** Pre-specification  
+**Trust:** Unverified
 
 ---
 
 ## About This Document
 
-This document defines the complete Pelorus PGN (Parameter Group Number) registry — the wire-level encoding of all signals on the Pelorus Core CAN FD bus.
-
-It is the transport counterpart to the semantic model defined in `06-signal-catalog.md`.
-
-**Design decisions (locked):**
-- Pelorus uses J1939-style 29-bit identifiers with PGN encoding (per `05-addressing.md`).
-- No Fast Packet transport (CAN FD 64-byte frames make it unnecessary).
-- New Pelorus extensions use the high PGN range `0x0FF80`–`0x0FFFF`.
-- All field layouts follow a clear bit-level definition for interoperability.
+This document defines the Pelorus PGN (Parameter Group Number) registry — wire-level encoding on the Pelorus Core CAN FD bus. It is the transport counterpart to [06-signal-catalog.md](./06-signal-catalog.md). Stack-level decisions (J1939-style identifiers, no Fast Packet, Pelorus extension range) are summarized in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary); **bit-level** field definitions and PGN assignments are **normative** here and in [05-addressing.md](./05-addressing.md) where applicable.
 
 ---
 

@@ -1,16 +1,15 @@
 # Pelorus Core — Addressing Specification
 
-**Version:** 0.1 Draft
-**Last Updated:** April 26, 2026
-**Status:** Pre-specification
+**Version:** 0.1 Draft  
+**Last Updated:** April 26, 2026  
+**Status:** Pre-specification  
+**Trust:** Unverified
 
 ---
 
 ## About This Document
 
-This document specifies source addressing, address claiming, conflict resolution, and device identification for Pelorus Core.  
-
-**Design decision (locked):** Pelorus Core addressing is **identical** to the legacy marine data ecosystem (SAE J1939-81 / ISO 11783-5). No deviations are introduced in v1.0. This makes gateway translation to legacy marine networks trivial and preserves all existing diagnostic and configuration tool behavior.
+This document specifies source addressing, address claiming, conflict resolution, and device identification for Pelorus Core. The locked v1.0 policy (J1939-81 / ISO 11783-5 parity) is summarized in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary); **normative** procedures and field layouts are defined here and in [07-pgn-registry.md](./07-pgn-registry.md) where applicable.
 
 ---
 

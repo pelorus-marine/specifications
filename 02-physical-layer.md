@@ -1,29 +1,27 @@
 # Pelorus Core — Physical Layer Specification
 
-**Version:** 0.1 Draft
-**Last Updated:** April 26, 2026
-**Status:** Pre-specification
+**Version:** 0.1 Draft  
+**Last Updated:** April 26, 2026  
+**Status:** Pre-specification  
+**Trust:** Trusted
 
 ---
 
 ## About This Document
 
-This document specifies the physical layer for Pelorus Core, the safety-critical CAN FD-based backbone of the Pelorus marine network. It defines bit rates, cabling, connectors, topology, transceiver requirements, power distribution, termination, and isolation. The design deliberately preserves legacy marine installation practices and physical infrastructure compatibility while delivering the protocol-level improvements CAN FD enables.
-
-**Design philosophy:** Pelorus Core should work on the wiring sailors already have, with the connectors they already use, with the installation practices they already know. The improvements over legacy marine live in the protocol, the firmware, and the engineering discipline — not in forcing sailors to rewire their boats.
+This document specifies the physical layer for Pelorus Core: bit rates, cabling, connectors, topology, transceiver requirements, power distribution, termination, and isolation. For stack context, coexistence with legacy marine buses, and cross-document locked decisions, see [01-overview.md](./01-overview.md) ([§3 Two-layer architecture](./01-overview.md#3-two-layer-architecture), [§4 Coexistence](./01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem), [§6 Design principles](./01-overview.md#6-design-principles), [§9 Locked decisions](./01-overview.md#9-locked-decisions-authoritative-summary)).
 
 ---
 
 ## 1. Scope and Compatibility Statement
 
-Pelorus Core defines a CAN FD-based serial communication network for marine vessel instrumentation. It is designed to:
+This document defines the **normative** physical requirements for Pelorus Core segments. High-level scope and legacy coexistence are summarized in [01-overview.md §3–4](./01-overview.md#3-two-layer-architecture).
 
-- Coexist with legacy marine networks on the same vessel via gateway nodes
-- Use legacy-marine-compatible cabling, connectors, and installation practices
-- Operate as a separate physical bus from the legacy marine data ecosystem (CAN FD frames are not compatible with classical CAN transceivers)
-- Support segmentation via repeater nodes for vessels exceeding single-segment limits
+Pelorus Core segments shall:
 
-Pelorus Core is **not** electrically interoperable with the legacy marine data ecosystem on the same wire. The two networks use the same physical infrastructure (cable, connectors) but operate as separate buses bridged by gateway nodes.
+- Use legacy-marine-compatible cabling, connectors, and installation practices where this document specifies them
+- Operate as a **separate** electrical bus from classical-CAN legacy marine networks (see [01-overview §4](./01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem))
+- Support scaling via repeater-isolated segments per [08-network-architecture.md](./08-network-architecture.md)
 
 ---
 

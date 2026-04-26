@@ -2,21 +2,14 @@
 
 **Version:** 0.1 Draft  
 **Last Updated:** April 26, 2026  
-**Status:** Pre-specification (normative for v1.0)
+**Status:** Pre-specification  
+**Trust:** Unverified
 
 ---
 
 ## About This Document
 
-This document defines the functional specification for Pelorus Core repeater nodes.
-
-Repeaters enable multi-segment networks on vessels that exceed the single-segment limits defined in `02-physical-layer.md`. They are the mechanism for scaling Pelorus Core while maintaining electrical isolation and fault containment.
-
-**Design decisions (locked):**
-- Repeaters shall provide galvanic isolation between all connected segments (mandatory).
-- Repeaters shall forward all valid CAN FD frames transparently.
-- Repeaters shall participate fully in power management and address claiming.
-- Maximum 4 repeater hops between any two endpoints on the network (per `08-network-architecture.md`).
+This document defines the **normative** functional specification for Pelorus Core repeater nodes. Segment limits and hop-count rules are specified in [08-network-architecture.md](./08-network-architecture.md); physical port requirements in [02-physical-layer.md](./02-physical-layer.md). Locked repeater policy in brief: [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary).
 
 ---
 

@@ -2,32 +2,26 @@
 
 **Version:** 0.1 Draft  
 **Last Updated:** April 26, 2026  
-**Status:** Pre-specification (normative for v1.0)
+**Status:** Pre-specification  
+**Trust:** Unverified
 
 ---
 
 ## About This Document
 
-This document provides practical instructions for installing a Pelorus Core network on a vessel. It covers planning, wiring, termination, power distribution, repeater placement, and basic commissioning.
+This document provides **non-normative** installation guidance for Pelorus Core networks: planning, wiring, termination, power, repeaters, and commissioning. **Normative** physical and electrical rules are in [02-physical-layer.md](./02-physical-layer.md); the locked v1.0 installation policy is one line in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary).
 
-It assumes you have read and understood the preceding specifications:
-- `02-physical-layer.md` (cabling, connectors, termination, isolation)
-- `08-network-architecture.md` (segment limits, repeaters, star topology)
-- `10-repeater-specification.md` (repeater requirements)
-- `12-hardware-design-guide.md` (hardware requirements)
-
-**Design decisions (locked):**  
-Installation must follow the physical and electrical rules in `02-physical-layer.md`. No deviations are permitted for v1.0.
+Prerequisites: [02-physical-layer.md](./02-physical-layer.md), [08-network-architecture.md](./08-network-architecture.md), [10-repeater-specification.md](./10-repeater-specification.md), [12-hardware-design-guide.md](./12-hardware-design-guide.md).
 
 ---
 
 ## 1. Pre-Installation Planning
 
-1. Measure the vessel and identify required segments (maximum 30 m per segment, 50 nodes per segment).
+1. Measure the vessel and plan segments so backbone length, node count, and stub length stay within [08-network-architecture.md](./08-network-architecture.md) (summary in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary)).
 2. Decide on topology:
    - Small vessels: single linear bus
    - Large vessels: recommended star topology with central gateway
-3. Plan repeater locations (if needed) to respect the 4-hop maximum.
+3. Plan repeater locations (if needed) to respect the hop limit in [08-network-architecture.md](./08-network-architecture.md).
 4. Identify power injection points and ensure 9–32 V DC supply with reverse polarity protection.
 5. Decide on isolation requirements (mandatory for high-power devices).
 
@@ -35,10 +29,9 @@ Installation must follow the physical and electrical rules in `02-physical-layer
 
 ## 2. Cabling and Connectors
 
-- Use only legacy-marine-compatible micro cable (M12 A-coded 5-pin).
+- Use only cable and connectors specified in [02-physical-layer.md](./02-physical-layer.md) (typically legacy-marine-compatible micro cable, M12 A-coded 5-pin).
 - Backbone runs between terminators; drops use T-connectors.
-- Maximum stub length: 6 m.
-- Maximum backbone segment length: 30 m.
+- Observe stub and backbone length limits in [08-network-architecture.md](./08-network-architecture.md).
 - All connectors must be fully mated and sealed (IP67/IP68).
 - Label every cable and drop clearly.
 

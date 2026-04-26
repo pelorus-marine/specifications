@@ -1,28 +1,25 @@
-# Pelorus Power Management — Developer Reference
+# Pelorus Core — Power Management Specification
 
-**Version:** 0.4 Draft
-**Last Updated:** April 26, 2026
-**Status:** Pre-specification
+**Version:** 0.4 Draft  
+**Last Updated:** April 26, 2026  
+**Status:** Pre-specification  
+**Trust:** Trusted (§1–5 ISO-validated; §6+ proposals subject to validation)
 
 ---
 
 ## About This Document
 
-This document provides what an embedded developer needs to implement Pelorus-compatible power management on CAN FD networks, citing only freely accessible reference materials. The Pelorus design adopts the automotive industry's selective wake-up and partial networking mechanisms, adapted for marine use.
+This document is the **normative** reference for Pelorus power management on CAN FD: selective wake-up, partial networking, functional groups, power states, network management behavior, and related electrical details. It cites only freely accessible reference materials.
 
-**Core philosophy:** every Pelorus node should consume only the power it needs to do its current job. A boat at anchor with only the GNSS-driven anchor watch active should draw single-digit milliamps across the entire network, not the 2-3 amps typical of the legacy marine data ecosystem.
+For **why** Pelorus treats power as architecture (always-on legacy loads, anchor Ah budgets, sailor-first goals), see [01-overview.md §2](./01-overview.md#2-the-problem) and [§6](./01-overview.md#6-design-principles). For locked decisions that span multiple documents, see [§9](./01-overview.md#9-locked-decisions-authoritative-summary).
 
 **ISO 11898-2:2016 Validation Note:** Sections 1–5 of this document have been cross-checked against the full ISO 11898-2:2016 standard (Sections 5.9 and 5.10, Tables 18–20, Figures 6–11). All WUF format, matching rules, frame error counter, bus biasing, and timing claims are accurate and normative. Sections 6 onward describe Pelorus-specific allocations (functional group bit assignments, reserved identifiers, NM cadence) which are v0.1 proposals subject to revision after prototype validation.
 
 ---
 
-## 1. The Problem
+## 1. Problem statement (reference)
 
-The legacy marine data ecosystem inherited its always-on power model from SAE J1939, designed for trucks where the alternator runs continuously. The standard provides no selective device power management.
-
-A typical sailboat instrument suite draws 2-3 A continuously. Over 12 hours at anchor that consumes 24-36 Ah — a meaningful fraction of the 200-400 Ah usable battery capacity on most cruising boats, before refrigeration, lights, and other loads compete for the same capacity.
-
-Pelorus solves this by making power management a first-class part of the protocol. Every Pelorus node has defined power states with documented current budgets, participates in coordinated network sleep and wake, and can be selectively woken based on functional group membership.
+The marine power-management problem Pelorus addresses is stated in [01-overview.md §2](./01-overview.md#2-the-problem). **This document** specifies the mechanisms — partial networking, Wake-Up Frames, functional groups / PNC-style behavior, power states, and coordination — that implement that design goal.
 
 ---
 

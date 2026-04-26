@@ -2,23 +2,14 @@
 
 **Version:** 0.1 Draft  
 **Last Updated:** April 26, 2026  
-**Status:** Pre-specification (normative for v1.0)
+**Status:** Pre-specification  
+**Trust:** Unverified
 
 ---
 
 ## About This Document
 
-This document defines the network architecture for Pelorus Core, including segmentation, scaling to larger vessels, repeater behavior, and topology recommendations.
-
-It builds directly on the locked physical-layer decisions in `02-physical-layer.md` and the addressing rules in `05-addressing.md`.
-
-**Design decisions (locked):**
-- Pelorus Core is a linear bus with T-drop topology on each segment (identical to legacy marine practice).
-- A single segment is limited to 30 m and 50 nodes.
-- Larger vessels must use repeater nodes to create multiple isolated segments.
-- Repeaters provide galvanic isolation, transparent frame forwarding, optional filtering, and fault containment.
-- Maximum 4 repeater hops between any two endpoints.
-- Star topology with a central gateway is the recommended pattern for large vessels.
+This document defines the **normative** network architecture for Pelorus Core: segment limits, multi-segment scaling, repeater usage, and topology recommendations. It builds on [02-physical-layer.md](./02-physical-layer.md) and [05-addressing.md](./05-addressing.md). A concise summary of locked topology and scaling decisions appears in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary).
 
 ---
 

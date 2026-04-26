@@ -1,12 +1,21 @@
 # Pelorus Core — Specification Document Index
 
-**Purpose:** Numbered list of all documents that constitute a complete Pelorus Core specification. Numbers are stable references — once assigned, they do not change. New documents get new numbers; deprecated documents are marked but keep their numbers.
-
-**Last Updated:** April 26, 2026
+**Version:** Living  
+**Last Updated:** April 26, 2026  
+**Status:** Active  
+**Trust:** Trusted
 
 ---
 
-## Trust Levels
+## About This Document
+
+Numbered list of all documents that constitute a complete Pelorus Core specification. Numbers are stable references — once assigned, they do not change. New documents get new numbers; deprecated documents are marked but keep their numbers.
+
+This index is the authoritative list of Pelorus Core specification documents. Update when documents are added, drafted, or completed.
+
+---
+
+## 1. Trust Levels
 
 Every document is annotated with a trust level so contributors know what to rely on:
 
@@ -16,7 +25,7 @@ Every document is annotated with a trust level so contributors know what to rely
 
 ---
 
-## Document Index
+## 2. Document Index
 
 ### Tier 1 — Core Specification (Normative)
 
@@ -66,14 +75,16 @@ Every document is annotated with a trust level so contributors know what to rely
 
 ---
 
-## Numbering Conventions
+## 3. Numbering Conventions
 
 - Tier 1-4 documents use numeric prefixes (`01-`, `02-`, etc.) so they sort in logical reading order in any file browser
 - Tier 5 documents use conventional names without prefixes (README, LICENSE, etc.) because GitHub and other tools expect them at known names
 - Numbers are assigned at document creation and never reused
 - Deprecated documents keep their number but get marked deprecated in this index
 
-## Completion Tracking
+---
+
+## 4. Completion Tracking
 
 **Trusted or final:** 8 of 21
 
@@ -99,7 +110,3 @@ Every document is annotated with a trust level so contributors know what to rely
 1. Capture real legacy marine bus traffic from a representative vessel (prerequisite for instance binding design — see ARCHITECTURE.md §6.2)
 2. Review 05–07 against the trusted core (01–04) and either revalidate, rewrite, or delete each
 3. Reconcile cross-document conflicts: PGN range (03 vs 07), NM payload (04 vs 07), instance binding (06)
-
----
-
-*This index is the authoritative list of Pelorus Core specification documents. Update when documents are added, drafted, or completed.*

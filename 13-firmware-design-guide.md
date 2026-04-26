@@ -2,22 +2,14 @@
 
 **Version:** 0.1 Draft  
 **Last Updated:** April 26, 2026  
-**Status:** Pre-specification (normative for v1.0)
+**Status:** Pre-specification  
+**Trust:** Unverified
 
 ---
 
 ## About This Document
 
-This document provides practical guidance for writing conformant Pelorus Core firmware for nodes, repeaters, and gateways.
-
-It defines the required architecture, state machines, error handling, and testing practices. All reference implementations (`pelorus-pm`, `pelorus-pgn`, etc.) follow these rules.
-
-**Design decisions (locked):**
-- All firmware is written in Rust (`edition = "2021"`).
-- `forbid(unsafe_code)` is mandatory.
-- `no_std` + `alloc` is preferred for embedded targets; `std` is allowed only for tools and gateways.
-- Real-time paths must be deterministic and allocation-free.
-- Power management, address claiming, and binding table handling must follow documents 04, 05, and 06 exactly.
+This document provides **non-normative** guidance for Pelorus Core firmware: architecture, state machines, diagnostics, and testing practice. **Normative** behavior for power, addressing, and binding remains in [04-power-management.md](./04-power-management.md), [05-addressing.md](./05-addressing.md), and [06-signal-catalog.md](./06-signal-catalog.md). Language and safety rules are summarized in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary); firmware-specific patterns are developed here.
 
 ---
 

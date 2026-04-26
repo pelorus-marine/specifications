@@ -2,22 +2,16 @@
 
 **Version:** 0.1 Draft  
 **Last Updated:** April 26, 2026  
-**Status:** Pre-specification (normative for v1.0)
+**Status:** Pre-specification  
+**Trust:** Unverified
 
 ---
 
 ## About This Document
 
-This document provides practical guidance for designing Pelorus Core hardware: nodes, repeaters, and gateways. It covers component selection, schematic patterns, PCB layout rules, EMC considerations, and mechanical requirements.
+This document provides **non-normative** guidance for Pelorus Core hardware: component selection, schematic patterns, PCB layout, EMC, and mechanical practice. **Normative** electrical and isolation requirements remain in [02-physical-layer.md](./02-physical-layer.md). Locked hardware posture (repairability, coating, isolation tiers) is summarized in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary); acceptance criteria and detailed patterns are in this document.
 
-It is written for hardware engineers building conformant Pelorus devices and assumes familiarity with the preceding specifications (`02-physical-layer.md`, `04-power-management.md`, `08-network-architecture.md`, `09-gateway-specification.md`, and `10-repeater-specification.md`).
-
-**Design decisions (locked):**
-- Hardware shall be repairable, field-serviceable, and built for long-term offshore use.
-- Conformal coating is mandatory on all boards.
-- Galvanic isolation is mandatory for devices >100 mA active or interfacing high-power systems.
-- All designs must meet the electrical, power, and isolation requirements of `02-physical-layer.md`.
-- Real-world liveaboard validation on the founder's vessel is the final acceptance criterion.
+Prerequisites: [02-physical-layer.md](./02-physical-layer.md), [04-power-management.md](./04-power-management.md), [08-network-architecture.md](./08-network-architecture.md), [09-gateway-specification.md](./09-gateway-specification.md), [10-repeater-specification.md](./10-repeater-specification.md).
 
 ---
 

@@ -2,21 +2,18 @@
 
 **Version:** 0.1 Draft  
 **Last Updated:** April 26, 2026  
-**Status:** Pre-specification (normative for v1.0)
+**Status:** Pre-specification  
+**Trust:** Unverified
 
 ---
 
 ## About This Document
 
-This document provides the official manufacturer self-declaration template for Pelorus Core conformance.
-
-Any manufacturer claiming that a device, repeater, gateway, or firmware is Pelorus Core conformant must complete and publish this declaration. It is a formal attestation that the product has been tested against the full specification set (documents 01–15) and passes all applicable tests in `15-conformance-test-plan.md`.
-
-**Design decision (locked):** Conformance is based on self-testing against the reference implementations. No third-party certification body is required for v1.0.
+This document provides the manufacturer self-declaration template for Pelorus Core conformance. The attestation model is summarized in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary); use this file for the **exact** declaration text and checklist once `15-conformance-test-plan.md` is authored.
 
 ---
 
-## Manufacturer Self-Declaration Template
+## 1. Manufacturer Self-Declaration Template
 
 **Product Identification**  
 - Manufacturer: _______________________________  
@@ -58,7 +55,7 @@ Date: _______________________________
 
 ---
 
-## How to Use This Template
+## 2. How to Use This Template
 
 1. Fill in the product details and sign the declaration.
 2. Publish the completed declaration alongside the product documentation (e.g. on the product webpage or in the user manual).
@@ -67,7 +64,7 @@ Date: _______________________________
 
 ---
 
-## Open Items (to be resolved before v1.0 promotion)
+## 3. Open Items (to be resolved before v1.0 promotion)
 
 - Official Pelorus Core conformance logo and usage guidelines
 - Digital signing method for declarations (optional for v1.0)

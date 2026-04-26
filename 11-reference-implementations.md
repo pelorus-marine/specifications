@@ -2,17 +2,14 @@
 
 **Version:** 0.1 Draft  
 **Last Updated:** April 26, 2026  
-**Status:** Pre-specification (normative for v1.0)
+**Status:** Pre-specification  
+**Trust:** Unverified
 
 ---
 
 ## About This Document
 
-This document lists the official reference implementations for Pelorus Core and defines the rules that all implementations must follow to be considered conformant.
-
-The reference implementations are the canonical, authoritative source of how the specification should be realized in code. They serve as the basis for conformance testing, example code, and community contributions.
-
-**Design decision (locked):** All reference implementations are written in Rust, `no_std` compatible where possible, and `forbid(unsafe_code)`.
+This document lists the official reference implementations for Pelorus Core and defines rules implementations should follow. The language and safety posture are summarized in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary); crate inventory, versioning, and contribution expectations are **normative** here.
 
 ---
 
@@ -35,11 +32,8 @@ All crates will be published under the `pelorus-marine` GitHub organization.
 
 ## 2. Implementation Principles
 
-Every reference implementation and any conformant third-party implementation must follow these rules:
+Language, edition, `no_std` posture, and `forbid(unsafe_code)` are fixed at the program level in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary). **Reference crates and third-party implementations** shall also meet:
 
-- **Language:** Rust (minimum edition 2021)
-- **Safety:** `forbid(unsafe_code)` in all crates
-- **Embedded suitability:** `no_std` + `alloc` where possible; optional `std` features for tools
 - **Determinism:** No heap allocation in real-time paths (static buffers where needed)
 - **Testing:** Full unit and integration test coverage against the conformance test fixtures (to be provided in `15-conformance-test-plan.md`)
 - **Licensing:** MIT or Apache 2.0 (chosen per crate)
@@ -49,9 +43,9 @@ Every reference implementation and any conformant third-party implementation mus
 
 ## 3. Conformance
 
-A device or software component is considered Pelorus Core conformant only if it passes the official conformance test suite and correctly implements the behavior defined in documents 01–10.
+A device or software component is considered Pelorus Core conformant only if it satisfies the process in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary), passes the applicable tests in [15-conformance-test-plan.md](./15-conformance-test-plan.md) when that document is authored, and publishes [16-compliance-self-declaration.md](./16-compliance-self-declaration.md) as required.
 
-The reference implementations serve as the gold standard for what “correct behavior” means.
+The reference implementations serve as the gold standard for what “correct behavior” means during self-testing.
 
 ---
 

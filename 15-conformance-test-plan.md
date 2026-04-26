@@ -1,105 +1,57 @@
-# Pelorus Core — Installation Guide
+# Pelorus Core — Conformance Test Plan
 
 **Version:** 0.1 Draft  
 **Last Updated:** April 26, 2026  
-**Status:** Pre-specification (normative for v1.0)
+**Status:** Pre-specification  
+**Trust:** Unverified
 
 ---
 
 ## About This Document
 
-This document provides practical instructions for installing a Pelorus Core network on a vessel. It covers planning, wiring, termination, power distribution, repeater placement, and basic commissioning.
+This document will define the conformance test plan (categories, fixtures, pass/fail) for Pelorus Core devices. The **conformance model** (self-test against reference implementations; no third-party cert for v1.0) is stated once in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary) and in [16-compliance-self-declaration.md](./16-compliance-self-declaration.md). **Normative** test procedures will live here when authored.
 
-It assumes you have read and understood the preceding specifications:
-- `02-physical-layer.md` (cabling, connectors, termination, isolation)
-- `08-network-architecture.md` (segment limits, repeaters, star topology)
-- `10-repeater-specification.md` (repeater requirements)
-- `12-hardware-design-guide.md` (hardware requirements)
-
-**Design decisions (locked):**  
-Installation must follow the physical and electrical rules in `02-physical-layer.md`. No deviations are permitted for v1.0.
+> **Stub — content TBD.** This file is a placeholder. The real test plan has not been authored yet. Until it is, treat any reference to "the conformance test plan" elsewhere in the specification as referring to a document that does not yet exist. Do not infer test procedures from the empty sections below.
 
 ---
 
-## 1. Pre-Installation Planning
+## 1. Scope
 
-1. Measure the vessel and identify required segments (maximum 30 m per segment, 50 nodes per segment).
-2. Decide on topology:
-   - Small vessels: single linear bus
-   - Large vessels: recommended star topology with central gateway
-3. Plan repeater locations (if needed) to respect the 4-hop maximum.
-4. Identify power injection points and ensure 9–32 V DC supply with reverse polarity protection.
-5. Decide on isolation requirements (mandatory for high-power devices).
+*To be authored. Will enumerate the device classes covered (node, repeater, gateway) and the boundary between this plan and external standards (marine environmental qualification, accelerated-life testing, etc.).*
 
 ---
 
-## 2. Cabling and Connectors
+## 2. Test Equipment and Setup
 
-- Use only legacy-marine-compatible micro cable (M12 A-coded 5-pin).
-- Backbone runs between terminators; drops use T-connectors.
-- Maximum stub length: 6 m.
-- Maximum backbone segment length: 30 m.
-- All connectors must be fully mated and sealed (IP67/IP68).
-- Label every cable and drop clearly.
+*To be authored. Will define the standard test fixture, required instruments, and the reference companion node used to drive each test.*
 
 ---
 
-## 3. Termination and Bus Biasing
+## 3. Test Categories
 
-- Install split termination (two 60 Ω resistors + 4.7 nF C0G capacitor) at **both ends** of every segment.
-- Do not use a single terminator or unterminated stubs.
-- Verify termination resistance (≈120 Ω) between CAN_H and CAN_L with power off.
+*To be authored. Will group tests by the specification document they verify (`02-physical-layer.md`, `03-data-link-layer.md`, `04-power-management.md`, `05-addressing.md`, `06-signal-catalog.md`, `07-pgn-registry.md`, `09-gateway-specification.md`, `10-repeater-specification.md`).*
 
 ---
 
-## 4. Power Distribution
+## 4. Requirements Traceability Matrix
 
-- Power is supplied on the same cable as data (pins per `02-physical-layer.md`).
-- Use fused or PTC-protected distribution blocks.
-- Provide separate power injection points for long or heavily loaded segments.
-- All devices must have reverse polarity protection.
+*To be authored. Will map every "shall" statement in documents 02–14 to one or more test IDs defined in `Section 3`.*
 
 ---
 
-## 5. Repeater and Gateway Installation
+## 5. Pass/Fail Criteria
 
-- Mount repeaters where they create clean isolated segments.
-- In star topology, connect repeaters directly to the central gateway.
-- The central gateway should be installed in an accessible, dry location with good ventilation and Wi-Fi/Ethernet access for the web UI.
-- Ensure galvanic isolation is present on every repeater port.
+*To be authored. Will define the conditions under which a device may be declared Pelorus Core conformant per `16-compliance-self-declaration.md`.*
 
 ---
 
-## 6. Commissioning Steps
+## 6. Open Items (to be resolved before v1.0 promotion)
 
-1. Install and terminate all segments before powering anything.
-2. Power up one segment at a time and verify no bus errors.
-3. Connect the gateway (if used) and confirm it claims an address.
-4. Provision the binding table via the gateway web UI.
-5. Test power management states (Active → Sleep → Wake).
-6. Verify multi-segment forwarding and isolation.
-7. Perform a full network test with all devices.
+- Author all sections above. This document is currently a placeholder.
+- Decide whether environmental and reliability tests (vibration, salt fog, accelerated life) are referenced normatively here or left to external marine standards.
+- Define a machine-readable test report format so reference implementations can publish conformance results automatically.
+- Set normative thresholds for sleep current, repeater forwarding latency, and gateway bridge round-trip latency.
 
 ---
 
-## 7. Troubleshooting Checklist
-
-- Bus errors or no communication → check termination and stub lengths
-- High standby current → verify isolation and transceiver sleep behavior
-- Address conflicts → check NAME uniqueness
-- Binding table not updating → verify gateway is powered and publishing NM messages
-- Intermittent faults → inspect connectors and cable shielding
-
----
-
-## 8. Open Items (to be resolved before v1.0 promotion)
-
-- Detailed wiring diagrams and example layouts
-- Recommended tools and test equipment list
-- Step-by-step commissioning checklist with pass/fail criteria
-- Common failure modes and sailor-level fixes
-- Integration with existing legacy marine cabling (bridge notes)
-
----
-
-*This document, together with documents 01–13, completes the minimum viable specification for Pelorus Core reference implementations, hardware prototyping, and vessel installation.*
+*This document, together with documents 01–14 and 16, will complete the minimum viable specification for verifying Pelorus Core conformance once authored.*

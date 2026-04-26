@@ -36,10 +36,26 @@ This is the umbrella organization for the Pelorus Marine project. Repositories w
 
 Start with the overview, then read by topic. The full document map is in [00-document-index.md](./00-document-index.md).
 
-- **[01-overview.md](./01-overview.md)** — What Pelorus is, two-layer architecture, v1.0 scope, reading guide (v0.1).
-- **[02-physical-layer.md](./02-physical-layer.md)** — Pelorus Core physical layer: bit rates, cabling, connectors, topology, transceivers, power, termination, isolation (v0.1 draft).
-- **[03-data-link-layer.md](./03-data-link-layer.md)** — CAN FD frame format usage, 29-bit identifier and PGN structure, multi-frame transport, error handling (v0.1 draft).
-- **[04-power-management.md](./04-power-management.md)** — Developer reference for Pelorus power management on CAN FD networks. Covers partial networking, selective wake-up, marine functional groups, power states, NM behavior, frame error counter, and bus biasing. Cross-checked against ISO 11898-2:2016 (v0.4 draft).
+| # | Document | Description | Status |
+|---|---|---|---|
+| 01 | [01-overview.md](./01-overview.md) | What Pelorus is, two-layer architecture, v1.0 scope, reading guide. | v0.1 — trusted |
+| 02 | [02-physical-layer.md](./02-physical-layer.md) | Pelorus Core physical layer: bit rates, cabling, connectors, topology, transceivers, power, termination, isolation. | v0.1 — trusted |
+| 03 | [03-data-link-layer.md](./03-data-link-layer.md) | CAN FD frame format usage, 29-bit identifier and PGN structure, multi-frame transport, error handling. | v0.1 — trusted |
+| 04 | [04-power-management.md](./04-power-management.md) | Partial networking, selective wake-up, marine functional groups, power states, NM behavior, frame error counter, and bus biasing. Cross-checked against ISO 11898-2:2016. | v0.4 — trusted (§1–5 ISO-validated; §6+ proposals subject to validation) |
+| 05 | [05-addressing.md](./05-addressing.md) | Source address claiming, conflict resolution, device identification. | v0.1 — unverified draft |
+| 06 | [06-signal-catalog.md](./06-signal-catalog.md) | VSS-syntax catalog format, `Vessel.*` data model, instance handling. | v0.1 — unverified draft |
+| 07 | [07-pgn-registry.md](./07-pgn-registry.md) | Specific PGN assignments and definitions. | v0.1 — unverified draft |
+| 08 | [08-network-architecture.md](./08-network-architecture.md) | Segmentation, multi-segment networks, scaling. | v0.1 — unverified draft |
+| 09 | [09-gateway-specification.md](./09-gateway-specification.md) | Legacy-marine-to-Pelorus gateway behavior. | v0.1 — unverified draft |
+| 10 | [10-repeater-specification.md](./10-repeater-specification.md) | Pelorus Core repeater functional spec. | v0.1 — unverified draft |
+| 11 | [11-reference-implementations.md](./11-reference-implementations.md) | Pointers to canonical Rust crates, version compatibility. | v0.1 — unverified draft |
+| 12 | [12-hardware-design-guide.md](./12-hardware-design-guide.md) | Schematic patterns, component selection, layout, EMC. | v0.1 — unverified draft |
+| 13 | [13-firmware-design-guide.md](./13-firmware-design-guide.md) | State machines, embedded Rust patterns, testing. | v0.1 — unverified draft |
+| 14 | [14-installation-guide.md](./14-installation-guide.md) | Wiring guide, segment planning, troubleshooting. | v0.1 — unverified draft |
+| 15 | [15-conformance-test-plan.md](./15-conformance-test-plan.md) | Verification procedures, expected results, edge cases. | v0.1 — unverified draft |
+| 16 | [16-compliance-self-declaration.md](./16-compliance-self-declaration.md) | Manufacturer attestation template. | v0.1 — unverified draft |
+
+Documents 01–04 are the trusted core; 05–16 are unverified provisional drafts pending review against the core. See [00-document-index.md](./00-document-index.md) for trust definitions and tier groupings.
 
 ### Recent Progress
 

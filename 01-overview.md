@@ -1,14 +1,15 @@
-# Pelorus — Overview
+# Pelorus Core — Overview
 
-**Version:** 0.1 Draft
-**Last Updated:** April 26, 2026
-**Status:** Pre-specification
+**Version:** 0.1 Draft  
+**Last Updated:** April 26, 2026  
+**Status:** Pre-specification  
+**Trust:** Trusted
 
 ---
 
 ## About This Document
 
-This is the entry point to the Pelorus specification. It states what Pelorus is, what it replaces, how the protocol stack is divided, and which documents to read next. It is non-normative — every concrete requirement lives in a downstream document.
+This is the entry point to the Pelorus specification. It states what Pelorus is, what it replaces, how the protocol stack is divided, and which documents to read next. **Normative** requirements live in downstream documents (02 onward). [§9](#9-locked-decisions-authoritative-summary) collects **locked decisions** in one place so other documents can cross-reference instead of repeating them; for bit-level and testable requirements, always use the numbered specification for that topic.
 
 Read this first. Then go to [02-physical-layer.md](./02-physical-layer.md) for hardware-level requirements or [04-power-management.md](./04-power-management.md) for selective wake-up and power state behavior.
 
@@ -146,6 +147,40 @@ Implementations targeting v0.x should expect to update before v1.0 ships.
 
 ---
 
-## License
+## 9. Locked decisions (authoritative summary)
+
+Downstream documents (02–16) state **normative requirements** and rationale. This section is the **only** place that collects cross-cutting locked decisions in one narrative. If text elsewhere repeats this material for context, treat this section as the summary; do not maintain duplicate prose.
+
+- **Physical profile (02–04):** Pelorus Core is CAN FD on legacy-marine-style cabling and M12 A-coded 5-pin connectors; arbitration 250 kbit/s, data phase 500 kbit/s; linear bus per segment with split termination and 9–32 V DC supply. Pelorus Core and the legacy marine classical-CAN bus are **not** electrically interoperable on the same wire; they coexist on a vessel via gateways ([§4](#4-coexistence-with-the-legacy-marine-data-ecosystem)).
+
+- **Data link (03):** J1939-style 29-bit identifiers and PGN encoding; 64-byte CAN FD payloads; **no** Fast Packet; multi-frame payloads use J1939 Transport Protocol; application data is push or request-via-PGN — **no** Remote Transmission Request frames on Pelorus Core.
+
+- **Power management (04):** Partial networking and selective wake-up per ISO 11898-2:2016 (with the patent considerations documented there). Marine functional groups / PNC-style behavior are defined in 04, not re-listed here.
+
+- **Addressing (05):** Source addressing, address claiming, and the NAME field follow **SAE J1939-81 / ISO 11783-5** with **no** Pelorus-specific deviations in v1.0.
+
+- **Signal catalog (06):** Canonical semantics use **COVESA VSS** syntax under a **`Vessel.*`** root; no custom catalog syntax in v1.0.
+
+- **PGN registry (07):** Wire encoding for Pelorus-specific messages uses the high PGN range **`0x0FF80`–`0x0FFFF`** (exact assignments in 07). Compatibility and field layouts are normative in 07.
+
+- **Network architecture (08):** Per segment: max **30 m** backbone, max **50** nodes, max **6 m** stubs; multi-segment networks use **repeaters** with **galvanic isolation** between segments; max **4** repeater hops between any two endpoints; **star topology with a central gateway** is the recommended pattern for large vessels.
+
+- **Gateway (09):** The gateway is a **convenient, not mandatory** authority (no single point of failure for the network). It bridges Pelorus Core and legacy marine traffic, publishes the binding table on the bus, and may offer a web UI — **operation without** that UI must remain possible.
+
+- **Repeater (10):** Repeaters **shall** isolate segments electrically, **transparently** forward valid CAN FD frames, and **fully** participate in power management and addressing.
+
+- **Reference implementations (11):** Official reference code is **Rust**, **`no_std`** where practical, and **`forbid(unsafe_code)`**.
+
+- **Hardware (12):** Designs **shall** be repairable and field-serviceable; **conformal coating** is mandatory; **galvanic isolation** follows the tiers and thresholds in 02 and 12. Early hardware acceptance for the project includes **liveaboard validation** as described in 12.
+
+- **Firmware (13):** Same language and safety rules as 11; power, addressing, and binding behavior **shall** match 04–06.
+
+- **Installation (14):** Installation **shall** comply with 02; **no** deviations for v1.0.
+
+- **Conformance (15–16):** Conformance is established by **self-testing** against reference implementations; **no** third-party certification body is required for v1.0 (see 16).
+
+---
+
+## 10. License
 
 This document is licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](./LICENSE.md).
