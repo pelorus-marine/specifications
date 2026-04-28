@@ -9,7 +9,7 @@
 
 ## About This Document
 
-This document provides the manufacturer self-declaration template for Pelorus Core conformance. The attestation model is summarized in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary); use this file for the **exact** declaration text and checklist once [15-conformance-test-plan.md](./15-conformance-test-plan.md) is fully authored (stub today).
+This document provides the manufacturer self-declaration template for Pelorus Core conformance. The attestation model is summarized in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary); use this file for the **exact** declaration text and checklist once [15-conformance-test-plan.md](./15-conformance-test-plan.md) is fully authored (stub today).
 
 ---
 

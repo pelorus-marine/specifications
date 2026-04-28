@@ -9,7 +9,7 @@
 
 ## About This Document
 
-This document provides **non-normative** guidance for Pelorus Core firmware: architecture, state machines, diagnostics, and testing practice. **Normative** behavior for power, addressing, and binding remains in [04-power-management.md](./04-power-management.md), [05-addressing.md](./05-addressing.md), and [06-signal-catalog.md](./06-signal-catalog.md). Language and safety rules are summarized in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary); firmware-specific patterns are developed here.
+This document provides **non-normative** guidance for Pelorus Core firmware: architecture, state machines, diagnostics, and testing practice. **Normative** behavior for power, addressing, and binding remains in [04-power-management.md](./04-power-management.md), [05-addressing.md](./05-addressing.md), and [06-signal-catalog.md](./06-signal-catalog.md). Language and safety rules are summarized in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary); firmware-specific patterns are developed here.
 
 ---
 

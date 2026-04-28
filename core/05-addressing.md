@@ -9,7 +9,7 @@
 
 ## About This Document
 
-This document specifies source addressing, address claiming, conflict resolution, and device identification for Pelorus Core. The locked v1.0 policy (J1939-81 / ISO 11783-5 parity) is summarized in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary); **normative** procedures and field layouts are defined here and in [07-dcid-registry.md](./07-dcid-registry.md) where applicable.
+This document specifies source addressing, address claiming, conflict resolution, and device identification for Pelorus Core. The v1.0 addressing policy (J1939-81 / ISO 11783-5 parity) is summarized in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary); **normative** procedures and field layouts are defined here and in [07-dcid-registry.md](./07-dcid-registry.md) where applicable.
 
 **Physical layer:** The procedures in this document apply to nodes on **Pelorus Core CAN FD** segments. **LMDE** segments use the **same J1939-81 rules on Classical CAN**; each electrical segment has its own address space. Correlation across segments (e.g. a device visible on both buses) is handled by **gateways** and the binding table, not by sharing one CAN segment between classical-only and CAN FD populations.
 

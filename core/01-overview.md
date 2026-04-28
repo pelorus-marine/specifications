@@ -9,7 +9,7 @@
 
 ## About This Document
 
-This is the entry point to the Pelorus specification. It states what Pelorus is, what it replaces, how the protocol stack is divided, and which documents to read next. **Normative** requirements live in downstream documents (02 onward). [§9](#9-locked-decisions-authoritative-summary) collects **locked decisions** in one place so other documents can cross-reference instead of repeating them; for bit-level and testable requirements, always use the numbered specification for that topic.
+This is the entry point to the Pelorus specification. It states what Pelorus is, what it replaces, how the protocol stack is divided, and which documents to read next. **Normative** requirements live in downstream documents (02 onward). [§9](#9-cross-cutting-decisions-authoritative-summary) collects **cross-cutting decisions** in one place so other documents can cross-reference instead of repeating them; for bit-level and testable requirements, always use the numbered specification for that topic.
 
 Read this first. Then go to [02-physical-layer.md](./02-physical-layer.md) for hardware-level requirements or [04-power-management.md](./04-power-management.md) for selective wake-up and power state behavior.
 
@@ -19,7 +19,7 @@ Read this first. Then go to [02-physical-layer.md](./02-physical-layer.md) for h
 
 **Legacy Marine Data Ecosystem** is a **project code name** for the incumbent, certification-gated marine instrumentation fieldbus and its physical plant (connectors, cable families, and de facto in-use DCID set) that dominates new recreational-vessel installs. This specification **does not** use third-party trademarks for that ecosystem; **LMDE** is the abbreviated form in technical text after the first mention in a document.
 
-**Physical layer (read this with “J1939”):** In practice, LMDE stacks use **J1939-family** semantics on **Classical CAN (CAN 2.0)** — extended 29-bit IDs, **8-byte payloads**, a single 250 kbit/s bit rate on the wire, and no CAN FD framing **for application data**. **Pelorus Core** uses **CAN FD** (ISO 11898-1:2015) with the locked arbitration / data-phase profile in **02**/**03**. Pelorus deliberately adopts **J1939-derived** identifier layout, DCID numbering, transport, and addressing rules **on the CAN FD bus**; that alignment is **not** the same as running arbitrary classical-only J1939 nodes on the same electrical segment as Pelorus (see §4).
+**Physical layer (read this with “J1939”):** In practice, LMDE stacks use **J1939-family** semantics on **Classical CAN (CAN 2.0)** — extended 29-bit IDs, **8-byte payloads**, a single 250 kbit/s bit rate on the wire, and no CAN FD framing **for application data**. **Pelorus Core** uses **CAN FD** (ISO 11898-1:2015) with the arbitration / data-phase profile specified in **02**/**03**. Pelorus deliberately adopts **J1939-derived** identifier layout, DCID numbering, transport, and addressing rules **on the CAN FD bus**; that alignment is **not** the same as running arbitrary classical-only J1939 nodes on the same electrical segment as Pelorus (see §4).
 
 ---
 
@@ -40,7 +40,7 @@ The Legacy Marine Data Ecosystem is technically sound at its core but trapped by
 - **Closed protocol** — proprietary DCIDs, paid certification, NDA requirements to obtain the specification
 - **Always-on power** — no selective device sleep; the suite draws 2–3 A continuously even when much of it is unused for hours or days (overnight at the dock, long passages with irrelevant sensors still powered), consuming 24–36 Ah overnight on a typical vessel
 - **Single-segment topology** — backbone failure takes down the entire network
-- **Aging physical layer** — locked to classical CAN at 250 kbit/s; cannot migrate without breaking installed equipment
+- **Aging physical layer** — fixed at classical CAN at 250 kbit/s; cannot migrate without breaking installed equipment
 - **No diagnostic transparency** — sailors cannot debug their own networks
 - **Vendor lock-in tactics** — proprietary extensions break interoperability between brands
 
@@ -103,7 +103,7 @@ Tier 2 (network architecture, gateway, repeater) and Tier 3 (implementation guid
 
 ### Explicitly Deferred From v1.0
 
-The following were considered and held for later versions. Rationale is captured in [ARCHITECTURE.md](../ARCHITECTURE.md) §5.
+The following were considered and held for later versions.
 
 - Higher data phase rates (1 Mbit/s, 2 Mbit/s) — held for v2.0+
 - Auto-negotiation of bit rates — held indefinitely; static profile is correct for v1.0
@@ -129,7 +129,7 @@ These guide every concrete decision in downstream documents.
 
 ## 7. Status and Stability
 
-The v0.1 specification is pre-release. **Normative** locked decisions are in [§9](#9-locked-decisions-authoritative-summary) below and in **02–04**; [ARCHITECTURE.md](../ARCHITECTURE.md) §4 restates them as background. Document text is still under revision and field validation has not begun. Hardware prototypes do not yet exist.
+The v0.1 specification is pre-release. **Normative** requirements are summarized in [§9](#9-cross-cutting-decisions-authoritative-summary) below and stated in **02–04**; [ARCHITECTURE.md](../ARCHITECTURE.md) is non-normative background (problem framing and subsystem overview). Document text is still under revision and field validation has not begun. Hardware prototypes do not yet exist.
 
 Compatibility commitment for v1.0:
 
@@ -150,14 +150,14 @@ Implementations targeting v0.x should expect to update before v1.0 ships.
 | Understand the hardware-level requirements | [02-physical-layer.md](./02-physical-layer.md) |
 | Implement selective wake-up and power management | [04-power-management.md](./04-power-management.md) |
 | See what is decided and why | [ARCHITECTURE.md](../ARCHITECTURE.md) |
-| See what is open and unresolved | [ARCHITECTURE.md](../ARCHITECTURE.md) §6 |
+| Track open work (draft GitHub issue bodies) | [issues/README.md](../issues/README.md) |
 | Track specification document status | [00-document-index.md](./00-document-index.md) |
 
 ---
 
-## 9. Locked decisions (authoritative summary)
+## 9. Cross-cutting decisions (authoritative summary)
 
-Downstream documents (02–16) state **normative requirements** and rationale. This section is the **only** place that collects cross-cutting locked decisions in one narrative. If text elsewhere repeats this material for context, treat this section as the summary; do not maintain duplicate prose.
+Downstream documents (02–16) state **normative requirements** and rationale. This section collects cross-cutting decisions in one narrative so other documents can reference a single summary. If text elsewhere repeats this material for context, treat this section as the summary; do not maintain duplicate prose.
 
 - **Physical profile (02–04):** Pelorus Core is CAN FD on LMDE-style cabling and M12 A-coded 5-pin connectors; arbitration 250 kbit/s, data phase 500 kbit/s; linear bus per segment with split termination and 9–32 V DC supply. LMDE segments are **Classical CAN (CAN 2.0)**. Pelorus Core and LMDE are **not** electrically interoperable on the same segment; they coexist on a vessel via gateways ([§4](#4-coexistence-with-the-legacy-marine-data-ecosystem)).
 

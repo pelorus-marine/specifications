@@ -9,7 +9,7 @@
 
 ## About This Document
 
-This document defines the Pelorus DCID (Data Contract ID) registry — wire-level encoding on the Pelorus Core CAN FD bus. It is the transport counterpart to [06-signal-catalog.md](./06-signal-catalog.md). Stack-level decisions (J1939-style identifiers, no Fast Packet, Pelorus extension range) are summarized in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary); **bit-level** field definitions and DCID assignments are **normative** here and in [05-addressing.md](./05-addressing.md) where applicable.
+This document defines the Pelorus DCID (Data Contract ID) registry — wire-level encoding on the Pelorus Core CAN FD bus. It is the transport counterpart to [06-signal-catalog.md](./06-signal-catalog.md). Stack-level decisions (J1939-style identifiers, no Fast Packet, Pelorus extension range) are summarized in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary); **bit-level** field definitions and DCID assignments are **normative** here and in [05-addressing.md](./05-addressing.md) where applicable.
 
 ---
 

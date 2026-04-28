@@ -11,7 +11,7 @@
 
 This document specifies subscriber-side **buffering** for Pelorus Stream media: how much to buffer, how to absorb network jitter, and how to drop data when conditions force a choice between freshness and completeness. It is the policy companion to [`05-stream-payload.md`](./05-stream-payload.md) (which defines the abstract PU model).
 
-The headline rule — **bounded latency over guaranteed delivery** — is locked in [`01-overview.md` §6](./01-overview.md).
+The headline rule — **bounded latency over guaranteed delivery** — is specified in [`01-overview.md` §6](./01-overview.md).
 
 ---
 

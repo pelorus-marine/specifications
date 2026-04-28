@@ -9,7 +9,7 @@
 
 ## About This Document
 
-This document provides **non-normative** guidance for Pelorus Core hardware: component selection, schematic patterns, PCB layout, EMC, and mechanical practice. **Normative** electrical and isolation requirements remain in [02-physical-layer.md](./02-physical-layer.md). Locked hardware posture (repairability, coating, isolation tiers) is summarized in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary); acceptance criteria and detailed patterns are in this document.
+This document provides **non-normative** guidance for Pelorus Core hardware: component selection, schematic patterns, PCB layout, EMC, and mechanical practice. **Normative** electrical and isolation requirements remain in [02-physical-layer.md](./02-physical-layer.md). Hardware posture (repairability, coating, isolation tiers) is summarized in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary); acceptance criteria and detailed patterns are in this document.
 
 Prerequisites: [02-physical-layer.md](./02-physical-layer.md), [04-power-management.md](./04-power-management.md), [08-network-architecture.md](./08-network-architecture.md), [09-gateway-specification.md](./09-gateway-specification.md), [10-repeater-specification.md](./10-repeater-specification.md).
 

@@ -9,7 +9,7 @@
 
 ## About This Document
 
-This document defines the Pelorus Signal Catalog — the canonical semantic data model for all Pelorus Core signals — using **COVESA VSS** under a **`Vessel.*`** root. It is protocol-agnostic and is the single source of truth for meaning, type, units, and instance binding. The locked catalog policy is summarized in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary); **normative** structure, overlays, and binding rules are defined in this document.
+This document defines the Pelorus Signal Catalog — the canonical semantic data model for all Pelorus Core signals — using **COVESA VSS** under a **`Vessel.*`** root. It is protocol-agnostic and is the single source of truth for meaning, type, units, and instance binding. The catalog policy is summarized in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary); **normative** structure, overlays, and binding rules are defined in this document.
 
 ---
 
@@ -43,7 +43,7 @@ Pelorus uses standard VSS `.vspec` (YAML) format. Key elements:
 
 ## 3. Instance Handling and Binding (Critical)
 
-**Instance Binding Problem** ([ARCHITECTURE.md](../ARCHITECTURE.md) §6.2) is solved here.
+**Instance Binding Problem** (tracked in [instance-binding.md](../issues/instance-binding.md)) is solved here.
 
 Pelorus uses **numeric indexed arrays** as the canonical form in the catalog:
 
@@ -60,7 +60,7 @@ The mapping `(Source Address + 64-bit NAME + DCID + DCID-internal instance field
 
 ## 4. Fault Tolerance — No Single Point of Failure
 
-The binding table **must not** create a single point of failure (consistent with the rejection of a sole gateway authority in [ARCHITECTURE.md](../ARCHITECTURE.md) §5).
+The binding table **must not** create a single point of failure (consistent with [09-gateway-specification.md](./09-gateway-specification.md): gateways are not mandatory sole authorities; multiple gateways are supported).
 
 - The binding table is **published on the bus** via a dedicated Pelorus DCID (defined later in `07-dcid-registry.md`).
 - Any authorized node (primary gateway, secondary display head, diagnostic tool, etc.) can act as binding authority and publish updates.

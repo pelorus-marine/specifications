@@ -11,7 +11,7 @@
 
 This is the entry point to the Pelorus Stream specification. It states what Stream is, what it is **not**, how it relates to Pelorus Core and the State subsystem, and which documents to read next. **Normative** requirements live in downstream documents (02 onward). [§9](#9-draft-design-targets-summary) collects **draft design targets** in one place so other documents can cross-reference instead of repeating them; for wire-level requirements, always use the numbered specification for that topic.
 
-Pelorus Stream is **intentionally** the Pelorus Ethernet substrate: it aims to take what is genuinely good in **NMEA OneNet-style** IP marine networking (IPv6, rich media paths, complementary to a fieldbus) while **rejecting** closed certification walls, mandatory product programs, and stacks that entangle high-bandwidth data with safety authority. Stream is specified to **mate cleanly with Pelorus Core** (CAN FD): read-only observation of Core identity where needed, **no** actuation or safety path through Stream, gateways where legacy marine networks join the vessel.
+Pelorus Stream is **intentionally** the Pelorus Ethernet substrate: it aims to take what is genuinely good in **NMEA OneNet-style** IP marine networking (IPv6, rich media paths, complementary to a fieldbus) while **rejecting** closed certification walls, mandatory product programs, and stacks that entangle high-bandwidth data with safety authority. Stream **mates cleanly with Pelorus Core** (CAN FD) using **tiered gateways**—**standard** for Core→Stream and **capable bidirectional** only where Stream→Core is required (**§3.1**). Ordinary Stream nodes do **not** originate Core traffic; **no** actuation or safety authority through Stream beyond §2 bounds; LMDE joins remain gateway-mediated per [`core/09-gateway-specification.md`](../core/09-gateway-specification.md).
 
 Read this first. Then go to [`02-stream-id.md`](./02-stream-id.md) for the data model, or [`08-connection.md`](./08-connection.md) for the transport substrate.
 
@@ -34,7 +34,7 @@ Stream **does not**:
 - Carry safety-critical signals. Safety-critical traffic lives on Pelorus Core (CAN FD). See [`core/01-overview.md`](../core/01-overview.md).
 - Represent authoritative system state. Authoritative state lives on Core; the **State subsystem** derives operational views from Core. See [Issue #2](https://github.com/pelorus-marine/specifications/issues/2).
 - Make decisions. Prioritization, suppression, coordination, and arbitration are owned by the **State subsystem**. Stream advertises and transports; Stream does not choose.
-- Influence Core behavior. A failed Stream subsystem must leave Core fully functional. A misbehaving Stream node must not be able to degrade Core.
+- Influence Core behavior from ordinary Stream endpoints (anything toward Core is **gateway-only**—§3.1). A failed Stream subsystem must leave Core fully functional. A misbehaving Stream node must not be able to degrade Core.
 - Guarantee delivery. The default transport is best-effort UDP. Reliable delivery is opt-in (QUIC) and is still subordinate to State decisions.
 - Provide a control bus for actuators. Helm, autopilot, engine, and thruster commands belong on Core; Stream playback control (volume, pause) is the upper bound of what may be expressed on Stream.
 
@@ -63,11 +63,19 @@ Pelorus has two physical layers (Core and Stream) and one logical layer (State) 
    └──────────────────────┘   └──────────────────────┘
 ```
 
-### 3.1 The Stream → Core Boundary
+### 3.1 The Stream ↔ Core Boundary
 
-Stream may **read** Core via published, well-known mechanisms (e.g. a node identity tied to its NAME on Core; gateway-published metadata). Stream **shall not** transmit on Core, request a Core-level action, or hold any Core resource.
+Integration uses **gateway tiers** (summary also in [`ARCHITECTURE.md`](../ARCHITECTURE.md) §3; normative gateway responsibilities in [`core/09-gateway-specification.md`](../core/09-gateway-specification.md) §8):
 
-A node that participates in both Core and Stream runs them as separate stacks with no shared safety-critical state. The two stacks may share an SoC and a clock; they shall not share an authoritative data path.
+1. **Core → Stream — standard gateway.** Core traffic (telemetry, identity, DCID-aligned metadata) is bridged onto the Ethernet substrate through the **standard gateway** path—the usual product bridge from Pelorus Core **CAN FD** to Pelorus Stream.
+
+2. **Stream → Core — capable bidirectional gateway only.** Ethernet-origin traffic **shall not** be injected onto the Core fieldbus by arbitrary Stream publishers, unconstrained applications, or generic Stream stacks pretending to be Core talkers. **Reverse bridging** onto Core is permitted **only** through a **capable bidirectional gateway** that explicitly implements and validates the Stream→Core policy surface (future conformance tests in `stream/` and **`core/09`**).
+
+3. **Ordinary Stream endpoints** shall **not** transmit on Core, originate Core frames, request Core-level actions outside gateway-mediated interfaces, or hold authoritative Core resources—except where (2) defines the gateway as the sole injection boundary.
+
+Stream may **read** Core via published mechanisms **via (1)** (e.g. gateway-published identity tied to a Core NAME; mirrored telemetry).
+
+A node that participates in both Core and Stream runs them as separate stacks with no shared safety-critical state. The two stacks may share an SoC and a clock; they shall not share an authoritative data path except through the gateway tiers above.
 
 ### 3.2 The Stream → State Boundary
 
@@ -99,7 +107,7 @@ Pelorus Stream runs on the Ethernet plant defined in [`core/01-overview.md` §3.
 - mDNS-SD service discovery ([`23-discovery.md`](./23-discovery.md))
 - No IPv4 dependency; nodes that bridge to legacy IPv4 networks do so out-of-scope of this specification
 
-PoE strategy and switch topology are out of scope of this v0.1 draft and are tracked in [`ARCHITECTURE.md`](../ARCHITECTURE.md) §6.3. Stream protocol behavior shall not depend on the presence of PoE.
+PoE strategy and switch topology are out of scope of this v0.1 draft and are tracked in [pelorus-stream-open-items.md](../issues/pelorus-stream-open-items.md). Stream protocol behavior shall not depend on the presence of PoE.
 
 ---
 
@@ -195,7 +203,7 @@ Downstream documents (02–27) state **normative-style** requirements and ration
 
 When Core’s **DCID** model and Issue #3 converge, update Stream cross-references (§3.3) so telemetry and catalog bindings stay aligned.
 
-- **Boundary (this document, §2–3):** Stream is **strictly non-safety-critical** and shall **never** influence Core behavior. Decision logic (prioritization, suppression, coordination) is owned by the **State subsystem** ([Issue #2](https://github.com/pelorus-marine/specifications/issues/2)). Stream advertises and transports; State decides.
+- **Boundary (this document, §2–3):** Stream is **strictly non-safety-critical**. Ordinary Stream endpoints shall **not** influence Core behavior directly (**§3.1**); any Stream→Core effect appears **only** through a **capable bidirectional gateway**. Decision logic (prioritization, suppression, coordination) is owned by the **State subsystem** ([Issue #2](https://github.com/pelorus-marine/specifications/issues/2)). Stream advertises and transports; State decides.
 
 - **Physical layer:** Pelorus Stream uses the Ethernet plant defined in [`core/01-overview.md` §3.2](../core/01-overview.md). M12 D-coded 4-pin at 100 Mbit/s for v1.0; X-coded reserved for future Gigabit.
 

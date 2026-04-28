@@ -9,7 +9,7 @@
 
 ## About This Document
 
-This document defines the **normative** functional specification for Pelorus Core repeater nodes. Segment limits and hop-count rules are specified in [08-network-architecture.md](./08-network-architecture.md); physical port requirements in [02-physical-layer.md](./02-physical-layer.md). Locked repeater policy in brief: [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary).
+This document defines the **normative** functional specification for Pelorus Core repeater nodes. Segment limits and hop-count rules are specified in [08-network-architecture.md](./08-network-architecture.md); physical port requirements in [02-physical-layer.md](./02-physical-layer.md). Repeater policy in brief: [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary).
 
 ---
 

@@ -23,8 +23,8 @@ Related: [`core/00-document-index.md`](../core/00-document-index.md) lists the s
 
 Every document is annotated with a trust level so contributors know what to rely on:
 
-- **Trusted** — written deliberately against external sources or locked decisions; cited content is verified.
-- **Unverified** — provisional draft of unknown provenance. Content has not been validated, may contradict locked decisions, may invent terms. Treat as a starting guess until reviewed.
+- **Trusted** — written deliberately against external sources or published suite summaries; cited content is verified.
+- **Unverified** — provisional draft of unknown provenance. Content has not been validated, may contradict trusted documents, may invent terms. Treat as a starting guess until reviewed.
 - **Final** — frozen and not expected to change.
 
 ---
@@ -143,7 +143,7 @@ Audio is the only media class specified for v1.0. Video, sonar, and radar are de
 
 ## 5. Relationship to Pelorus Core
 
-Pelorus Stream is **strictly non-safety-critical** and **never** influences Core behavior. See [`01-overview.md` §3](./01-overview.md) and the locked decision in [`core/01-overview.md` §9](../core/01-overview.md#9-locked-decisions-authoritative-summary).
+Pelorus Stream is **strictly non-safety-critical** and **never** influences Core behavior. See [`01-overview.md` §3](./01-overview.md) and [`core/01-overview.md` §9](../core/01-overview.md#9-cross-cutting-decisions-authoritative-summary) for Core coupling context.
 
 - **DCID evolution / Core mapping** — open exploration: [Issue #3 — DCID (Data Contract ID)](https://github.com/pelorus-marine/specifications/issues/3). Semantic anchoring in **`Vessel.*`**: [`core/06-signal-catalog.md`](../core/06-signal-catalog.md) §6.
 

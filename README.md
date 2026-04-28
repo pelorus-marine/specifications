@@ -41,7 +41,7 @@ Normative text is split between **[`core/`](./core/)** (Pelorus Core, documents 
 - **[`core/00-document-index.md`](./core/00-document-index.md)** — safety-critical CAN FD stack, gateway, conformance.
 - **[`stream/00-document-index.md`](./stream/00-document-index.md)** — Ethernet media and telemetry; strictly non-safety-critical ([`stream/01-overview.md`](./stream/01-overview.md) §2–3).
 
-**Cold start:** [Core overview](./core/01-overview.md) · [Stream overview](./stream/01-overview.md) · [ARCHITECTURE.md](./ARCHITECTURE.md) (non-normative repo-wide record).
+**Cold start:** [Core overview](./core/01-overview.md) · [Stream overview](./stream/01-overview.md) · [ARCHITECTURE.md](./ARCHITECTURE.md) (non-normative repo-wide record) · [Open-work tracking drafts](./issues/README.md).
 
 ### Recent Progress
 
@@ -50,7 +50,7 @@ Normative text is split between **[`core/`](./core/)** (Pelorus Core, documents 
 - Physical layer specification drafted to v0.1 (CAN FD profile, LMDE-compatible cabling and connectors, segmentation strategy, isolation tiers).
 - Data link layer specification drafted to v0.1 (29-bit J1939-style identifiers, J1939 TP for multi-frame messages, no Fast Packet, no Remote Frames, reserved **Pelorus** identifier ranges).
 - Power management specification completed to v0.4 (functional group bit allocations, four-state power model with state machine, NM cadence, FEC and bus biasing rules, implementation checklist). DCID allocations for WUF (0x0FF80) and NM (0x0FF81) are candidate values pending ratification in [core/07-dcid-registry.md](./core/07-dcid-registry.md).
-- **Pelorus Stream specification** drafted to v0.1 across 28 sequential documents in [`stream/`](./stream/) (Issue [#1](https://github.com/pelorus-marine/specifications/issues/1)). Locked decisions: UUIDv7 stream IDs, deterministic CBOR control plane, Opus 48 kHz audio, IPv6 link-local with mDNS-SD discovery, UDP best-effort default with opt-in QUIC. Stream remains strictly non-safety-critical and decoupled from Core.
+- **Pelorus Stream specification** drafted to v0.1 across 28 sequential documents in [`stream/`](./stream/) (Issue [#1](https://github.com/pelorus-marine/specifications/issues/1)). **Draft design targets:** UUIDv7 stream IDs, deterministic CBOR control plane, Opus 48 kHz audio, IPv6 link-local with mDNS-SD discovery, UDP best-effort default with opt-in QUIC. Stream remains strictly non-safety-critical and decoupled from Core.
 
 ### Planned Repositories
 

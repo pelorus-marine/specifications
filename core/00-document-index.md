@@ -21,8 +21,8 @@ This index is the authoritative list of Pelorus Core specification documents. Up
 
 Every document is annotated with a trust level so contributors know what to rely on:
 
-- **Trusted** — written deliberately against external sources or locked decisions; cited content is verified.
-- **Unverified** — provisional draft of unknown provenance. Content has not been validated, may contradict locked decisions, may invent terms. Treat as a starting guess until reviewed.
+- **Trusted** — written deliberately against external sources or published suite summaries; cited content is verified.
+- **Unverified** — provisional draft of unknown provenance. Content has not been validated, may contradict trusted documents, may invent terms. Treat as a starting guess until reviewed.
 - **Final** — frozen and not expected to change.
 
 ---
@@ -71,7 +71,7 @@ Every document is annotated with a trust level so contributors know what to rely
 |---|---|---|---|---|
 | 17 | `README.md` | GitHub org/repo landing page | v0.1 | Trusted |
 | 18 | `LICENSE.md` | Creative Commons Attribution 4.0 | Final | Final |
-| 19 | `ARCHITECTURE.md` | Architectural decisions, rejections, and open issues (non-normative) | v0.3 | Trusted |
+| 19 | `ARCHITECTURE.md` | Architectural background and subsystem overview (non-normative) | v0.4 | Trusted |
 | 20 | `CONTRIBUTING.md` | How to contribute to the specification | v0.1 draft | Unverified |
 | 21 | `CODE_OF_CONDUCT.md` | Community behavior standards | v0.1 draft | Unverified |
 
@@ -95,7 +95,7 @@ Every document is annotated with a trust level so contributors know what to rely
 - `core/02-physical-layer.md` (v0.1)
 - `core/03-data-link-layer.md` (v0.1)
 - `core/04-power-management.md` (v0.4)
-- `ARCHITECTURE.md` (v0.3) (repo root)
+- `ARCHITECTURE.md` (v0.4) (repo root)
 - `LICENSE.md` (final) (repo root)
 - `README.md` (v0.1) (repo root)
 
@@ -109,6 +109,6 @@ Every document is annotated with a trust level so contributors know what to rely
 
 **Next priorities for v0.1 specification:**
 
-1. Capture real LMDE bus traffic from a representative vessel (prerequisite for instance binding design — see [ARCHITECTURE.md](../ARCHITECTURE.md) §6.2)
+1. Capture real LMDE bus traffic from a representative vessel (prerequisite for instance binding design — see [instance-binding.md](../issues/instance-binding.md))
 2. Review 05–07 against the trusted core (01–04) and either revalidate, rewrite, or delete each
 3. Reconcile cross-document conflicts: DCID range (03 vs 07), NM payload (04 vs 07), instance binding (06)

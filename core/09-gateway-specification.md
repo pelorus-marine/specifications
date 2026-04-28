@@ -9,7 +9,7 @@
 
 ## About This Document
 
-This document defines the **normative** functional specification for Pelorus Core gateway nodes: bridging, binding-table authority, and role in recommended topologies. A one-paragraph summary of locked gateway policy is in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary). Non-gateway-specific binding and instance rules remain in [06-signal-catalog.md](./06-signal-catalog.md) and [ARCHITECTURE.md](../ARCHITECTURE.md).
+This document defines the **normative** functional specification for Pelorus Core gateway nodes: bridging, binding-table authority, and role in recommended topologies. A one-paragraph summary of gateway policy is in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary). Non-gateway-specific binding and instance rules remain in [06-signal-catalog.md](./06-signal-catalog.md) and [ARCHITECTURE.md](../ARCHITECTURE.md).
 
 **Physical boundary:** A gateway connects at least one **Pelorus Core** segment (**CAN FD** per **02**/**03**) and at least one **LMDE** segment (**Classical CAN / CAN 2.0** per industry practice). Bridging **always** spans that physical and framing difference; **do not** attach classical-only J1939 devices to a Pelorus Core backbone as “just another node.”
 
@@ -98,4 +98,16 @@ The gateway shall expose:
 
 ---
 
-*This document, together with documents 01–08, completes the minimum viable specification for Pelorus Core reference implementations and hardware prototyping.*
+## 8. Core ↔ Stream coupling (gateway tiers)
+
+Pelorus Stream (Ethernet) is **non-safety-critical** and orthogonal to Core **CAN FD**, but vessels integrate the two. **`ARCHITECTURE.md`** §3 and **`stream/01-overview.md`** §3.1 state the same coupling rules:
+
+- **Standard gateway** — **Required** capability to expose Core toward Stream: bridge Core-sourced telemetry, identity, and catalog-aligned metadata onto the Stream substrate (Core→Stream). This is the normal productized path.
+
+- **Capable bidirectional gateway** — **Includes** standard-gateway behavior **and** an explicitly designed, enumerated, and conformance-tested **Stream→Core** injection path. Ordinary Stream publishers **must not** originate frames on the Core fieldbus; reverse bridging **only** traverses this tier.
+
+Wire formats and APIs on the Stream side of these bridges are specified under **`stream/`**; Core-side semantics remain DCID- and catalog-bound (**06**/**07**).
+
+---
+
+*This document — including **§8** (Core ↔ Stream coupling) — together with Core documents **01–08**, completes the minimum viable specification for Pelorus Core reference implementations and hardware prototyping.*

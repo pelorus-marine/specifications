@@ -32,7 +32,7 @@ Every Stream-aware node may run a registry. Heads, gateways, and dedicated UI di
 
 There is **no authoritative registry**. Statements made by a publisher about its own streams take precedence over any registry's cache. If a registry's cached metadata for stream X disagrees with what the publisher of X is currently advertising, the publisher wins.
 
-This matches the rejection of single-authority designs in [`ARCHITECTURE.md`](../ARCHITECTURE.md) §5 (sole-gateway authority): no single point of failure, anywhere, in either Core or Stream.
+This aligns with Core gateway policy ([`core/09-gateway-specification.md`](../core/09-gateway-specification.md)): no mandatory single authority—no single point of failure, anywhere, in either Core or Stream.
 
 A node that "knows" about a stream because its registry told it so shall verify by listening for the stream itself before subscribing. The registry is for *discovery and UI*, not for *resolution*.
 

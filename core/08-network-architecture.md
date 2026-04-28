@@ -9,7 +9,7 @@
 
 ## About This Document
 
-This document defines the **normative** network architecture for Pelorus Core: segment limits, multi-segment scaling, repeater usage, and topology recommendations. It builds on [02-physical-layer.md](./02-physical-layer.md) and [05-addressing.md](./05-addressing.md). A concise summary of locked topology and scaling decisions appears in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary).
+This document defines the **normative** network architecture for Pelorus Core: segment limits, multi-segment scaling, repeater usage, and topology recommendations. It builds on [02-physical-layer.md](./02-physical-layer.md) and [05-addressing.md](./05-addressing.md). A concise summary of topology and scaling decisions appears in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary).
 
 ---
 

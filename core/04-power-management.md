@@ -11,7 +11,7 @@
 
 This document is the **normative** reference for Pelorus power management on CAN FD: selective wake-up, partial networking, functional groups, power states, network management behavior, and related electrical details. It cites only freely accessible reference materials.
 
-For **why** Pelorus treats power as architecture (always-on loads on typical LMDE networks, Ah budgets on battery, sailor-first goals), see [01-overview.md §2](./01-overview.md#2-the-problem) and [§6](./01-overview.md#6-design-principles). For locked decisions that span multiple documents, see [§9](./01-overview.md#9-locked-decisions-authoritative-summary).
+For **why** Pelorus treats power as architecture (always-on loads on typical LMDE networks, Ah budgets on battery, sailor-first goals), see [01-overview.md §2](./01-overview.md#2-the-problem) and [§6](./01-overview.md#6-design-principles). For decisions that span multiple documents, see [§9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary).
 
 For the **LMDE vs Pelorus Core** split — **Classical CAN** application traffic on legacy segments vs **CAN FD** on Pelorus, and **non-interoperation on one segment** — see [01-overview.md §4](./01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem).
 

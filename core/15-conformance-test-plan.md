@@ -9,7 +9,7 @@
 
 ## About This Document
 
-This document will define the conformance test plan (categories, fixtures, pass/fail) for Pelorus Core devices. The **conformance model** (self-test against reference implementations; no third-party cert for v1.0) is stated once in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary) and in [16-compliance-self-declaration.md](./16-compliance-self-declaration.md). **Normative** test procedures will live here when authored.
+This document will define the conformance test plan (categories, fixtures, pass/fail) for Pelorus Core devices. The **conformance model** (self-test against reference implementations; no third-party cert for v1.0) is stated once in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary) and in [16-compliance-self-declaration.md](./16-compliance-self-declaration.md). **Normative** test procedures will live here when authored.
 
 > **Stub — content TBD.** This file is a placeholder. The real test plan has not been authored yet. Until it is, treat any reference to "the conformance test plan" elsewhere in the specification as referring to a document that does not yet exist. Do not infer test procedures from the empty sections below.
 

@@ -9,7 +9,7 @@
 
 ## About This Document
 
-This document specifies the physical layer for Pelorus Core: bit rates, cabling, connectors, topology, transceiver requirements, power distribution, termination, and isolation. For stack context, coexistence with LMDE buses, and cross-document locked decisions, see [01-overview.md](./01-overview.md) ([§3 Two-layer architecture](./01-overview.md#3-two-layer-architecture), [§4 Coexistence](./01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem), [§6 Design principles](./01-overview.md#6-design-principles), [§9 Locked decisions](./01-overview.md#9-locked-decisions-authoritative-summary)).
+This document specifies the physical layer for Pelorus Core: bit rates, cabling, connectors, topology, transceiver requirements, power distribution, termination, and isolation. For stack context, coexistence with LMDE buses, and cross-document summaries, see [01-overview.md](./01-overview.md) ([§3 Two-layer architecture](./01-overview.md#3-two-layer-architecture), [§4 Coexistence](./01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem), [§6 Design principles](./01-overview.md#6-design-principles), [§9 Cross-cutting decisions](./01-overview.md#9-cross-cutting-decisions-authoritative-summary)).
 
 ---
 
