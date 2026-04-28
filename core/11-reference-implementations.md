@@ -19,7 +19,7 @@ The following crates/repositories are the canonical reference implementations:
 
 | Crate / Repository | Purpose | Status | Key Characteristics |
 |--------------------|---------|--------|---------------------|
-| `pelorus-pgn`      | PGN encoding/decoding and validation | Planned | Full support for all PGNs in `07-pgn-registry.md` |
+| `pelorus-dcid`      | DCID encoding/decoding and validation | Planned | Full support for all DCIDs in `07-dcid-registry.md` |
 | `pelorus-pm`       | Power management state machine and selective wake-up | Planned | Implements `04-power-management.md` exactly |
 | `pelorus-address`  | Address claiming and NAME handling | Planned | Implements `05-addressing.md` |
 | `pelorus-catalog`  | VSS catalog parsing, binding table, and runtime mapping | Planned | Implements `06-signal-catalog.md` |
@@ -37,7 +37,7 @@ Language, edition, `no_std` posture, and `forbid(unsafe_code)` are fixed at the 
 - **Determinism:** No heap allocation in real-time paths (static buffers where needed)
 - **Testing:** Full unit and integration test coverage against the conformance test fixtures (to be provided in `15-conformance-test-plan.md`)
 - **Licensing:** MIT or Apache 2.0 (chosen per crate)
-- **Versioning:** Semantic versioning that tracks the specification version (e.g. `pelorus-pgn` v0.1.x matches spec v0.1)
+- **Versioning:** Semantic versioning that tracks the specification version (e.g. `pelorus-dcid` v0.1.x matches spec v0.1)
 
 ---
 

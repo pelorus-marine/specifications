@@ -15,7 +15,7 @@ This document specifies the physical layer for Pelorus Core: bit rates, cabling,
 
 ## 1. Scope and Compatibility Statement
 
-This document defines the **normative** physical requirements for Pelorus Core segments. High-level scope and legacy coexistence are summarized in [01-overview.md §3–4](./01-overview.md#3-two-layer-architecture).
+This document defines the **normative** physical requirements for Pelorus Core segments. **Pelorus Core** segments use **CAN FD** (see §2). **LMDE** legacy segments discussed for coexistence use **Classical CAN (CAN 2.0)** application traffic on the same connector/cable plant but **must not** be merged on one segment with Pelorus CAN FD populations as specified. High-level scope and legacy coexistence: [01-overview.md §3–4](./01-overview.md#3-two-layer-architecture).
 
 Pelorus Core segments shall:
 
@@ -45,7 +45,7 @@ Pelorus Core uses CAN FD frames per ISO 11898-1:2015:
 
 ### 2.3 No Fast Packet
 
-Pelorus Core does not implement the Legacy Marine Data Ecosystem's Fast Packet protocol. Multi-frame messages exceeding 64 bytes use the J1939 Transport Protocol (TP) or are restructured into single-frame messages where possible. The vast majority of LMDE PGNs (including all signals up to 100 bytes) fit in a single CAN FD frame, eliminating Fast Packet's complexity.
+Pelorus Core does not implement the Legacy Marine Data Ecosystem's Fast Packet protocol. Multi-frame messages exceeding 64 bytes use the J1939 Transport Protocol (TP) or are restructured into single-frame messages where possible. The vast majority of LMDE DCIDs (including all signals up to 100 bytes) fit in a single CAN FD frame, eliminating Fast Packet's complexity.
 
 ### 2.4 Rationale
 
@@ -169,7 +169,7 @@ Vessels requiring more than a single segment use repeater nodes to create multip
 - Connect two electrically isolated CAN FD segments
 - Forward valid CAN FD frames between segments transparently
 - Provide galvanic isolation between segments
-- Optionally filter messages by PGN for traffic management
+- Optionally filter messages by DCID for traffic management
 - May serve as power injection points for one or both segments
 - Detect and contain faults on a single segment without affecting the network
 
@@ -463,7 +463,7 @@ The Pelorus project will maintain a reference implementation and compatibility t
 
 The following items are not yet specified and will be addressed in future revisions:
 
-- Specific PGN number assignments for Pelorus Core (currently under design)
+- Specific DCID number assignments for Pelorus Core (currently under design)
 - Legacy Marine Data Ecosystem bridge gateway functional specification
 - Pelorus Core repeater functional specification (filtering rules, fault handling)
 - Specific power tee implementations (single, center, dual injection)
@@ -498,12 +498,13 @@ The following items are not yet specified and will be addressed in future revisi
 
 | Term | Definition |
 |---|---|
-| **CAN FD** | CAN with Flexible Data-Rate, ISO 11898-1:2015 |
+| **CAN FD** | CAN with Flexible Data-Rate, ISO 11898-1:2015; **Pelorus Core** application frames use this format |
+| **Classical CAN** | CAN 2.0 / ISO 11898-1 base format (no flexible data rate); **8-byte** payload maximum per data frame; typical **LMDE / J1939 marine** application traffic at 250 kbit/s |
 | **DLC** | Data Length Code, 4-bit field indicating frame data size |
 | **ESD** | Electrostatic Discharge |
 | **HBM** | Human Body Model, ESD test methodology |
 | **LEN** | Load Equivalency Number, LMDE power unit (1 LEN = 50 mA) |
-| **PGN** | Parameter Group Number, J1939 / LMDE message identifier |
+| **DCID** | Data Contract ID — Pelorus name for the historic **Parameter Group Number** role in J1939-family stacks; numeric values align with LMDE where compatibility is claimed. **LMDE:** carried in **Classical CAN** frames. **Pelorus:** carried in **CAN FD** frames (this document set). |
 | **SIC** | Signal Improvement Capability, CAN ringing suppression per CiA 601-4 |
 | **WUF** | Wake-Up Frame, CAN frame triggering selective node wake-up |
 

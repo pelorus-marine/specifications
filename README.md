@@ -25,7 +25,7 @@ Sailors deserve better. **Pelorus** exists to provide it.
 - **Open** — full specification freely available, no NDAs, no licensing fees
 - **Reliable** — built on CAN FD with deterministic real-time guarantees, designed for safety-critical use
 - **Power-aware** — selective node sleep and wake so the network draws only what the current voyage context needs (not only at anchor — e.g. ocean passage may shed depth, radar, or other gear until coastal work again)
-- **Interoperable** — bridges cleanly to the existing Legacy Marine Data Ecosystem and the older legacy serial marine protocol networks
+- **Interoperable** — bridges cleanly to the existing Legacy Marine Data Ecosystem (**Classical CAN**) from **Pelorus Core** (**CAN FD**) via gateways (not shared segments), and to older legacy serial marine networks where applicable
 - **Modern** — Rust reference implementations, IPv6 link-local where applicable, mDNS service discovery
 
 ---
@@ -34,30 +34,14 @@ Sailors deserve better. **Pelorus** exists to provide it.
 
 This is the umbrella organization for the **Pelorus** Marine project. Repositories will be added as the work progresses.
 
-### Current Documents
+### Current documents
 
-Start with the overview, then read by topic. The full document map is in [core/00-document-index.md](./core/00-document-index.md). All numbered specification files (**00–16**) live under [`core/`](./core/).
+Normative text is split between **[`core/`](./core/)** (Pelorus Core, documents `00`–`16`) and **[`stream/`](./stream/)** (Pelorus Stream, `00`–`27`). Each subsystem has a single **authoritative index** (filenames, purpose, status, trust tier, completion tracking):
 
-| # | Document | Description | Status |
-|---|---|---|---|
-| 01 | [01-overview.md](./core/01-overview.md) | What **Pelorus** is, two-layer architecture, v1.0 scope, reading guide. | v0.1 — trusted |
-| 02 | [02-physical-layer.md](./core/02-physical-layer.md) | **Pelorus Core** physical layer: bit rates, cabling, connectors, topology, transceivers, power, termination, isolation. | v0.1 — trusted |
-| 03 | [03-data-link-layer.md](./core/03-data-link-layer.md) | CAN FD frame format usage, 29-bit identifier and PGN structure, multi-frame transport, error handling. | v0.1 — trusted |
-| 04 | [04-power-management.md](./core/04-power-management.md) | Partial networking, selective wake-up, marine functional groups, power states, NM behavior, frame error counter, and bus biasing. Cross-checked against ISO 11898-2:2016. | v0.4 — trusted (§1–5 ISO-validated; §6+ proposals subject to validation) |
-| 05 | [05-addressing.md](./core/05-addressing.md) | Source address claiming, conflict resolution, device identification. | v0.1 — unverified draft |
-| 06 | [06-signal-catalog.md](./core/06-signal-catalog.md) | VSS-syntax catalog format, `Vessel.*` data model, instance handling. | v0.1 — unverified draft |
-| 07 | [07-pgn-registry.md](./core/07-pgn-registry.md) | Specific PGN assignments and definitions. | v0.1 — unverified draft |
-| 08 | [08-network-architecture.md](./core/08-network-architecture.md) | Segmentation, multi-segment networks, scaling. | v0.1 — unverified draft |
-| 09 | [09-gateway-specification.md](./core/09-gateway-specification.md) | LMDE-to-**Pelorus** gateway behavior. | v0.1 — unverified draft |
-| 10 | [10-repeater-specification.md](./core/10-repeater-specification.md) | **Pelorus Core** repeater functional spec. | v0.1 — unverified draft |
-| 11 | [11-reference-implementations.md](./core/11-reference-implementations.md) | Pointers to canonical Rust crates, version compatibility. | v0.1 — unverified draft |
-| 12 | [12-hardware-design-guide.md](./core/12-hardware-design-guide.md) | Schematic patterns, component selection, layout, EMC. | v0.1 — unverified draft |
-| 13 | [13-firmware-design-guide.md](./core/13-firmware-design-guide.md) | State machines, embedded Rust patterns, testing. | v0.1 — unverified draft |
-| 14 | [14-installation-guide.md](./core/14-installation-guide.md) | Wiring guide, segment planning, troubleshooting. | v0.1 — unverified draft |
-| 15 | [15-conformance-test-plan.md](./core/15-conformance-test-plan.md) | Conformance test plan (stub — procedures TBD). | v0.1 — unverified draft |
-| 16 | [16-compliance-self-declaration.md](./core/16-compliance-self-declaration.md) | Manufacturer attestation template. | v0.1 — unverified draft |
+- **[`core/00-document-index.md`](./core/00-document-index.md)** — safety-critical CAN FD stack, gateway, conformance.
+- **[`stream/00-document-index.md`](./stream/00-document-index.md)** — Ethernet media and telemetry; strictly non-safety-critical ([`stream/01-overview.md`](./stream/01-overview.md) §2–3).
 
-Documents 01–04 are the trusted core; 05–16 are unverified provisional drafts pending review against the core. See [core/00-document-index.md](./core/00-document-index.md) for trust definitions and tier groupings.
+**Cold start:** [Core overview](./core/01-overview.md) · [Stream overview](./stream/01-overview.md) · [ARCHITECTURE.md](./ARCHITECTURE.md) (non-normative repo-wide record).
 
 ### Recent Progress
 
@@ -65,12 +49,13 @@ Documents 01–04 are the trusted core; 05–16 are unverified provisional draft
 - Document index added to track specification completeness.
 - Physical layer specification drafted to v0.1 (CAN FD profile, LMDE-compatible cabling and connectors, segmentation strategy, isolation tiers).
 - Data link layer specification drafted to v0.1 (29-bit J1939-style identifiers, J1939 TP for multi-frame messages, no Fast Packet, no Remote Frames, reserved **Pelorus** identifier ranges).
-- Power management specification completed to v0.4 (functional group bit allocations, four-state power model with state machine, NM cadence, FEC and bus biasing rules, implementation checklist). PGN allocations for WUF (0x0FF80) and NM (0x0FF81) are candidate values pending ratification in [core/07-pgn-registry.md](./core/07-pgn-registry.md).
+- Power management specification completed to v0.4 (functional group bit allocations, four-state power model with state machine, NM cadence, FEC and bus biasing rules, implementation checklist). DCID allocations for WUF (0x0FF80) and NM (0x0FF81) are candidate values pending ratification in [core/07-dcid-registry.md](./core/07-dcid-registry.md).
+- **Pelorus Stream specification** drafted to v0.1 across 28 sequential documents in [`stream/`](./stream/) (Issue [#1](https://github.com/pelorus-marine/specifications/issues/1)). Locked decisions: UUIDv7 stream IDs, deterministic CBOR control plane, Opus 48 kHz audio, IPv6 link-local with mDNS-SD discovery, UDP best-effort default with opt-in QUIC. Stream remains strictly non-safety-critical and decoupled from Core.
 
 ### Planned Repositories
 
 - `spec` — The **Pelorus** protocol specification
-- `pgn-rs` — Rust crate for parsing and decoding **Pelorus** PGNs
+- `dcid-rs` — Rust crate for parsing and decoding **Pelorus** DCIDs
 - `pm` — Reference implementation of **Pelorus** power management (`pelorus-pm` crate)
 - `gateway` — Reference firmware for the **Pelorus** / Legacy Marine Data Ecosystem / the older legacy serial marine protocol gateway node
 - `signal-catalog` — VSS-syntax marine signal definitions

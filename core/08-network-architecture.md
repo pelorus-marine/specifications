@@ -74,7 +74,7 @@ Alternative linear or tree topologies are permitted but not recommended for vess
 - **Addressing:** Repeaters and devices on all segments use the same 8-bit source address space and J1939-style address claiming (`05-addressing.md`).
 - **Power Management:** Repeaters participate in selective wake-up using the same PNC and NM mechanisms (`04-power-management.md`).
 - **Signal Catalog & Binding:** The binding table is network-wide and is published on every segment (`06-signal-catalog.md`).
-- **PGNs:** All Pelorus PGNs (including WUF 0x0FF80 and NM 0x0FF81) are forwarded transparently by repeaters (`07-pgn-registry.md`).
+- **DCIDs:** All Pelorus DCIDs (including WUF 0x0FF80 and NM 0x0FF81) are forwarded transparently by repeaters (`07-dcid-registry.md`).
 - **Gateways:** The central gateway may also bridge to LMDE networks; its behavior is defined in [09-gateway-specification.md](./09-gateway-specification.md).
 
 ---
@@ -83,7 +83,7 @@ Alternative linear or tree topologies are permitted but not recommended for vess
 
 - Exact repeater filtering rules and configuration interface
 - Repeater address claiming and redundancy behavior
-- Fault detection and reporting PGNs
+- Fault detection and reporting DCIDs
 - Conformance test procedures for multi-segment networks
 - Maximum practical number of segments in a star topology
 

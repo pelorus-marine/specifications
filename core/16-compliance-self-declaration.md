@@ -33,7 +33,7 @@ Specifically, the product has been verified to comply with the Pelorus Core docu
 - Addressing (`core/05-addressing.md`)
 - Power Management (`core/04-power-management.md`)
 - Signal Catalog and Binding (`core/06-signal-catalog.md`)
-- PGN Registry (`core/07-pgn-registry.md`)
+- DCID Registry (`core/07-dcid-registry.md`)
 - Network Architecture (`core/08-network-architecture.md`)
 - Gateway Behavior (`core/09-gateway-specification.md`)
 - Repeater Behavior (`core/10-repeater-specification.md`)

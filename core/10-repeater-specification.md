@@ -51,9 +51,9 @@ The following features are permitted but not required for basic repeater complia
 
 - **Physical Layer:** All ports comply with `02-physical-layer.md` (250/500 kbit/s, split termination, M12 A-coded).
 - **Addressing:** Repeaters claim addresses and participate in conflict resolution (`05-addressing.md`).
-- **Power Management:** Repeaters forward WUF (0x0FF80) and NM (0x0FF81) messages and respect PNC masks (`04-power-management.md` and `07-pgn-registry.md`).
-- **Signal Catalog & Binding:** Binding table and semantic mapping are network-wide; repeaters forward the binding table PGN transparently (`06-signal-catalog.md`).
-- **PGN Registry:** All Pelorus PGNs are forwarded without alteration (`07-pgn-registry.md`).
+- **Power Management:** Repeaters forward WUF (0x0FF80) and NM (0x0FF81) messages and respect PNC masks (`04-power-management.md` and `07-dcid-registry.md`).
+- **Signal Catalog & Binding:** Binding table and semantic mapping are network-wide; repeaters forward the binding table DCID transparently (`06-signal-catalog.md`).
+- **DCID Registry:** All Pelorus DCIDs are forwarded without alteration (`07-dcid-registry.md`).
 - **Network Architecture:** Repeaters enable the multi-segment and star topologies defined in `08-network-architecture.md`.
 - **Gateway:** Repeaters work seamlessly with the central gateway defined in `09-gateway-specification.md`.
 
@@ -62,7 +62,7 @@ The following features are permitted but not required for basic repeater complia
 ## 5. Open Items (to be resolved before v1.0 promotion)
 
 - Exact filtering configuration format and rules
-- Repeater-specific diagnostic and fault-reporting PGNs
+- Repeater-specific diagnostic and fault-reporting DCIDs
 - Conformance test plan for isolation, fault containment, and hop-limit behavior
 - Redundancy and failover behavior for multiple repeaters
 - Minimum and maximum number of ports per repeater device

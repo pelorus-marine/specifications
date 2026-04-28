@@ -39,14 +39,14 @@ Every document is annotated with a trust level so contributors know what to rely
 | 04 | `04-power-management.md` | Selective wake-up, PNCs, power states, network management | v0.4 draft | Trusted (§1–5 ISO-validated; §6+ proposals subject to validation) |
 | 05 | `05-addressing.md` | Source address claiming, conflict resolution, device identification | v0.1 draft | Unverified |
 | 06 | `06-signal-catalog.md` | VSS-syntax catalog format, `Vessel.*` data model, instance handling | v0.1 draft | Unverified |
-| 07 | `07-pgn-registry.md` | Specific PGN assignments and definitions | v0.1 draft | Unverified |
+| 07 | `07-dcid-registry.md` | Specific DCID assignments and definitions | v0.1 draft | Unverified |
 
 ### Tier 2 — Architectural Specifications
 
 | # | Filename | Purpose | Status | Trust |
 |---|---|---|---|---|
 | 08 | `08-network-architecture.md` | Segmentation, multi-segment networks, scaling | v0.1 draft | Unverified |
-| 09 | `09-gateway-specification.md` | LMDE-to-Pelorus gateway behavior | v0.1 draft | Unverified |
+| 09 | `09-gateway-specification.md` | Classical CAN (LMDE) ↔ CAN FD (Pelorus Core) gateway | v0.1 draft | Unverified |
 | 10 | `10-repeater-specification.md` | Pelorus Core repeater functional spec | v0.1 draft | Unverified |
 
 ### Tier 3 — Implementation Guidance
@@ -101,7 +101,7 @@ Every document is annotated with a trust level so contributors know what to rely
 
 **Unverified — needs review:** 13 of 21
 
-- `core/05-addressing.md`, `core/06-signal-catalog.md`, `core/07-pgn-registry.md`
+- `core/05-addressing.md`, `core/06-signal-catalog.md`, `core/07-dcid-registry.md`
 - `core/08-network-architecture.md`, `core/09-gateway-specification.md`, `core/10-repeater-specification.md`
 - `core/11-reference-implementations.md`, `core/12-hardware-design-guide.md`, `core/13-firmware-design-guide.md`, `core/14-installation-guide.md`
 - `core/15-conformance-test-plan.md`, `core/16-compliance-self-declaration.md`
@@ -111,4 +111,4 @@ Every document is annotated with a trust level so contributors know what to rely
 
 1. Capture real LMDE bus traffic from a representative vessel (prerequisite for instance binding design — see [ARCHITECTURE.md](../ARCHITECTURE.md) §6.2)
 2. Review 05–07 against the trusted core (01–04) and either revalidate, rewrite, or delete each
-3. Reconcile cross-document conflicts: PGN range (03 vs 07), NM payload (04 vs 07), instance binding (06)
+3. Reconcile cross-document conflicts: DCID range (03 vs 07), NM payload (04 vs 07), instance binding (06)

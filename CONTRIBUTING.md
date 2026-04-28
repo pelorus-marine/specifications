@@ -23,7 +23,7 @@ This is an open, sailor-first project. The specification (`core/00-document-inde
 We welcome contributions in these areas, in rough order of priority:
 
 1. **Specification improvements** — fixing errors, clarifying language, adding missing test cases
-2. **Reference implementations** — Rust crates (`pelorus-pgn`, `pelorus-pm`, etc.)
+2. **Reference implementations** — Rust crates (`pelorus-dcid`, `pelorus-pm`, etc.)
 3. **Test fixtures and conformance tools**
 4. **Documentation** — installation guides, examples, troubleshooting
 5. **Real-world testing and feedback** — especially on actual vessels
@@ -63,6 +63,16 @@ All pull requests must include:
 - Specification changes are treated as normative and require careful review.
 - If your change affects any numbered document (01–16), you must also update the corresponding section in `core/00-document-index.md`.
 - Major architectural proposals must be discussed in an issue first.
+
+### DCID numbering, registry, and VSS linkage
+
+Any change that **alters DCID assignment, DCID versioning, or the semantic meaning of the `dcid` overlay attribute** must be submitted as **one coherent Pull Request** that updates together:
+
+- [`core/07-dcid-registry.md`](./core/07-dcid-registry.md)
+- [`core/06-signal-catalog.md`](./core/06-signal-catalog.md) §6 (and any affected `catalog/` entries)
+- [`stream/01-overview.md`](./stream/01-overview.md) §3.3 if Stream–Core identifier narrative is affected
+
+Rationale: prevents gateways, compilers, and docs from drifting out of sync. Exploratory DCID structure belongs in [Issue #3](https://github.com/pelorus-marine/specifications/issues/3) until promoted into **07**. When machine-readable artifacts (e.g. generated `dcid-contract`) exist, the same PR must regenerate them — see [`meta/issue-dcid-contract-artifact.md`](./meta/issue-dcid-contract-artifact.md).
 
 ---
 

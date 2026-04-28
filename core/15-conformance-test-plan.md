@@ -29,7 +29,7 @@ This document will define the conformance test plan (categories, fixtures, pass/
 
 ## 3. Test Categories
 
-*To be authored. Will group tests by the specification document they verify (`02-physical-layer.md`, `03-data-link-layer.md`, `04-power-management.md`, `05-addressing.md`, `06-signal-catalog.md`, `07-pgn-registry.md`, `09-gateway-specification.md`, `10-repeater-specification.md`).*
+*To be authored. Will group tests by the specification document they verify (`02-physical-layer.md`, `03-data-link-layer.md`, `04-power-management.md`, `05-addressing.md`, `06-signal-catalog.md`, `07-dcid-registry.md`, `09-gateway-specification.md`, `10-repeater-specification.md`).*
 
 ---
 

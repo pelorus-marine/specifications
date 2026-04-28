@@ -9,7 +9,9 @@
 
 ## About This Document
 
-This document specifies the data link layer for Pelorus Core: CAN FD frame usage, 29-bit identifier layout, multi-frame transport when payloads exceed 64 bytes, and error handling. It sits between [02-physical-layer.md](./02-physical-layer.md) and the application-layer documents [05-addressing.md](./05-addressing.md), [06-signal-catalog.md](./06-signal-catalog.md), [07-pgn-registry.md](./07-pgn-registry.md). For the J1939-derived identifier model, Fast Packet policy, and other locked stack decisions stated once for the whole suite, see [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary).
+This document specifies the data link layer for Pelorus Core: CAN FD frame usage, 29-bit identifier layout, multi-frame transport when payloads exceed 64 bytes, and error handling. It sits between [02-physical-layer.md](./02-physical-layer.md) and the application-layer documents [05-addressing.md](./05-addressing.md), [06-signal-catalog.md](./06-signal-catalog.md), [07-dcid-registry.md](./07-dcid-registry.md). For the J1939-derived identifier model, Fast Packet policy, and other locked stack decisions stated once for the whole suite, see [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary).
+
+**J1939 vs CAN FD (normative scope of this document):** Pelorus adopts **SAE J1939**–family *semantics* for the CAN identifier, DCIDs, and transport/addressing references used in this suite, but **all Pelorus Core application data** uses **CAN FD** frames as defined below. **LMDE** segments use **Classical CAN (CAN 2.0)** for those semantics; they are **not** bit-compatible with Pelorus on a **single shared segment**. See [01-overview.md §4](./01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem).
 
 ---
 
@@ -18,7 +20,7 @@ This document specifies the data link layer for Pelorus Core: CAN FD frame usage
 This document defines:
 
 - The CAN FD frame format Pelorus Core uses
-- The 29-bit identifier layout and PGN derivation
+- The 29-bit identifier layout and DCID derivation
 - Addressing modes (broadcast PDU2, peer-to-peer PDU1)
 - Multi-frame message construction for payloads exceeding 64 bytes
 - Error handling at the data link layer
@@ -26,7 +28,7 @@ This document defines:
 
 This document does **not** define:
 
-- Specific PGN assignments (see [07-pgn-registry.md](./07-pgn-registry.md))
+- Specific DCID assignments (see [07-dcid-registry.md](./07-dcid-registry.md))
 - Source address values or claiming protocol (see [05-addressing.md](./05-addressing.md))
 - Signal definitions or units (see [06-signal-catalog.md](./06-signal-catalog.md))
 - Wake-up frame matching (see [04-power-management.md §5](./04-power-management.md))
@@ -54,10 +56,10 @@ This is a deliberate divergence from a coexistence-on-the-same-wire mindset. LMD
 
 ### 2.2 No Remote Frames
 
-Pelorus Core does not use Remote Transmission Request (RTR) frames. Data is push-only or request-via-PGN. Receivers needing data either:
+Pelorus Core does not use Remote Transmission Request (RTR) frames. Data is push-only or request-via-DCID. Receivers needing data either:
 
-- Subscribe by listening for the relevant broadcast PGN, or
-- Send a request PGN (PGN 0xEA00 per J1939, ratification pending in [07-pgn-registry.md](./07-pgn-registry.md))
+- Subscribe by listening for the relevant broadcast DCID, or
+- Send a request message (DCID 0xEA00 per J1939, ratification pending in [07-dcid-registry.md](./07-dcid-registry.md))
 
 ### 2.3 Frame Size Selection
 
@@ -91,8 +93,8 @@ Pelorus Core uses a 29-bit identifier laid out per SAE J1939-21:
 |---|---|---|
 | 28–26 | Priority (PRIO) | 0 (highest) to 7 (lowest) |
 | 25 | Reserved (R) | Transmitted as 0; ignored on receive |
-| 24 | Data Page (DP) | Selects PGN page; v1.0 of Pelorus uses DP=0 only |
-| 23–16 | PDU Format (PF) | Determines PDU type and PGN |
+| 24 | Data Page (DP) | Selects DCID page; v1.0 of Pelorus uses DP=0 only |
+| 23–16 | PDU Format (PF) | Determines PDU type and DCID |
 | 15–8 | PDU Specific (PS) | Destination address (PDU1) or group extension (PDU2) |
 | 7–0 | Source Address (SA) | Sender's claimed address per [05-addressing.md](./05-addressing.md) |
 
@@ -105,16 +107,16 @@ Pelorus Core uses a 29-bit identifier laid out per SAE J1939-21:
 
 This is the J1939 convention, preserved unchanged.
 
-### 3.2 PGN Derivation
+### 3.2 DCID Derivation
 
-The Parameter Group Number is derived from R, DP, PF, and (for PDU2 only) PS:
+The Data Contract ID is derived from R, DP, PF, and (for PDU2 only) PS:
 
-- **PDU1 (PF ≤ 0xEF):** `PGN = (R << 17) | (DP << 16) | (PF << 8)` — the destination address is **not** part of the PGN
-- **PDU2 (PF ≥ 0xF0):** `PGN = (R << 17) | (DP << 16) | (PF << 8) | PS`
+- **PDU1 (PF ≤ 0xEF):** `DCID = (R << 17) | (DP << 16) | (PF << 8)` — the destination address is **not** part of the DCID
+- **PDU2 (PF ≥ 0xF0):** `DCID = (R << 17) | (DP << 16) | (PF << 8) | PS`
 
 Examples:
 
-| Identifier (29-bit) | PRIO | PF | PS | SA | PGN | Type |
+| Identifier (29-bit) | PRIO | PF | PS | SA | DCID | Type |
 |---|---|---|---|---|---|---|
 | `0x0CF80401` | 3 | 0xF8 | 0x04 | 0x01 | 0x0F804 | PDU2 broadcast |
 | `0x18EE0102` | 6 | 0xEE | 0x01 | 0x02 | 0x0EE00 | PDU1 to addr 0x01 |
@@ -126,24 +128,24 @@ Priority is the most-significant 3 bits of the identifier and dominates bus arbi
 
 | Priority | Class | Examples |
 |---|---|---|
-| 0 | Wake-up frames | WUF (PGN 0x0FF80) |
+| 0 | Wake-up frames | WUF (DCID 0x0FF80) |
 | 1 | Safety-critical real-time | Steering, autopilot commands, alarm assertions |
 | 2 | Critical real-time | Heading, attitude, propulsion control |
 | 3 | Real-time navigation | GNSS position, depth, speed, wind |
 | 4 | Standard navigation | AIS targets, route data |
 | 5 | Engine and machinery | Engine RPM, fuel, alternator |
-| 6 | Network management, diagnostics | NM (PGN 0x0FF81), address claim, status |
+| 6 | Network management, diagnostics | NM (DCID 0x0FF81), address claim, status |
 | 7 | Bulk and non-critical | Logs, configuration, historical data |
 
-These are guidelines. Specific PGN priority assignments are recorded in [07-pgn-registry.md](./07-pgn-registry.md). Vendor-specific or proprietary PGNs must respect the same priority bands.
+These are guidelines. Specific DCID priority assignments are recorded in [07-dcid-registry.md](./07-dcid-registry.md). Vendor-specific or proprietary DCIDs must respect the same priority bands.
 
 ---
 
 ## 4. Reserved Identifier Ranges
 
-The following PGNs and ranges are reserved for Pelorus Core protocol use and shall not be assigned to application data.
+The following DCIDs and ranges are reserved for Pelorus Core protocol use and shall not be assigned to application data.
 
-| PGN / Range | Purpose | Document |
+| DCID / Range | Purpose | Document |
 |---|---|---|
 | 0x0EE00 | Address Claimed | [05-addressing.md](./05-addressing.md) |
 | 0x0EA00 | Request | This document §5.3 |
@@ -155,7 +157,7 @@ The following PGNs and ranges are reserved for Pelorus Core protocol use and sha
 | 0x0EF00 – 0x0EFFF | Proprietary A (per-vendor, peer-to-peer) | Vendor-managed |
 | 0x0FF00 – 0x0FF7F | Proprietary B (per-vendor, broadcast) | Vendor-managed |
 
-PGN 0x0FF80 and onward in the 0x0FF8x range are **carved out** of what would otherwise be Proprietary B space. Vendors shall not assign proprietary messages in these ranges.
+DCID 0x0FF80 and onward in the 0x0FF8x range are **carved out** of what would otherwise be Proprietary B space. Vendors shall not assign proprietary messages in these ranges.
 
 ---
 
@@ -175,15 +177,15 @@ CAN FD frames carry up to 64 bytes. Messages larger than 64 bytes use a transpor
 
 For broadcast messages exceeding 64 bytes, the sender:
 
-1. Transmits PGN 0x0EC00 BAM with the destination PGN, total length, and frame count
-2. Transmits PGN 0x0EB00 data frames sequentially, with sequence number in byte 0 and up to 63 bytes of payload in bytes 1–63
+1. Transmits DCID 0x0EC00 BAM with the destination DCID, total length, and frame count
+2. Transmits DCID 0x0EB00 data frames sequentially, with sequence number in byte 0 and up to 63 bytes of payload in bytes 1–63
 3. Receivers reassemble by sequence number
 
 Frame spacing: minimum 50 ms between data frames per J1939-21. Receivers shall accept frames as fast as the bus delivers them.
 
 ### 5.3 Request Mechanism
 
-A receiver requesting a specific PGN sends PGN 0x0EA00 with the requested PGN encoded in the data field (3 bytes, little-endian). The target node replies with the requested PGN if it is the producer. If multiple producers exist (instance handling), the receiver may need to disambiguate via PGN 0x0EE00 address-claim records.
+A receiver requesting a specific DCID sends DCID 0x0EA00 with the requested DCID encoded in the data field (3 bytes, little-endian). The target node replies with the requested DCID if it is the producer. If multiple producers exist (instance handling), the receiver may need to disambiguate via DCID 0x0EE00 address-claim records.
 
 ### 5.4 No Fast Packet
 
@@ -229,7 +231,7 @@ Pelorus Core nodes shall use the CAN controller's automatic retransmission. Manu
 
 ### 6.5 Error Counters and Diagnostics
 
-Each Pelorus Core node shall expose, via a diagnostic PGN (assignment in [07-pgn-registry.md](./07-pgn-registry.md)):
+Each Pelorus Core node shall expose, via a diagnostic DCID (assignment in [07-dcid-registry.md](./07-dcid-registry.md)):
 
 - TX error count
 - RX error count
@@ -260,8 +262,8 @@ The full 29-bit identifier (priority + reserved + DP + PF + PS + SA) must be uni
 
 The following remain unresolved:
 
-- Final priority assignments for specific PGNs (in [07-pgn-registry.md](./07-pgn-registry.md))
-- Diagnostic PGN definitions for error counter exposure
+- Final priority assignments for specific DCIDs (in [07-dcid-registry.md](./07-dcid-registry.md))
+- Diagnostic DCID definitions for error counter exposure
 - Behavior under sustained bus saturation (denial-of-service mitigation)
 - Multi-frame message reassembly behavior across repeater hops (depends on [10-repeater-specification.md](./10-repeater-specification.md))
 - Whether Pelorus adopts J1939-21 TP unchanged or defines a CAN-FD-aware variant that uses 64-byte data frames natively
@@ -281,7 +283,7 @@ The following remain unresolved:
 | PDU1/PDU2 split | At PF=0xF0 | At PF=0xF0 (identical) |
 | Source address | 8 bit | 8 bit (identical) |
 
-Pelorus Core preserves LMDE / J1939 identifier semantics exactly. The differences are the underlying frame format (CAN FD) and the multi-frame protocol (J1939 TP rather than Fast Packet).
+Pelorus Core preserves LMDE / J1939 identifier and DCID **semantics**. The differences are the **physical frame format** (**Classical CAN** on LMDE vs **CAN FD** on Pelorus) and the **multi-frame rules** (LMDE Fast Packet vs J1939 TP on Pelorus as specified).
 
 ---
 
