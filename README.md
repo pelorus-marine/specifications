@@ -6,6 +6,14 @@
 
 ---
 
+## Why **Pelorus**
+
+Marine electronics labeled "marine grade" are too often unreliable, expensive, and locked into closed proprietary ecosystems. The Legacy Marine Data Ecosystem — the dominant standard — is technically sound at its core but trapped by 20+ years of backward compatibility, closed specifications, and vendor incentives that prioritize differentiation over interoperability.
+
+Sailors deserve better. **Pelorus** exists to provide it.
+
+---
+
 ## What it is
 
 Incumbent marine networking ([**LMDE**](./ARCHITECTURE.md#lmde) — *Legacy Marine Data Ecosystem*) works but sits behind certification gates, closed catalogs, and vendor-first incentives. **Pelorus** specifies an open stack sailors and builders can inspect, extend, and debug: power-aware **Pelorus Core** (CAN FD), **Pelorus Stream** (Ethernet, non-safety-critical media), and **Pelorus State** (coordination — planned), bridged sensibly to classical buses where needed.
