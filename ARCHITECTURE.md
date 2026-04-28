@@ -1,87 +1,125 @@
 # Pelorus — architecture record
 
-**Last Updated:** April 26, 2026  
+**Last Updated:** April 28, 2026  
 **Status:** Living (non-normative)
-
-Locked requirements live in [01-overview.md](./core/01-overview.md) §9 and documents **02–16** in [`core/`](./core/). This file records **why** decisions were made, what was rejected, and what is still open.
-
----
 
 ## 1. Project
 
-- **Mission:** Open marine data network; CAN FD core; Rust-first reference code; reliability offshore.
-- **Terminology:** **Legacy Marine Data Ecosystem (LMDE)** — project code name for the incumbent certification-gated fieldbus and physical plant (see [01-overview.md](./core/01-overview.md) **Terminology**). No third-party trademarks for that ecosystem in this repo.
-- **Presence:** Specification hub **https://sevenseas.io/pelorus** · org **https://github.com/pelorus-marine** · community face Seven Seas (`sevenseas.io`).
+### Mission
+
+Open marine data network; CAN FD core; Rust-first reference code; reliability offshore.
+
+<h3 id="lmde">Legacy Marine Data Ecosystem (LMDE)</h3>
+
+[**LMDE**](#lmde) is this project’s umbrella term for the certification-gated, mostly **proprietary** marine connectivity landscape—CAN fieldbuses, OEM Ethernet fabrics, and connector families that dominate recreational installs. Compared to open, sailor-owned buses, it optimizes for **vendor control** and **program revenue**. Typical drawbacks:
+
+- **Specifications and certification** are **very expensive**—or **unobtainable outright**; where shared at all, access is often gated by **mandatory NDAs** and pay-to-play programs.
+- **Interoperability** commonly means **bridges and gateway SKUs**, not one open wire format from sensor to laptop.
+- **Similar-looking cable plants** can carry **incompatible framing**—looks like “marine network,” behaves like silos.
+- **Helm-side debuggability** is weak: the interesting signal-level truth is frequently **contractually or practically closed**.
+
+**Pelorus** does **not** assert bit-level compatibility with any incumbent stack.
+
+The bulleted names below are **examples** of real-world commercial buses and networks that fall under the [**LMDE**](#lmde) umbrella—**non-exhaustive**, **nominative**, and **not** normative targets for Pelorus conformance.
+
+- **NMEA 2000®** — Multidrop CAN instrument network; certification-gated ecosystem for certified recreational marine electronics.
+- **SeaTalk NG** — Raymarine NMEA-2000-class cabling and device network for integrated displays and sensors.
+- **SimNet** — Simrad / Lowrance / B&G (Navico) CAN network for MFDs, sonar, and radar interfaces.
+- **SmartCraft** — Mercury / MerCruiser engine and vessel digital diagnostics and data bus.
+- **Volvo Penta EVC** — Volvo propulsion and vessel control digital network.
+- **Yamaha Command Link** — Yamaha outboard digital instrumentation and control bus.
+- **RayNet** — Raymarine high-speed Ethernet fabric (e.g. radar / plotter backhaul).
+- **Navico Ethernet** — Navico-family marine Ethernet for displays, imaging, and accessories.
+- **Garmin Marine Network** — Garmin plotter, sonar, and sensor integration fabric.
+- **Furuno NavNet** — Furuno integrated navigation, radar, and sensor network.
+- **NMEA OneNet®** — NMEA IPv6 / Ethernet application-layer family for high-bandwidth marine IP (parallel path to 2000-class CAN for many vendors).
+
+### Presence
+
+- [Pelorus project site](https://sevenseas.io/pelorus) — Landing page for the Pelorus open marine data network.
+- [Specifications repository](https://github.com/pelorus-marine/specifications) — Source of truth for this document set; issues and changes live here.
+- [Seven Seas community](https://sevenseas.io/) — Project-facing brand and wider community entry point (not limited to Pelorus).
 
 ---
 
 ## 2. Problem Pelorus targets
 
-Weaknesses of the **Legacy Marine Data Ecosystem** that Pelorus addresses: closed protocol and certification wall; **always-on power** (full suite energized even when passage or context makes much of it useless for days); classical CAN at 250 kbit/s locked in by install base; single-segment fragility; poor sailor-side debuggability; vendor-specific extensions. **Bandwidth is not the main issue** for typical navigation/engine PGNs at 250 kbit/s — openness, power, reliability, and behavior matter more.
+Weaknesses of [**Legacy Marine Data Ecosystem**](#lmde) that Pelorus addresses:
+
+- **Specification gate**: Proprietary message catalogs; costly certification; NDAs—hard for sailors and small builders to inspect, extend, or verify independently.
+- **Lab-first qualification**: Conformance is proven on the bench, not under years of salt spray, vibration, wet connectors, and RF-rich passages.
+- **Always-on drain**: Without selective sleep as the norm, the suite draws continuous aggregate current even when voyage context makes much of it useless for days.
+- **Classical CAN ceiling**: Install base is stuck at ~250 kbit/s Classical CAN and **8-byte** frames; Pelorus Core uses **CAN FD** with **up to 64-byte** frames. Typical navigation/engine DCIDs still don’t need “more Mbps” as much as openness, power discipline, and behavior.
+- **Backbone fault domain**: A linear segment is one electrical island—opens, shorts, or bad terminators can blind **everything** on that backbone.
+- **Opaque diagnostics**: Little vendor-neutral tooling to capture and decode live traffic as **your** ship’s contract.
+- **Vendor islands**: Optional-field gaps and proprietary extensions → cross-brand surprises and **gateway-heavy** rigs despite compatible cabling.
+- **Parallel Ethernet silos**: Vendor marine Ethernet fabrics add another incompatible layer beside CAN—more cables, boxes, and translation—not one unified media plane.
+- **Cadence drag**: Cert-gated evolution is slow next to automotive or IT stack velocity—features queue behind programs and committee cycles.
+- **Tooling capture**: Firmware updates and deep diagnostics often depend on OEM apps, dongles, or dealer chains—not something you fully own at anchor.
+
 
 ---
 
-## 3. Stack shape
+## 3. Subsystems
 
-- **Pelorus Core (CAN FD):** 250 kbit/s arbitration / 500 kbit/s data, 64-byte frames, M12 A-coded **LMDE micro** plant, linear bus + T-drops, ISO 11898-2:2016 partial networking / selective wake-up, segmentation via isolated repeaters.
-- **Pelorus Stream (Ethernet):** High bandwidth; connector direction set; full protocol stack **deferred**.
+### [Core](./core/01-overview.md)
 
----
+**CAN FD fieldbus** for safety-critical instrumentation and controls. Application traffic is defined by Pelorus [**DCIDs**](./core/07-dcid-registry.md) — the wire contracts naming payloads and semantics on the bus—with selective wake groups and **M12 DeviceNet** physical plant.
 
-## 4. Locked Pelorus Core decisions (summary)
+The rest of Pelorus stacks around **Core** as the authoritative source of wired device contracts; Stream and higher layers must not degrade Core when they fail.
 
-*(Detail and testable numbers: [02-physical-layer.md](./core/02-physical-layer.md), [03-data-link-layer.md](./core/03-data-link-layer.md), [04-power-management.md](./core/04-power-management.md), [01-overview.md](./core/01-overview.md) §9.)*
+[**LMDE**](#lmde) and Pelorus Core are [**not** same-segment‑interoperable](./core/01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem).
 
-| Area | Decision |
-|------|----------|
-| Bit rate / frame | 250k arb / 500k data; CAN FD; **no** Fast Packet in core |
-| Physical | M12 A-coded 5-pin, LMDE micro cable, split termination, 9–32 V, reverse-polarity protection; segment limits per 02/08 |
-| Transceiver | ISO 11898-2:2016 partial networking + selective wake; CAN FD ≥1 Mbit/s; **no** SIC required at 500k data |
-| Isolation | Tiered: mandatory above thresholds / high-power interfaces; optional for benign low-power sensors |
-| Scaling | Repeaters: galvanic isolation, transparent CAN FD forward, ≤4 hops; star + central gateway recommended large vessels |
-| Power | Four states; WUF/NM/PNC-style groups per **04**; selective wake **patents** in ISO 11898-2:2016 — RAND pledge; **commercial products need IP counsel** |
-| Addressing / catalog | J1939-81 / ISO 11783-5 parity for SA/claiming; VSS + `Vessel.*`; extension PGN band per **07** (reconcile vs **03**) |
+### [Stream](./stream/01-overview.md)
 
----
+Ethernet **non-safety-critical** layer for bandwidth-heavy traffic: **M12** D-coded 100 Mbit/s, IPv6, discovery—a **transport** substrate, **not** an actuator or safety plane. Example use cases include:
 
-## 5. Rejected for v1.0 (do not re-propose without new evidence)
+- Bridge monitoring
+- Engine diagnostics
+- Voyage data recording
+- Radar integration
+- ECDIS connectivity
+- AIS data sharing
+- Remote vessel monitoring
+- Smart sensor networks
+- Autonomous navigation support
+- Cybersecure marine networking
+- Cloud data synchronization
+- Fleet management analytics
+- Real-time weather data integration
+- Port communication systems
+- Onboard IoT device integration
+- CCTV and video surveillance streaming
+- Docking and situational awareness cameras
+- Passenger infotainment systems
+- Distributed audio/music systems
+- Crew communication and video conferencing
 
-Higher data-phase rates; B-coded connectors to force cable churn; bit-rate auto-negotiation; universal galvanic isolation; Fast Packet in core; Signal K **as core** (app-level bridge OK); DIP-switch per-device profile selection; always-on bus as only mode; **sole** gateway as only profile authority (layered NV + gateway override instead).
+**Core stays authoritative** for safety-critical semantics.
 
----
+**Core → Stream:** Telemetry and identity/metadata aligned with DCIDs are bridged onto Stream through the **standard gateway**.
 
-## 6. Open issues
+**Stream → Core:** Reverse injection onto the Core fieldbus—anything originating on the Ethernet side toward CAN—is permitted **only** through a **capable bidirectional gateway**. Arbitrary Stream publishers **must not** originate traffic as Core talkers.
 
-### 6.1 Specification
+### [State](./state/01-overview.md)
 
-- Full PGN registry; **03** vs **07** on Pelorus extension range; **04** vs **07** on NM payload; ratify WUF/NM candidates (0x0FF80 / 0x0FF81).
-- Validate **09** gateway and **10** repeater specs against hardware.
-- Conformance fixtures (**15** stub).
+**Pelorus State** (when specified) coordinates priorities among publishers. Stream transports payloads; it does **not** replace Core as nautical truth.
 
-### 6.2 Instance binding (blocking for clean semantics)
-
-LMDE instance fields vs canonical `Vessel.*` paths: binding table ownership, drift, provisioning UX, failure modes. **Prerequisite:** captured **LMDE bus traffic** from a representative vessel (e.g. canboat-class tooling); document devices, PGNs, instances, sailor-visible failures.
-
-### 6.3 Pelorus Stream
-
-Stack, PoE, switching — mostly undecided.
-
-### 6.4 Data model
-
-VSS + standalone `Vessel.*` decided; semantic overlay from PGN→canonical paths partial; custom Pelorus VSS attributes need formal definition in **06**.
-
-### 6.5 Hardware / business
-
-Prototype current and wake latency; EMC on cable plants; maritime IP review before commercial selective-wake products; corporate structure when/if commercial.
+Logical **event → snapshot → situation → policy/intent** pipeline **above** Core and Stream, with **no** fieldbus or Ethernet I/O of its own.
 
 ---
 
-## 7. Reading order (cold start)
+## 4. Trademarks and third-party names
 
-1. [01-overview.md](./core/01-overview.md)  
-2. [02-physical-layer.md](./core/02-physical-layer.md), [03-data-link-layer.md](./core/03-data-link-layer.md), [04-power-management.md](./core/04-power-management.md)  
-3. [00-document-index.md](./core/00-document-index.md) for trust on **05–16**
+Pelorus is an independent open specification. **This is not legal advice**; consult counsel before shipping product packaging, marketing, or certifications that cite other organizations’ brands.
 
----
+The commercial networks named as examples under [**Legacy Marine Data Ecosystem (LMDE)**](#lmde) — **NMEA 2000®**, **SeaTalk NG**, **SimNet**, **SmartCraft**, **Volvo Penta EVC**, **Yamaha Command Link**, **RayNet**, **Navico Ethernet**, **Garmin Marine Network**, **Furuno NavNet**, **NMEA OneNet®**, and the vendor / house marks referenced in those lines (including **Raymarine**, **Navico**, **Simrad**, **Lowrance**, **B&G**, **Garmin**, **Furuno**, **Volvo Penta**, **Yamaha**, **Mercury**, **MerCruiser**) — are **third-party** names cited **nominatively** to identify real-world buses and fabrics; **rights belong to their respective owners**, not Pelorus.
 
-Working rules: **Normative** requirements live in [01-overview.md](./core/01-overview.md) §9 and documents **02–16** under [`core/`](./core/); this file is background only. Do not relitigate **§5** rejections without maintainer direction. Prefer simplicity and static profiles for v1.0. Cite external claims. Update this file when decisions change.
+**Practical editorial rules for this repository:**
+
+1. Default to [**LMDE**](#lmde) and neutral wording for the incumbent ecosystem; name specific products only when it helps the reader.
+2. **Compare:** name the program **once**, then use neutral phrases for the rest of the section (**nominative fair use**).
+3. **No** implied endorsement or wire-level compatibility unless a normative doc proves it. Use **“OneNet-style”** / **“N2K-class”** only for general categories of behavior.
+4. **NMEA 2000®** and **NMEA OneNet®** are **NMEA** marks—spell correctly; **®** on first prominent use where counsel advises. Other names above are **third-party marks**—treat likewise.
+5. **Pelorus** is **not** an **NMEA** product name and is **not** “NMEA-compatible” unless a conformance document establishes that with tests.
+

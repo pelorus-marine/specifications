@@ -9,7 +9,7 @@
 
 ## About This Document
 
-This document provides **non-normative** installation guidance for Pelorus Core networks: planning, wiring, termination, power, repeaters, and commissioning. **Normative** physical and electrical rules are in [02-physical-layer.md](./02-physical-layer.md); the locked v1.0 installation policy is one line in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary).
+This document provides **non-normative** installation guidance for Pelorus Core networks: planning, wiring, termination, power, repeaters, and commissioning. **Normative** physical and electrical rules are in [02-physical-layer.md](./02-physical-layer.md); the v1.0 installation policy summary is one line in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary).
 
 Prerequisites: [02-physical-layer.md](./02-physical-layer.md), [08-network-architecture.md](./08-network-architecture.md), [10-repeater-specification.md](./10-repeater-specification.md), [12-hardware-design-guide.md](./12-hardware-design-guide.md).
 
@@ -17,7 +17,7 @@ Prerequisites: [02-physical-layer.md](./02-physical-layer.md), [08-network-archi
 
 ## 1. Pre-Installation Planning
 
-1. Measure the vessel and plan segments so backbone length, node count, and stub length stay within [08-network-architecture.md](./08-network-architecture.md) (summary in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary)).
+1. Measure the vessel and plan segments so backbone length, node count, and stub length stay within [08-network-architecture.md](./08-network-architecture.md) (summary in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary)).
 2. Decide on topology:
    - Small vessels: single linear bus
    - Large vessels: recommended star topology with central gateway

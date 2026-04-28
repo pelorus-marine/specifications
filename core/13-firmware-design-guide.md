@@ -9,7 +9,7 @@
 
 ## About This Document
 
-This document provides **non-normative** guidance for Pelorus Core firmware: architecture, state machines, diagnostics, and testing practice. **Normative** behavior for power, addressing, and binding remains in [04-power-management.md](./04-power-management.md), [05-addressing.md](./05-addressing.md), and [06-signal-catalog.md](./06-signal-catalog.md). Language and safety rules are summarized in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary); firmware-specific patterns are developed here.
+This document provides **non-normative** guidance for Pelorus Core firmware: architecture, state machines, diagnostics, and testing practice. **Normative** behavior for power, addressing, and binding remains in [04-power-management.md](./04-power-management.md), [05-addressing.md](./05-addressing.md), and [06-signal-catalog.md](./06-signal-catalog.md). Language and safety rules are summarized in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary); firmware-specific patterns are developed here.
 
 ---
 
@@ -30,15 +30,15 @@ Firmware must implement the following state machines exactly as defined in the s
 
 - **Power Management State Machine** (`04-power-management.md`)
   - Four states: Active, Standby, Sleep, Deep Sleep
-  - Selective wake-up handling via WUF (PGN 0x0FF80)
-  - PNC mask processing and NM (PGN 0x0FF81) transmission
+  - Selective wake-up handling via WUF (DCID 0x0FF80)
+  - PNC mask processing and NM (DCID 0x0FF81) transmission
 
 - **Address Claiming State Machine** (`05-addressing.md`)
   - Listen → Claim → Defend → Cannot Claim
 
 - **Binding Table Cache** (`06-signal-catalog.md`)
   - Receive, validate, and cache the latest binding table
-  - Fallback to raw PGN + instance mode when cache is invalid or absent
+  - Fallback to raw DCID + instance mode when cache is invalid or absent
 
 - **Repeater Forwarding** (`10-repeater-specification.md`)
   - Transparent CAN FD frame forwarding with fault isolation
@@ -68,7 +68,7 @@ Firmware must implement the following state machines exactly as defined in the s
 ## 5. Interaction with Other Pelorus Components
 
 - **Physical Layer:** Firmware must respect all electrical and timing limits from `02-physical-layer.md`.
-- **PGN Registry:** Use the exact field layouts and PGN numbers from `07-pgn-registry.md`.
+- **DCID Registry:** Use the exact field layouts and DCID numbers from `07-dcid-registry.md`.
 - **Network Architecture:** Repeaters and gateways must respect hop limits and star topology rules from `08-network-architecture.md`.
 - **Gateway UI:** Gateways expose the binding table via the web UI defined in `09-gateway-specification.md`.
 - **Hardware:** Firmware must work with the schematic patterns and isolation rules in `12-hardware-design-guide.md`.

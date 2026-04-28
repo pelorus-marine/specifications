@@ -9,7 +9,7 @@
 
 ## About This Document
 
-This document provides the manufacturer self-declaration template for Pelorus Core conformance. The attestation model is summarized in [01-overview.md §9](./01-overview.md#9-locked-decisions-authoritative-summary); use this file for the **exact** declaration text and checklist once [15-conformance-test-plan.md](./15-conformance-test-plan.md) is fully authored (stub today).
+This document provides the manufacturer self-declaration template for Pelorus Core conformance. The attestation model is summarized in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary); use this file for the **exact** declaration text and checklist once [15-conformance-test-plan.md](./15-conformance-test-plan.md) is fully authored (stub today).
 
 ---
 
@@ -33,7 +33,7 @@ Specifically, the product has been verified to comply with the Pelorus Core docu
 - Addressing (`core/05-addressing.md`)
 - Power Management (`core/04-power-management.md`)
 - Signal Catalog and Binding (`core/06-signal-catalog.md`)
-- PGN Registry (`core/07-pgn-registry.md`)
+- DCID Registry (`core/07-dcid-registry.md`)
 - Network Architecture (`core/08-network-architecture.md`)
 - Gateway Behavior (`core/09-gateway-specification.md`)
 - Repeater Behavior (`core/10-repeater-specification.md`)

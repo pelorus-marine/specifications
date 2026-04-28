@@ -11,7 +11,9 @@
 
 This document is the **normative** reference for Pelorus power management on CAN FD: selective wake-up, partial networking, functional groups, power states, network management behavior, and related electrical details. It cites only freely accessible reference materials.
 
-For **why** Pelorus treats power as architecture (always-on loads on typical LMDE networks, Ah budgets on battery, sailor-first goals), see [01-overview.md §2](./01-overview.md#2-the-problem) and [§6](./01-overview.md#6-design-principles). For locked decisions that span multiple documents, see [§9](./01-overview.md#9-locked-decisions-authoritative-summary).
+For **why** Pelorus treats power as architecture (always-on loads on typical LMDE networks, Ah budgets on battery, sailor-first goals), see [01-overview.md §2](./01-overview.md#2-the-problem) and [§6](./01-overview.md#6-design-principles). For decisions that span multiple documents, see [§9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary).
+
+For the **LMDE vs Pelorus Core** split — **Classical CAN** application traffic on legacy segments vs **CAN FD** on Pelorus, and **non-interoperation on one segment** — see [01-overview.md §4](./01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem).
 
 **ISO 11898-2:2016 Validation Note:** Sections 1–5 of this document have been cross-checked against the full ISO 11898-2:2016 standard (Sections 5.9 and 5.10, Tables 18–20, Figures 6–11). All WUF format, matching rules, frame error counter, bus biasing, and timing claims are accurate and normative. Sections 6 onward describe Pelorus-specific allocations (functional group bit assignments, reserved identifiers, NM cadence) which are v0.1 proposals subject to revision after prototype validation.
 
@@ -232,9 +234,9 @@ Pelorus WUFs use a single fixed 29-bit J1939-style identifier:
 | PF (PDU Format) | 0xFF | PDU2 broadcast (no destination) |
 | PS (PDU Specific) | 0x80 | Pelorus WUF assignment |
 | Source Address | originator's claimed address | See [05-addressing.md](./05-addressing.md) |
-| Resulting PGN | 0x0FF80 (65408) | "Pelorus Wake-Up Group Frame" |
+| Resulting DCID | 0x0FF80 (65408) | "Pelorus Wake-Up Group Frame" |
 
-This is a candidate allocation. Final PGN assignment is recorded in [07-pgn-registry.md](./07-pgn-registry.md).
+This is a candidate allocation. Final DCID assignment is recorded in [07-dcid-registry.md](./07-dcid-registry.md).
 
 ### 7.2 WUF Data Field
 
@@ -249,7 +251,7 @@ Pelorus Network Management messages use:
 | Priority | 6 (binary `110`) | Below safety-critical traffic |
 | PF | 0xFF | PDU2 broadcast |
 | PS | 0x81 | Pelorus NM assignment |
-| Resulting PGN | 0x0FF81 (65409) | "Pelorus Network Management" |
+| Resulting DCID | 0x0FF81 (65409) | "Pelorus Network Management" |
 
 ### 7.4 NM Data Field
 
@@ -263,9 +265,9 @@ DLC = 8. Layout:
 
 Implementations should not rely on the reserved bytes carrying information; future revisions may allocate them.
 
-### 7.5 No Other PGNs Reserved by This Document
+### 7.5 No Other DCIDs Reserved by This Document
 
-This document allocates only the WUF and NM identifiers. All other identifier allocations are deferred to [07-pgn-registry.md](./07-pgn-registry.md).
+This document allocates only the WUF and NM identifiers. All other identifier allocations are deferred to [07-dcid-registry.md](./07-dcid-registry.md).
 
 ---
 
@@ -457,7 +459,7 @@ For developers integrating Pelorus power management into a node:
 
 **Firmware**
 
-- [ ] Configures transceiver WUF identifier to PGN 0x0FF80
+- [ ] Configures transceiver WUF identifier to DCID 0x0FF80
 - [ ] Configures data mask for the device's functional group memberships
 - [ ] Implements NM state machine per §9
 - [ ] Transmits NM at 200 ms cadence in Normal-Operation
@@ -478,7 +480,7 @@ For developers integrating Pelorus power management into a node:
 
 These remain unresolved:
 
-- Final PGN assignments for WUF and NM (currently candidates 0x0FF80 / 0x0FF81; ratification in [07-pgn-registry.md](./07-pgn-registry.md))
+- Final DCID assignments for WUF and NM (currently candidates 0x0FF80 / 0x0FF81; ratification in [07-dcid-registry.md](./07-dcid-registry.md))
 - NM cadence values pending prototype-hardware wake-up latency measurement
 - Vendor-specific PNC bit allocation policy (bits 6–63)
 - Multi-segment cluster coordination across repeaters (interaction with [10-repeater-specification.md](./10-repeater-specification.md))
