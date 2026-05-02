@@ -30,6 +30,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  RUST_TOOLCHAIN: "1.88.0"
 
 jobs:
   mdbook:
@@ -40,12 +41,12 @@ jobs:
       # Pin toolchain and ship rustfmt/clippy — rust-toolchain.toml alone can sync a minimal profile.
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: 1.88.0
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
           components: rustfmt, clippy
 
       # Belt-and-suspenders: some runners still invoke `cargo` without rustfmt on the active toolchain.
       - name: Ensure rustfmt and clippy
-        run: rustup component add --toolchain 1.88.0 rustfmt clippy
+        run: rustup component add --toolchain "${{ env.RUST_TOOLCHAIN }}" rustfmt clippy
 
       - uses: taiki-e/install-action@v2
         with:
