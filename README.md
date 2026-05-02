@@ -44,6 +44,12 @@ Normative drafts live under **[`core/`](./core/)** and **[`stream/`](./stream/)*
 
 ---
 
+## Releases
+
+Tagged snapshots for citations and tooling: **[GitHub Releases](https://github.com/pelorus-marine/specifications/releases)** · **[CHANGELOG.md](./CHANGELOG.md)**
+
+---
+
 ## Contribute · license
 
 Questions and PRs: [GitHub Issues](https://github.com/pelorus-marine/specifications/issues). Guidelines: [`CONTRIBUTING.md`](./CONTRIBUTING.md).
