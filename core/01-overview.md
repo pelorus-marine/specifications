@@ -150,7 +150,7 @@ Implementations targeting v0.x should expect to update before v1.0 ships.
 | Understand the hardware-level requirements | [02-physical-layer.md](./02-physical-layer.md) |
 | Implement selective wake-up and power management | [04-power-management.md](./04-power-management.md) |
 | See what is decided and why | [ARCHITECTURE.md](../ARCHITECTURE.md) |
-| Track open work (draft GitHub issue bodies) | [issues/README.md](../issues/README.md) |
+| Track open work | [GitHub Issues](https://github.com/pelorus-marine/specifications/issues) |
 | Track specification document status | [00-document-index.md](./00-document-index.md) |
 
 ---

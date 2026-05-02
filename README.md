@@ -24,7 +24,7 @@ Incumbent marine networking ([**LMDE**](./ARCHITECTURE.md#lmde) — *Legacy Mari
 
 **→ [`ARCHITECTURE.md`](./ARCHITECTURE.md)** — non-normative project record: why Pelorus exists, **LMDE** context and examples, Core / Stream / State roles, trademark and editorial rules.
 
-Normative drafts live under **[`core/`](./core/)** and **[`stream/`](./stream/)** (each has a **`00-document-index.md`**). Cold start: [Core overview](./core/01-overview.md) · [Stream overview](./stream/01-overview.md). Draft GitHub issue bodies: [`issues/README.md`](./issues/README.md).
+Normative drafts live under **[`core/`](./core/)** and **[`stream/`](./stream/)** (each has a **`00-document-index.md`**). Cold start: [Core overview](./core/01-overview.md) · [Stream overview](./stream/01-overview.md). Track backlog and design threads on [**GitHub Issues**](https://github.com/pelorus-marine/specifications/issues).
 
 ---
 

@@ -43,7 +43,7 @@ Pelorus uses standard VSS `.vspec` (YAML) format. Key elements:
 
 ## 3. Instance Handling and Binding (Critical)
 
-**Instance Binding Problem** (tracked in [instance-binding.md](../issues/instance-binding.md)) is solved here.
+**Instance Binding Problem** — LMDE traces, binding-table authority, and gateway coordination are tracked on [Pelorus Specifications — GitHub Issues](https://github.com/pelorus-marine/specifications/issues); catalog rules normative below resolve the wire vs semantics story.
 
 Pelorus uses **numeric indexed arrays** as the canonical form in the catalog:
 

@@ -107,7 +107,7 @@ Pelorus Stream runs on the Ethernet plant defined in [`core/01-overview.md` §3.
 - mDNS-SD service discovery ([`23-discovery.md`](./23-discovery.md))
 - No IPv4 dependency; nodes that bridge to legacy IPv4 networks do so out-of-scope of this specification
 
-PoE strategy and switch topology are out of scope of this v0.1 draft and are tracked in [pelorus-stream-open-items.md](../issues/pelorus-stream-open-items.md). Stream protocol behavior shall not depend on the presence of PoE.
+PoE strategy and switch topology are out of scope of this v0.1 draft and are tracked with [Pelorus Stream — Issue #1](https://github.com/pelorus-marine/specifications/issues/1) (design targets, bench validation, and deployment posture). Stream protocol behavior shall not depend on the presence of PoE.
 
 ---
 
