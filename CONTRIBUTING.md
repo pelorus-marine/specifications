@@ -83,8 +83,9 @@ Any change that **alters DCID assignment, DCID versioning, or the semantic meani
 - [`core/07-dcid-registry.md`](./core/07-dcid-registry.md)
 - [`core/06-signal-catalog.md`](./core/06-signal-catalog.md) §6 (and any affected `catalog/` entries)
 - [`stream/01-overview.md`](./stream/01-overview.md) §3.3 if Stream–Core identifier narrative is affected
+- Any machine-readable **DCID contract** artifact that ships in-repo (schema, registry snapshot, generated bundle for compilers or gateways) — **update or re-version it in this same PR** when DCID assignment or semantics change. There is no separate generator committed yet; when one lands, this rule still applies.
 
-Rationale: prevents gateways, compilers, and docs from drifting out of sync. Exploratory DCID structure belongs in [Issue #3](https://github.com/pelorus-marine/specifications/issues/3) until promoted into **07**. When machine-readable artifacts (e.g. generated `dcid-contract`) exist, the same PR must regenerate them — see [`meta/issue-dcid-contract-artifact.md`](./meta/issue-dcid-contract-artifact.md).
+Rationale: prevents gateways, compilers, and docs from drifting out of sync. Exploratory DCID structure belongs in [Issue #3](https://github.com/pelorus-marine/specifications/issues/3) until promoted into **07**.
 
 ---
 
