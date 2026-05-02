@@ -19,7 +19,7 @@ pub const CRATE_VERSION: &str = env!("CARGO_PKG_VERSION");
 pub enum GitRef<'a> {
     /// Default branch (`main`).
     Main,
-    /// Annotated or lightweight tag (`v0.1.0-alpha.0`, …).
+    /// Annotated or lightweight tag (`v0.1.0-alpha.1`, …).
     Tag(&'a str),
     /// Raw revision (`sha` prefix acceptable).
     Rev(&'a str),
@@ -90,7 +90,7 @@ mod tests {
 
     #[test]
     fn tag_ref_blob_path() {
-        let u = github_blob_url("CHANGELOG.md", GitRef::Tag("v0.1.0-alpha.0")).unwrap();
-        assert!(u.contains("/blob/v0.1.0-alpha.0/"));
+        let u = github_blob_url("CHANGELOG.md", GitRef::Tag("v0.1.0-alpha.1")).unwrap();
+        assert!(u.contains("/blob/v0.1.0-alpha.1/"));
     }
 }

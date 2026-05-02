@@ -12,6 +12,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - **mdBook** integration: mirrors [`core/`](./core/) and [`stream/`](./stream/) into a searchable HTML book — [`SPEC_BOOK.md`](./SPEC_BOOK.md), theme **`navy`**, sidebar folding.
 - **CI** workflow *Specification book* — `cargo fmt` / `clippy` / `test`, then `mdbook build`; uploads **`book/book`** as a workflow artifact.
 
+## [0.1.0-alpha.1] — 2026-05-02
+
+Pre-release snapshot: **`pelorus-spec`** crate **`0.1.0-alpha.1`** — workspace **`rust-version`** **1.88**, repo-root **`LICENSE-MIT`** / **`LICENSE-APACHE`** for Rust tooling alongside **`LICENSE.md`** (CC BY 4.0) for documentation.
+
+[0.1.0-alpha.1]: https://github.com/pelorus-marine/specifications/releases/tag/pelorus-spec-v0.1.0-alpha.1
+
 ## [0.1.0-alpha.0] — 2026-05-02
 
 First **pre-release** snapshot of the Pelorus Marine specifications corpus.

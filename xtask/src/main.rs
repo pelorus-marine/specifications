@@ -100,7 +100,7 @@ fn sorted_md_names(dir: &Path) -> Result<Vec<String>> {
 
 fn write_intro(repo_root: &Path, generated: &Path) -> Result<()> {
     let spec_ver = read_manifest_version(&repo_root.join("crates/pelorus-spec/Cargo.toml"))
-        .unwrap_or_else(|| "0.1.0-alpha.0".into());
+        .unwrap_or_else(|| "0.1.0-alpha.1".into());
     let body = format!(
         "# Pelorus specifications\n\
          \n\
