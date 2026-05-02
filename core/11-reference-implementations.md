@@ -1,7 +1,7 @@
 # Pelorus Core — Reference Implementations
 
 **Version:** 0.1 Draft  
-**Last Updated:** April 26, 2026  
+**Last Updated:** May 2, 2026  
 **Status:** Pre-specification  
 **Trust:** Unverified
 
@@ -23,7 +23,7 @@ The following crates/repositories are the canonical reference implementations:
 | `pelorus-pm`       | Power management state machine and selective wake-up | Planned | Implements `04-power-management.md` exactly |
 | `pelorus-address`  | Address claiming and NAME handling | Planned | Implements `05-addressing.md` |
 | `pelorus-catalog`  | VSS catalog parsing, binding table, and runtime mapping | Planned | Implements `06-signal-catalog.md` |
-| `pelorus-gateway`  | Reference gateway firmware (bridge + web UI) | Planned | Implements `09-gateway-specification.md` |
+| `pelorus-gateway`  | Reference gateway firmware (bridge + web UI) | Scaffold — [`reference-implementations/pelorus-gateway`](https://github.com/pelorus-marine/reference-implementations/tree/main/pelorus-gateway) | Implements [`09-gateway-specification.md`](./09-gateway-specification.md) |
 | `pelorus-repeater` | Reference repeater firmware | Planned | Implements `10-repeater-specification.md` |
 
 All crates will be published under the `pelorus-marine` GitHub organization.
