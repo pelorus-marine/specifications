@@ -116,7 +116,7 @@ Publisher-emitted events for multicast streams travel on the multicast group; su
 
 Stream does not persist events. Subscribers, the registry ([`22-stream-registry.md`](./22-stream-registry.md)), or the **Pelorus State subsystem** may keep ring buffers; Stream itself emits and forgets.
 
-Stream emits each event with a **schema context** implied by the envelope: protocol **`v`** ([`12-envelope.md`](./12-envelope.md)) and event **name**/payload shape ([§3](#3-event-names)). Consumers shall treat unknown names or payload shapes as ignorable unless a capability bit opts in.
+Stream emits each event with a **schema context** implied by the envelope: protocol **`v`** ([`12-envelope.md`](./12-envelope.md)) and event **name**/payload shape ([§3](#3-event-name-registry)). Consumers shall treat unknown names or payload shapes as ignorable unless a capability bit opts in.
 
 **Timestamps** in envelopes (`ts`, `tts`) are **publisher-local** unless a vessel-wide time policy applies (planned under **`state/`**, see [state/00-document-index.md](../state/00-document-index.md)); Stream v1.0 does **not** require IEEE 1588 (PTP). When correlating Stream data with Core or multiple publishers, **State** is responsible for clock interpretation—not Stream alone.
 

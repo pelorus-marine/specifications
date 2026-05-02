@@ -20,7 +20,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: gaurav-nelson/github-action-markdown-link-check@v1
+      # Generated mdBook sources under book/ duplicate core/stream specs with adjusted paths;
+      # relative links to repo-root files (LICENSE.md, ARCHITECTURE.md) fail link-check from there.
+      - uses: actions/setup-node@v4
         with:
-          use-quiet-mode: "yes"
-          config-file: .markdown-link-check.json
+          node-version: "20"
+
+      - name: Check Markdown links
+        run: |
+          set -euo pipefail
+          mapfile -d '' mdfiles < <(find . -name '*.md' -not -path './.git/*' -not -path './book/*' -print0)
+          if [ "${#mdfiles[@]}" -eq 0 ]; then
+            echo 'No Markdown files found.'
+            exit 0
+          fi
+          npx --yes markdown-link-check@3 -q -c .markdown-link-check.json "${mdfiles[@]}"
