@@ -1,7 +1,7 @@
 # Pelorus Core — DCID Registry
 
 **Version:** 0.1 Draft  
-**Last Updated:** May 2, 2026  
+**Last Updated:** May 4, 2026  
 **Status:** Pre-specification  
 **Trust:** Unverified
 
@@ -59,6 +59,18 @@ Pelorus reuses selected DCID numbers from the **Legacy Marine Data Ecosystem** t
 
 The mapping from each DCID/field to the corresponding `Vessel.*` path in the signal catalog is maintained in `06-signal-catalog.md` and the machine-readable `catalog/vessel.vspec` file.
 
+### Initial compatibility assignments (J1939 heritage, `DP = 0`, `R = 0`)
+
+Pelorus wire DCIDs below reuse **SAE J1939** PDU2 PGN numbers — derivation matches **[03-data-link-layer.md §3.2](./03-data-link-layer.md#32-dcid-derivation)** (same numeric DCID on Pelorus Core CAN FD as on a classical J1939 broadcast). Bit layouts and scaling follow **SAE J1939 Digital Annex** for the cited PGNs; gateways bridging **LMDE** classical CAN SHALL preserve field semantics.
+
+Multi-field PGNs carry several measurements in one frame; the **`Dcid`** column names the **Pelorus semantic lane** primarily associated with that PGN for catalog binding — precise signal extraction remains **DBC** / binding-table work (**06**).
+
+| Pelorus wire DCID | J1939 PGN (dec) | Informative name | Primary Pelorus `Dcid` lane |
+|---|---:|---|---|
+| **0xF004** | 61444 | Electronic Engine Controller 1 | `EngineRpm` (and additional engine fields per DA) |
+| **0xFEE8** | 65256 | Vehicle Heading | `HeadingTrue` |
+| **0xFEC5** | 65253 | Engine Temperature 1 | `EngineCoolantTemp` (coolant among temperature fields per DA) |
+
 ---
 
 ## 3. DCID Ranges and Assignment Rules
@@ -85,7 +97,7 @@ Assignment authority: Pelorus DCIDs are allocated in this registry. Future addit
 
 ## 5. Open Items (to be resolved before v1.0 promotion)
 
-- Exact list of compatibility DCIDs required for v1.0
+- Expand compatibility DCIDs beyond **§2** initial J1939 assignments (e.g. additional propulsion, navigation, environment PGNs; NMEA2000-specific mappings via gateway profiles)
 - Whether **future** WUF / NM payloads use reserved bytes **1–7** / **2–7** for extended masks, binding hints, or authority — today reserved (**04** §7)
 - Transmission rates and repetition rules for each DCID (NM cadence ratified in **04** §9.1)
 - Conformance test fixtures
