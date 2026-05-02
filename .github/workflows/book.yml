@@ -37,10 +37,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Respects rust-toolchain.toml; explicit components avoid missing rustfmt on runners.
-      - uses: dtolnay/rust-toolchain@stable
+      # Pin toolchain and ship rustfmt/clippy — rust-toolchain.toml alone can sync a minimal profile.
+      - uses: dtolnay/rust-toolchain@master
         with:
+          toolchain: 1.88.0
           components: rustfmt, clippy
+
+      # Belt-and-suspenders: some runners still invoke `cargo` without rustfmt on the active toolchain.
+      - name: Ensure rustfmt and clippy
+        run: rustup component add --toolchain 1.88.0 rustfmt clippy
 
       - uses: taiki-e/install-action@v2
         with:
