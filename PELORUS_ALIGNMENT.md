@@ -32,10 +32,10 @@ Normative Core documents live under **`core/`** in this repository. Implementati
 | `06-signal-catalog.md` | VSS / correlation | `pelorus-core` semantics / correlation (`src/semantics.rs`, `src/correlation.rs`) | `pelorus-ecdis` snapshot models vs Core semantics | — |
 | `07-dcid-registry.md` | DCID assignments | `platform/pelorus-core/src/dcid/` | Types bridged via `pelorus-ecdis` / adapter | — |
 | `09-gateway-specification.md` | LMDE ↔ Pelorus gateway | Future `pelorus-gateway` / inspector flows | — | — |
-| `11-reference-implementations.md` | Official crate list | **`platform/`** workspace (`pelorus-core`, `pelorus-stream`, …) supersedes older “planned crate” names until spec is updated | `ecdis/pelorus-ecdis`, adapters | `reference-implementations/pelorus-gnss` (pairing reference) |
+| `11-reference-implementations.md` | Logical ↔ physical map | **11** §1 maps components to **`platform/`** tree (`pelorus-core/src/dcid`, …); gateway scaffold in **`reference-implementations/pelorus-gateway`** | `ecdis/pelorus-ecdis`, adapters | `reference-implementations` pairing / gateway scaffolds |
 | `15-conformance-test-plan.md` | Procedures / fixtures | CI and integration tests under each workspace | Add ECDIS-specific conformance cases when defined | — |
 
-**Planned split crates** in `11-reference-implementations.md` (`pelorus-dcid`, `pelorus-pm`, …) are not separate dirs yet; until then, treat **`pelorus-core`** and siblings in `platform/` as the standing reference implementation.
+**Optional** standalone `pelorus-dcid` / `pelorus-pm`-style crates are **TBD**; **`pelorus-core`** in **`platform/`** is the integration home today — see **11** §1.
 
 ---
 
