@@ -6,6 +6,7 @@ members = ["crates/pelorus-spec", "xtask"]
 edition = "2024"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/pelorus-marine/specifications"
+rust-version = "1.88.0"
 
 [workspace.lints.rust]
 unsafe_code = "forbid"
