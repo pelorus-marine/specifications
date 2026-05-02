@@ -15,7 +15,7 @@ Numbered list of all documents that constitute a complete Pelorus Core specifica
 
 This index is the authoritative list of Pelorus Core specification documents. Update when documents are added, drafted, or completed.
 
-**Combined checkout:** When `specifications/` sits beside `platform/`, `ecdis/`, and `reference-implementations/` (umbrella repository layout), use **[`PELORUS_ALIGNMENT.md`](../../PELORUS_ALIGNMENT.md)** at the parent tree root for spec ↔ implementation traceability and feedback-loop checklists.
+**Combined checkout:** When this repo sits beside `platform/`, `ecdis/`, and `reference-implementations/` in one tree, use **[`PELORUS_ALIGNMENT.md`](../PELORUS_ALIGNMENT.md)** (repository root here) for spec ↔ implementation traceability and feedback-loop checklists.
 
 ---
 

@@ -24,6 +24,8 @@ Incumbent marine networking ([**LMDE**](./ARCHITECTURE.md#lmde) — *Legacy Mari
 
 **→ [`ARCHITECTURE.md`](./ARCHITECTURE.md)** — non-normative project record: why Pelorus exists, **LMDE** context and examples, Core / Stream / State roles, trademark and editorial rules.
 
+**→ [`PELORUS_ALIGNMENT.md`](./PELORUS_ALIGNMENT.md)** — traceability and feedback-loop rituals across specs, `platform`, ECDIS, and reference implementations (when those repos are checked out beside this one).
+
 Normative drafts live under **[`core/`](./core/)** and **[`stream/`](./stream/)** (each has a **`00-document-index.md`**). Cold start: [Core overview](./core/01-overview.md) · [Stream overview](./stream/01-overview.md). Track backlog and design threads on [**GitHub Issues**](https://github.com/pelorus-marine/specifications/issues).
 
 **Readable HTML book** (search, sidebar, navy theme): build locally or grab the CI artifact — see **[`SPEC_BOOK.md`](./SPEC_BOOK.md)**.
