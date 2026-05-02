@@ -47,6 +47,12 @@ All pull requests must include:
 
 ---
 
+## Markdown link checks
+
+Changes touching Markdown files trigger [`.github/workflows/markdown-links.yml`](.github/workflows/markdown-links.yml) — external URL checks with [`.markdown-link-check.json`](.markdown-link-check.json). Extend **`ignorePatterns`** there for benign flaps (redirect quirks, authenticated endpoints).
+
+---
+
 ## Coding Standards (Rust)
 
 - Rust 2021 edition
