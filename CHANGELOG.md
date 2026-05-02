@@ -4,6 +4,14 @@ All notable releases of this repository are documented here. Specification **doc
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) for **repository** tags (`MAJOR.MINOR.PATCH` with optional prerelease labels).
 
+## [Unreleased]
+
+### Added
+
+- **Cargo workspace** ([`Cargo.toml`](./Cargo.toml)) with **`pelorus-spec`** (canonical GitHub URLs + corpus path constants) and **`xtask`** (`gen-book`, `book-build`).
+- **mdBook** integration: mirrors [`core/`](./core/) and [`stream/`](./stream/) into a searchable HTML book — [`SPEC_BOOK.md`](./SPEC_BOOK.md), theme **`navy`**, sidebar folding.
+- **CI** workflow *Specification book* — `cargo fmt` / `clippy` / `test`, then `mdbook build`; uploads **`book/book`** as a workflow artifact.
+
 ## [0.1.0-alpha.0] — 2026-05-02
 
 First **pre-release** snapshot of the Pelorus Marine specifications corpus.

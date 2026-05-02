@@ -36,7 +36,7 @@ We welcome contributions in these areas, in rough order of priority:
 1. Fork the repository
 2. Create a branch named `feature/xxx` or `fix/yyy`
 3. Make your changes
-4. Ensure all tests pass (`cargo test`)
+4. Ensure checks pass — `cargo fmt`, `cargo clippy`, and **`cargo test --workspace`** at repository root (Rust workspace); if you change **`core/`** or **`stream/`**, run **`cargo run -p xtask -- book-build`** once ([`SPEC_BOOK.md`](./SPEC_BOOK.md))
 5. Update any affected specification documents if your change impacts normative behavior
 6. Submit a Pull Request with a clear description
 
@@ -53,9 +53,15 @@ Changes touching Markdown files trigger [`.github/workflows/markdown-links.yml`]
 
 ---
 
+## Specification library (HTML book)
+
+The **`xtask`** binary mirrors `core/` and `stream/` into mdBook and runs **`mdbook build`**. Install **`mdbook`** once (`cargo install mdbook`), then see **[`SPEC_BOOK.md`](./SPEC_BOOK.md)**. Pull requests that touch corpus paths run [`.github/workflows/book.yml`](.github/workflows/book.yml).
+
+---
+
 ## Coding Standards (Rust)
 
-- Rust 2021 edition
+- Workspace crates (**`pelorus-spec`**, **`xtask`**) use edition **2024** (`rust-toolchain.toml`). Separate **reference implementation** crates may remain on Rust 2021 until migrated.
 - `forbid(unsafe_code)` in all crates
 - `no_std` + `alloc` preferred for embedded targets
 - `clippy` and `rustfmt` must pass with default settings

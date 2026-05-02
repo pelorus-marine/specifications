@@ -1,0 +1,5 @@
+/target/
+/book/book/
+
+# Generated mdBook source mirror (produced by `cargo xtask book-build`)
+/book/src/generated/

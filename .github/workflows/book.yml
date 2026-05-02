@@ -1,0 +1,59 @@
+name: Specification book
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "book/**"
+      - "core/**"
+      - "stream/**"
+      - "crates/**"
+      - "xtask/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "rust-toolchain.toml"
+      - ".github/workflows/book.yml"
+  pull_request:
+    branches: [main, master]
+    paths:
+      - "book/**"
+      - "core/**"
+      - "stream/**"
+      - "crates/**"
+      - "xtask/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "rust-toolchain.toml"
+      - ".github/workflows/book.yml"
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  mdbook:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.88.0
+
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: mdbook@0.4.48
+
+      - name: Rust fmt / clippy / test
+        run: |
+          cargo fmt --all -- --check
+          cargo clippy --workspace --locked --all-targets -- -D warnings
+          cargo test --workspace --locked
+
+      - name: Build workspace + mdBook
+        run: cargo run --locked -p xtask -- book-build
+
+      - name: Upload HTML artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pelorus-spec-book-html
+          path: book/book/

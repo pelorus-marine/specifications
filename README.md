@@ -26,6 +26,8 @@ Incumbent marine networking ([**LMDE**](./ARCHITECTURE.md#lmde) — *Legacy Mari
 
 Normative drafts live under **[`core/`](./core/)** and **[`stream/`](./stream/)** (each has a **`00-document-index.md`**). Cold start: [Core overview](./core/01-overview.md) · [Stream overview](./stream/01-overview.md). Track backlog and design threads on [**GitHub Issues**](https://github.com/pelorus-marine/specifications/issues).
 
+**Readable HTML book** (search, sidebar, navy theme): build locally or grab the CI artifact — see **[`SPEC_BOOK.md`](./SPEC_BOOK.md)**.
+
 ---
 
 ## Highlights
@@ -47,6 +49,19 @@ Normative drafts live under **[`core/`](./core/)** and **[`stream/`](./stream/)*
 ## Releases
 
 Tagged snapshots for citations and tooling: **[GitHub Releases](https://github.com/pelorus-marine/specifications/releases)** · **[CHANGELOG.md](./CHANGELOG.md)**
+
+---
+
+## Rust tooling (optional)
+
+This repo ships a small **[Cargo workspace](./Cargo.toml)** for automation—not a replacement for Markdown authoring:
+
+| Crate / binary | Purpose |
+|----------------|---------|
+| [`pelorus-spec`](./crates/pelorus-spec) | Stable GitHub blob URLs and corpus paths for downstream crates and tests. |
+| [`cargo run -p xtask -- …`](./SPEC_BOOK.md) | Generate mdBook mirror + run **`mdbook build`**. |
+
+See **[`SPEC_BOOK.md`](./SPEC_BOOK.md)** for install and build instructions.
 
 ---
 
