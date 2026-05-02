@@ -1,7 +1,7 @@
 # Pelorus Core — DCID Registry
 
 **Version:** 0.1 Draft  
-**Last Updated:** April 26, 2026  
+**Last Updated:** May 2, 2026  
 **Status:** Pre-specification  
 **Trust:** Unverified
 
@@ -9,42 +9,45 @@
 
 ## About This Document
 
-This document defines the Pelorus DCID (Data Contract ID) registry — wire-level encoding on the Pelorus Core CAN FD bus. It is the transport counterpart to [06-signal-catalog.md](./06-signal-catalog.md). Stack-level decisions (J1939-style identifiers, no Fast Packet, Pelorus extension range) are summarized in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary); **bit-level** field definitions and DCID assignments are **normative** here and in [05-addressing.md](./05-addressing.md) where applicable.
+This document defines the Pelorus DCID (Data Contract ID) registry — numeric assignments and registry policy on the Pelorus Core CAN FD bus. It is the transport counterpart to [06-signal-catalog.md](./06-signal-catalog.md). Identifier layout and DCID derivation are normative in **[03-data-link-layer.md](./03-data-link-layer.md)**. **Wake-up and NM payload layouts** for Pelorus DCIDs **0x0FF80** / **0x0FF81** are normative in **[04-power-management.md §7](./04-power-management.md#7-reserved-identifiers-and-data-conventions)** — this document duplicates **only** summary tables aligned with **04**; on conflict, **04** wins.
+
+Stack-level decisions (J1939-style identifiers, no Fast Packet, Pelorus extension range) are summarized in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary). Address claiming and NAME handling are in **[05-addressing.md](./05-addressing.md)**.
 
 ---
 
 ## 1. Pelorus-Specific DCIDs
 
-These DCIDs are defined exclusively for Pelorus and ratify the candidates from `04-power-management.md`.
+These DCIDs are defined exclusively for Pelorus and ratify the candidates from **[04-power-management.md](./04-power-management.md)**.
 
 ### DCID 0x0FF80 — Wake-Up Frame (WUF)
+
 - **Priority:** 0 (highest)
 - **Type:** Single
 - **Length:** 8 bytes
 - **Transmission:** Broadcast on selective wake events
 - **Purpose:** Triggers partial-network wake-up per ISO 11898-2:2016
 
-**Fields:**
+**Wire layout:** Normative — **[04 §7.2](./04-power-management.md#72-wuf-data-field)** (functional groups in byte **0** per **[04 §6](./04-power-management.md#6-pelorus-marine-functional-groups-pncs)**; bytes **1–7** reserved in **v1.0**).
 
-| Order | Name                  | Bit Length | Resolution | Unit | Signed | Description |
-|-------|-----------------------|------------|------------|------|--------|-------------|
-| 1     | PNC Mask              | 64         | 1          | -    | No     | 64-bit bitmask of Power Network Clusters to wake |
+| Byte(s) | Field |
+|---------|--------|
+| 0 | Functional-group bitmask (**04** §6) |
+| 1–7 | Reserved — transmit **`0x00`**, ignore on receive (**04** §7.2) |
 
 ### DCID 0x0FF81 — Network Management (NM)
+
 - **Priority:** 6
-- **Type:** Single (200 ms cadence when active)
+- **Type:** Single (200 ms cadence when active per **[04 §9.1](./04-power-management.md#91-nm-cadence)**)
 - **Length:** 8 bytes
-- **Purpose:** Power state, functional group status, and binding table authority announcements
+- **Purpose:** Coordinated cluster sleep / wake — CanNm-style behavior (**[04 §9](./04-power-management.md#9-network-management-behavior)**)
 
-**Fields:** (detailed in `04-power-management.md` §9; summary here)
+**Wire layout:** Normative — **[04 §7.4](./04-power-management.md#74-nm-data-field)** (byte **0** NM state **§9.2**; byte **1** active-groups low byte; bytes **2–7** reserved in **v1.0**).
 
-| Order | Name                  | Bit Length | Description |
-|-------|-----------------------|------------|-------------|
-| 1     | Source PNC            | 6          | Functional group of transmitter |
-| 2     | Power State           | 2          | Active / Standby / Sleep / Deep Sleep |
-| 3     | Binding Table Version | 16         | Monotonic version for cache invalidation |
-| 4     | Authority Priority    | 8          | 0 = primary gateway, higher = secondary |
-| 5     | Reserved              | 32         | - |
+| Byte | Field |
+|------|--------|
+| 0 | NM state (**04** §9.2) |
+| 1 | Active functional groups — low byte (**04** §7.4) |
+| 2–7 | Reserved — transmit **`0x00`**, ignore on receive (**04** §7.4) |
 
 ---
 
@@ -60,9 +63,13 @@ The mapping from each DCID/field to the corresponding `Vessel.*` path in the sig
 
 ## 3. DCID Ranges and Assignment Rules
 
-- **0x00000–0x0FF7F**: Standard marine DCIDs (used for compatibility as described above)
-- **0x0FF80–0x0FFFF**: Pelorus extensions (defined in this document)
-- **0x10000+**: Reserved for future manufacturer-specific or Pelorus v2+ extensions
+Numeric DCIDs follow derivation in **[03 §3.2](./03-data-link-layer.md#32-dcid-derivation)**. Sub-ranges inside the overall marine numeric space are allocated as follows:
+
+1. **0x00000–0x0FF7F** — Compatibility, standard marine, vendor proprietary bands, and Pelorus protocol reservations **except** the Pelorus extension block below — subdivisions and reserved slots (address claim, transport protocol, proprietary **A** / **B** windows, etc.) are normative in **[03 §4](./03-data-link-layer.md#4-reserved-identifier-ranges)**. This document registers **which** compatibility DCIDs Pelorus uses for interoperability; bit layouts for legacy families remain in their respective standards (**§2** above).
+
+2. **0x0FF80–0x0FFFF** — **Pelorus extensions** — assignments in **§1** of this document; gaps (**e.g.** **0x0FF82–0x0FF8F**) reserved per **[03 §4](./03-data-link-layer.md#4-reserved-identifier-ranges)**.
+
+3. **0x10000 and above** — Reserved for future manufacturer-specific or Pelorus **v2+** numeric allocation policy (document here when used). Shall not collide with **[03](./03-data-link-layer.md)** derivation rules.
 
 Assignment authority: Pelorus DCIDs are allocated in this registry. Future additions require a pull request that updates this document and the corresponding entries in the signal catalog.
 
@@ -70,8 +77,8 @@ Assignment authority: Pelorus DCIDs are allocated in this registry. Future addit
 
 ## 4. Relationship to Signal Catalog & Binding
 
-- Every DCID field that carries an instance value is resolved to a `Vessel.*` path via the binding table (see `06-signal-catalog.md` §3–4).
-- The binding table itself is broadcast as part of DCID 0x0FF81 updates.
+- Every DCID field that carries an instance value is resolved to a `Vessel.*` path via the binding table (see **[06-signal-catalog.md](./06-signal-catalog.md)** §3–4).
+- **v1.0:** Binding-table contents and versioning are **not** carried on **0x0FF81** NM payload bytes (**[04 §7.4](./04-power-management.md#74-nm-data-field)**). Distribution is **out of band** (gateway configuration, diagnostic session, **[Pelorus Stream](../stream/01-overview.md)**, or future NM reserved-byte allocation).
 - Low-power sensors only transmit raw DCIDs; semantic mapping is handled by any binding-aware node.
 
 ---
@@ -79,8 +86,8 @@ Assignment authority: Pelorus DCIDs are allocated in this registry. Future addit
 ## 5. Open Items (to be resolved before v1.0 promotion)
 
 - Exact list of compatibility DCIDs required for v1.0
-- Full field-level definitions for Pelorus extensions beyond the two defined above
-- Transmission rates and repetition rules for each DCID
+- Whether **future** WUF / NM payloads use reserved bytes **1–7** / **2–7** for extended masks, binding hints, or authority — today reserved (**04** §7)
+- Transmission rates and repetition rules for each DCID (NM cadence ratified in **04** §9.1)
 - Conformance test fixtures
 - Integration with the machine-readable `catalog/vessel.vspec` file
 

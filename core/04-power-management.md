@@ -240,7 +240,7 @@ This is a candidate allocation. Final DCID assignment is recorded in [07-dcid-re
 
 ### 7.2 WUF Data Field
 
-DLC = 8. Eight bytes of group mask, MSB byte first. Byte 0 carries the standard functional groups (§6); bytes 1–7 are reserved (must be transmitted as zero, must be ignored on receive).
+DLC = 8. **v1.0:** Byte **0** carries the standard marine functional-group bitmask (**§6** — lowest six bits; bits **6–7** of byte **0** reserved, transmit zero). Bytes **1–7** are reserved — transmit **`0x00`**, ignore on receive. Future revisions may allocate extended cluster bits in bytes **1–7** without changing the DCID (**[07-dcid-registry.md](./07-dcid-registry.md)** §1).
 
 ### 7.3 NM Identifier
 

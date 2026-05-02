@@ -113,4 +113,4 @@ Every document is annotated with a trust level so contributors know what to rely
 
 1. Capture real LMDE bus traffic from a representative vessel (prerequisite for instance binding design — coordinate on [Pelorus Specifications — GitHub Issues](https://github.com/pelorus-marine/specifications/issues))
 2. Review 05–07 against the trusted core (01–04) and either revalidate, rewrite, or delete each
-3. Reconcile cross-document conflicts: DCID range (03 vs 07), NM payload (04 vs 07), instance binding (06)
+3. Reconcile **instance binding** and catalog mechanics (**06**) against captured traffic and gateways (internal doc alignment: **03** / **04** / **07** DCID bands and **WUF** / **NM** wire layouts — **May 2026**)

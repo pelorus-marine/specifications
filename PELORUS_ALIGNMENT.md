@@ -39,13 +39,13 @@ Normative Core documents live under **`core/`** in this repository. Implementati
 
 ---
 
-## 3. Known cross-artifact conflicts (prioritize these)
+## 3. Known cross-artifact gaps (prioritize these)
 
-The specification index tracks internal inconsistencies and review debt — start reconciliation here:
+Track remaining review debt in **`core/00-document-index.md`** (*Next priorities*). **Resolved in-repo:** **03** / **07** DCID band wording and **04** / **07** **WUF** & **NM** on-wire layouts — **07** defers to **04** §7 for payloads.
 
-- **`core/00-document-index.md`** — §4 *Completion Tracking* and *Next priorities* (e.g. DCID range 03 vs 07, NM payload 04 vs 07, instance binding 06).
+Outstanding example: **instance binding** across **06** and gateways vs live traffic patterns.
 
-When you resolve one of those in prose, update **this matrix** and add or adjust a **test or fixture** in `platform/` (and note ECDIS impact if own-ship or DCIDs move).
+When you close an item in prose, update **this matrix** and add or adjust a **test or fixture** in `platform/` (and note ECDIS impact if own-ship or DCIDs move).
 
 ---
 
