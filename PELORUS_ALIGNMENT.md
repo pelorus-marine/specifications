@@ -43,7 +43,7 @@ Normative Core documents live under **`core/`** in this repository. Implementati
 
 Track remaining review debt in **`core/00-document-index.md`** (*Next priorities*). **Resolved in-repo:** **03** / **07** DCID band wording and **04** / **07** **WUF** & **NM** on-wire layouts — **07** defers to **04** §7 for payloads.
 
-Outstanding example: **instance binding** across **06** and gateways vs live traffic patterns.
+Outstanding example: **instance binding** design validated against live traffic patterns (**06** / gateways); v1.0 binding distribution remains **out of band** per **07** §4 / **06** §3–4.
 
 When you close an item in prose, update **this matrix** and add or adjust a **test or fixture** in `platform/` (and note ECDIS impact if own-ship or DCIDs move).
 

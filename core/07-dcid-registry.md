@@ -1,7 +1,7 @@
 # Pelorus Core — DCID Registry
 
 **Version:** 0.1 Draft  
-**Last Updated:** May 4, 2026  
+**Last Updated:** May 2, 2026  
 **Status:** Pre-specification  
 **Trust:** Unverified
 
@@ -71,6 +71,21 @@ Multi-field PGNs carry several measurements in one frame; the **`Dcid`** column 
 | **0xFEE8** | 65256 | Vehicle Heading | `HeadingTrue` |
 | **0xFEC5** | 65253 | Engine Temperature 1 | `EngineCoolantTemp` (coolant among temperature fields per DA) |
 
+### NAME field (64-bit device identity)
+
+The **NAME** carried in Address Claimed traffic is defined **only** by **SAE J1939-81** (with **ISO 11783-5** where applicable). Pelorus **does not** specify alternate NAME bit allocations in v1.0. Procedures are normative in **[05-addressing.md](./05-addressing.md)**; Address Claimed uses DCID **0x0EE00** per **03** / **05**.
+
+### Commanded Address (DCID 0xFED8)
+
+Support for **Commanded Address** on Pelorus Core is **required** per **[05 §4](./05-addressing.md#4-commanded-address)**.
+
+| Attribute | Value |
+|-----------|--------|
+| **Pelorus wire DCID** | **0xFED8** |
+| **Purpose** | Command a node to adopt a specific source address (provisioning, fleet tools, gateway-directed binding workflows). |
+| **Priority / PDU format / data field** | Per **SAE J1939 Digital Annex** for the Commanded Address message and **[03-data-link-layer.md](./03-data-link-layer.md)** framing rules. |
+| **Pelorus-specific payload constraints** | **None** in v1.0 — behavior matches industry J1939 Commanded Address unless a future revision registers exceptions here. |
+
 ---
 
 ## 3. DCID Ranges and Assignment Rules
@@ -98,6 +113,7 @@ Assignment authority: Pelorus DCIDs are allocated in this registry. Future addit
 ## 5. Open Items (to be resolved before v1.0 promotion)
 
 - Expand compatibility DCIDs beyond **§2** initial J1939 assignments (e.g. additional propulsion, navigation, environment PGNs; NMEA2000-specific mappings via gateway profiles)
+- Optional informative tables: preferred SA ranges per device class (non-normative supplement to **SAE J1939-81** NAME rules — does not replace **05** / **§2** NAME citations above)
 - Whether **future** WUF / NM payloads use reserved bytes **1–7** / **2–7** for extended masks, binding hints, or authority — today reserved (**04** §7)
 - Transmission rates and repetition rules for each DCID (NM cadence ratified in **04** §9.1)
 - Conformance test fixtures

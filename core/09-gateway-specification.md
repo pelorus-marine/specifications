@@ -1,7 +1,7 @@
 # Pelorus Core — Gateway Specification
 
 **Version:** 0.1 Draft  
-**Last Updated:** April 26, 2026  
+**Last Updated:** May 2, 2026  
 **Status:** Pre-specification  
 **Trust:** Unverified
 
@@ -45,12 +45,12 @@ A vessel may have zero, one, or multiple gateways. Multiple gateways are support
 The gateway shall:
 
 - Maintain the authoritative copy of the binding table in non-volatile memory.
-- Publish the binding table (or delta) via a Pelorus DCID (defined in `07-dcid-registry.md`) on every connected segment.
+- Distribute binding-table updates **out of band** for v1.0 (configuration export/import, diagnostic session, **[Pelorus Stream](../stream/01-overview.md)**, local UI/API — see **[07-dcid-registry.md](./07-dcid-registry.md)** §4 and **[06-signal-catalog.md](./06-signal-catalog.md)** §3–4). **Do not** rely on a Pelorus Core CAN DCID for binding publication until one is registered in **07** for a future revision.
 - Provide a web-based provisioning UI for sailors to assign friendly labels and map devices.
 - Detect and report instance drift or conflicts.
 - Allow secondary gateways or diagnostic tools to take over as binding authority if the primary is absent.
 
-See `06-signal-catalog.md` §3–4 for the full fault-tolerant binding model.
+See **[06-signal-catalog.md](./06-signal-catalog.md)** §3–4 for the full fault-tolerant binding model.
 
 ---
 
@@ -83,14 +83,14 @@ The gateway shall expose:
 
 - The network continues to operate fully if the gateway is powered off, failed, or disconnected.
 - All nodes that need semantics cache the latest binding table and power profile.
-- Secondary gateways (if present) automatically assume authority based on the published Authority Priority field in NM messages.
+- Secondary gateways (if present) coordinate binding authority per **[06](./06-signal-catalog.md)** / multi-gateway rules (**Open Items** below until deterministic hand-off is specified).
 - No hard dependency on any single physical node.
 
 ---
 
 ## 7. Open Items (to be resolved before v1.0 promotion)
 
-- Exact DCID format for binding table publication and delta updates
+- Optional **future** on-bus binding-table DCID or NM/WUF payload layout (v1.0 is **out of band** per **07** §4); delta encoding on Stream or diagnostic channel
 - Web UI wireframes and minimum feature set
 - Bridging conformance test plan for LMDE compatibility DCIDs
 - Multi-gateway conflict resolution and hand-off rules

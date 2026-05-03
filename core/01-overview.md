@@ -1,7 +1,7 @@
 # Pelorus Core — Overview
 
 **Version:** 0.1 Draft  
-**Last Updated:** April 26, 2026  
+**Last Updated:** May 2, 2026  
 **Status:** Pre-specification  
 **Trust:** Trusted
 
@@ -169,11 +169,11 @@ Downstream documents (02–16) state **normative requirements** and rationale. T
 
 - **Signal catalog (06):** Canonical semantics use **COVESA VSS** syntax under a **`Vessel.*`** root; no custom catalog syntax in v1.0.
 
-- **DCID registry (07):** Wire encoding for Pelorus-specific messages uses the high DCID range **`0x0FF80`–`0x0FFFF`** (exact assignments in 07). Compatibility and field layouts are normative in 07.
+- **DCID registry (07):** Pelorus-specific DCIDs use the high range **`0x0FF80`–`0x0FFFF`** (exact assignments in **07** §1). Compatibility DCIDs and addressing-related registrations (**NAME**, Commanded Address **0xFED8**) live in **07** §2; **SAE J1939 Digital Annex** remains normative for cited legacy payload bit layouts unless **07** explicitly overrides.
 
 - **Network architecture (08):** Per segment: max **30 m** backbone, max **50** nodes, max **6 m** stubs; multi-segment networks use **repeaters** with **galvanic isolation** between segments; max **4** repeater hops between any two endpoints; **star topology with a central gateway** is the recommended pattern for large vessels.
 
-- **Gateway (09):** The gateway is a **convenient, not mandatory** authority (no single point of failure for the network). It bridges **CAN FD (Pelorus Core)** and **Classical CAN (LMDE)** segments, publishes the binding table on the Pelorus side, and may offer a web UI — **operation without** that UI must remain possible.
+- **Gateway (09):** The gateway is a **convenient, not mandatory** authority (no single point of failure for the network). It bridges **CAN FD (Pelorus Core)** and **Classical CAN (LMDE)** segments, coordinates binding-table provisioning (**out-of-band** distribution for v1.0 per **07** §4 / **06** §3–4), and may offer a web UI — **operation without** that UI must remain possible.
 
 - **Repeater (10):** Repeaters **shall** isolate segments electrically, **transparently** forward valid CAN FD frames, and **fully** participate in power management and addressing.
 

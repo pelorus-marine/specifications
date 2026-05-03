@@ -1,7 +1,7 @@
 # Pelorus Core — Specification Document Index
 
 **Version:** Living  
-**Last Updated:** April 26, 2026  
+**Last Updated:** May 2, 2026  
 **Status:** Active  
 **Trust:** Trusted
 
@@ -111,7 +111,7 @@ Every document is annotated with a trust level so contributors know what to rely
 
 **Next priorities for v0.1 specification:**
 
-1. Use **[`REVIEW-05-07.md`](./REVIEW-05-07.md)** as the working checklist: address **06** §4 vs **07** §4 (binding distribution) first, then **05** §2 / §4 (NAME + **0xFED8**) vs **07** registration, then expand **07** §2 and open items.
+1. **05–07 cross-document alignment** (binding distribution, NAME / **0xFED8**, overview §9): **completed** May 2026. **Still open:** expand **07** §2 compatibility table; optional **future** on-bus binding format; real traffic capture for instance binding.
 2. Capture real LMDE bus traffic from a representative vessel (prerequisite for instance binding design — coordinate on [Pelorus Specifications — GitHub Issues](https://github.com/pelorus-marine/specifications/issues))
 3. Reconcile **instance binding** and catalog mechanics (**06**) against captured traffic and gateways (internal doc alignment: **03** / **04** / **07** DCID bands and **WUF** / **NM** wire layouts)
 4. Track cross-cutting work: [Issue #3 (DCID evolution)](https://github.com/pelorus-marine/specifications/issues/3), [Issue #6 (dual-bus redundancy RFC)](https://github.com/pelorus-marine/specifications/issues/6)

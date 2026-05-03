@@ -1,7 +1,7 @@
 # Pelorus Core — Addressing Specification
 
 **Version:** 0.1 Draft  
-**Last Updated:** April 26, 2026  
+**Last Updated:** May 2, 2026  
 **Status:** Pre-specification  
 **Trust:** Unverified
 
@@ -9,7 +9,7 @@
 
 ## About This Document
 
-This document specifies source addressing, address claiming, conflict resolution, and device identification for Pelorus Core. The v1.0 addressing policy (J1939-81 / ISO 11783-5 parity) is summarized in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary); **normative** procedures and field layouts are defined here and in [07-dcid-registry.md](./07-dcid-registry.md) where applicable.
+This document specifies source addressing, address claiming, conflict resolution, and device identification for Pelorus Core. The v1.0 addressing policy (J1939-81 / ISO 11783-5 parity) is summarized in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary). **Normative** procedures are defined here; **64-bit NAME** bit fields are cited in [07-dcid-registry.md](./07-dcid-registry.md#name-field-64-bit-device-identity). Commanded Address (**0xFED8**) is registered in [07-dcid-registry.md](./07-dcid-registry.md#commanded-address-dcid-0xfed8).
 
 **Physical layer:** The procedures in this document apply to nodes on **Pelorus Core CAN FD** segments. **LMDE** segments use the **same J1939-81 rules on Classical CAN**; each electrical segment has its own address space. Correlation across segments (e.g. a device visible on both buses) is handled by **gateways** and the binding table, not by sharing one CAN segment between classical-only and CAN FD populations.
 
@@ -31,11 +31,9 @@ Every node must successfully claim a unique SA before it may transmit applicatio
 
 Every device is identified by a unique 64-bit NAME (J1939 format). The NAME is the primary identifier for address conflict resolution and is transmitted in every Address Claimed message.
 
-The NAME structure follows the Legacy Marine Data Ecosystem exactly (8 bytes):
+The NAME structure follows the Legacy Marine Data Ecosystem / **SAE J1939** exactly (8 bytes): Arbitrary Address Capable, Industry Group (Marine = 4), Device Class, Function, Function Instance, Device Class Instance, Manufacturer Code, Identity Number, and related subfields.
 
-- Byte 0–7: Arbitrary Address Capable (1 bit), Industry Group (3 bits, Marine = 4), Device Class, Function, Function Instance, Device Class Instance, Manufacturer Code, Unique Number, etc.
-
-Exact bit field allocations and preferred address ranges per device class/function will be defined in `07-dcid-registry.md`.
+**Normative layout:** Bit-level NAME allocation is defined in **SAE J1939-81** (*Digital Annex* / manufacturer identification rules as cited there). Pelorus **does not** specify alternate NAME encodings in v1.0. Optional **preferred source-address ranges** per device class may be added later to **07** as informative guidance only — they do not change J1939-81 NAME semantics.
 
 ---
 
@@ -59,7 +57,7 @@ A node that cannot claim an address after repeated attempts shall enter a "canno
 
 ## 4. Commanded Address
 
-Support for the Commanded Address DCID (0xFED8) is **required**. This allows gateways, configuration tools, and the central gateway UI to force a specific address on a device (useful for instance binding and provisioning).
+Support for the Commanded Address DCID (**0xFED8**) is **required**. Payload layout, timing, and arbitration priority follow **SAE J1939 Digital Annex** for the Commanded Address message unless **07** lists a Pelorus-specific constraint (none in v1.0 — see [07-dcid-registry.md](./07-dcid-registry.md#commanded-address-dcid-0xfed8)). This message allows gateways, configuration tools, and provisioning UIs to assign a specific SA on a device (instance binding and fleet workflows).
 
 ---
 
@@ -79,7 +77,7 @@ Source Address alone does not carry semantic meaning (same limitation as the Leg
 
 ## Open Items
 
-- Exact preferred address ranges or device-class tables (to be added in 07-dcid-registry.md)
+- Informative preferred source-address ranges or device-class tables (optional future addition to **07** — does not replace **SAE J1939-81** NAME layout)
 - Any Pelorus-specific NAME extensions (none planned for v1.0)
 - Integration with repeater/gateway address spaces on multi-segment networks (see 08-network-architecture.md and 09-gateway-specification.md)
 

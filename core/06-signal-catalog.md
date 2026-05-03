@@ -1,7 +1,7 @@
 # Pelorus Core — Signal Catalog Specification
 
 **Version:** 0.1 Draft  
-**Last Updated:** April 26, 2026  
+**Last Updated:** May 2, 2026  
 **Status:** Pre-specification  
 **Trust:** Unverified
 
@@ -56,21 +56,22 @@ Pelorus uses **numeric indexed arrays** as the canonical form in the catalog:
 **Binding table**  
 The mapping `(Source Address + 64-bit NAME + DCID + DCID-internal instance field value) → VSS array index [n]` is stored in a **binding table**. Sailor-assigned friendly labels (“Port Main”, “Starboard”, “Wing Engine #3”, “Generator”) live as metadata on each entry.
 
+**v1.0 distribution (normative):** Binding-table contents are **not** defined for on-bus publication over Pelorus Core CAN in v1.0 — see **[07-dcid-registry.md](./07-dcid-registry.md)** §4. Distribution is **out of band** (gateway/local configuration export, diagnostic session, **[Pelorus Stream](../stream/01-overview.md)**, companion app, or NV backup restored by the operator). A future revision may assign a dedicated Pelorus DCID or NM/WUF payload fields for binding sync; until then, **do not** assume a CAN-visible binding-table message.
+
 ---
 
 ## 4. Fault Tolerance — No Single Point of Failure
 
 The binding table **must not** create a single point of failure (consistent with [09-gateway-specification.md](./09-gateway-specification.md): gateways are not mandatory sole authorities; multiple gateways are supported).
 
-- The binding table is **published on the bus** via a dedicated Pelorus DCID (defined later in `07-dcid-registry.md`).
-- Any authorized node (primary gateway, secondary display head, diagnostic tool, etc.) can act as binding authority and publish updates.
+- Any authorized role (primary gateway, secondary display head, diagnostic tool, etc.) can hold **binding authority**: merge edits in NV and distribute updates **out of band** per **07** §4 for v1.0.
 - Nodes that need semantics **cache the latest binding table in their own non-volatile memory**.
-- The primary gateway provides the convenient web UI for editing/provisioning, but it is **not required** for continued operation.
+- The primary gateway typically provides the convenient web UI for editing/provisioning, but it is **not required** for continued Core operation.
 - If the gateway is absent or failed:
   - Core raw DCID traffic continues unaffected.
   - Semantic consumers fall back to the last cached binding table (or to raw DCID + instance display if no cache exists).
   - New devices join and transmit data immediately (raw mode).
-- On gateway return it can re-publish the authoritative table.
+- When a gateway or tool returns, it reapplies or restores the authoritative table through the same **out-of-band** channels (not mandatory on-bus replay in v1.0).
 
 ---
 
@@ -94,7 +95,7 @@ This approach enables clean bridging via gateways while keeping Pelorus itself a
 |---|---|---|
 | **Semantics** | Units, types, valid range, human meaning, relationships between signals | This document — **`Vessel.*`** tree, COVESA VSS syntax |
 | **Core wire contract** | Which CAN FD (Pelorus) or Classical CAN (LMDE) message layout carries bits for a signal | **`core/07-dcid-registry.md`**, compatibility tables, gateway behavior |
-| **Instance binding** | Which physical device / bus instance maps to `Vessel.*[n]` | **Binding table** (published on Core; see §3–4) |
+| **Instance binding** | Which physical device / bus instance maps to `Vessel.*[n]` | **Binding table** — **out-of-band** distribution for v1.0 (**07** §4); see §3–4 |
 | **Pelorus Stream session** | High-bandwidth or media *sessions* (UUIDv7 stream ID), not CAN frames | **`stream/`** — metadata may **reference** `Vessel.*` paths or future DCID forms; no merge of identifier spaces without an explicit cross-spec |
 
 **Rules of the road**
@@ -110,7 +111,7 @@ This approach enables clean bridging via gateways while keeping Pelorus itself a
 
 - Catalog source: `catalog/vessel.vspec` (plus overlay files)
 - Validation: `vss-tools` with Pelorus overlay profile
-- Code generation: Rust structs, validation, and TypeScript definitions generated as part of `dcid-rs` and gateway crates
+- Code generation: Rust structs, validation, and TypeScript definitions generated as part of reference crates (see **[11-reference-implementations.md](./11-reference-implementations.md)** — e.g. **`pelorus-core`** / gateway tooling in **`platform`**) rather than a fixed crate name
 - Runtime: Only nodes that need semantics carry the binding cache; low-power sensors ignore it entirely
 
 ---
@@ -118,7 +119,7 @@ This approach enables clean bridging via gateways while keeping Pelorus itself a
 ## 8. Open Items (to be resolved before v1.0 promotion)
 
 - Exact tree structure and initial signal set (target: cover all common marine data observed on a representative liveaboard vessel)
-- Binding table DCID format, publication cadence, and authority conflict rules
+- **Future** optional on-bus binding sync: DCID or NM/WUF payload format, publication cadence, and authority conflict rules when **07** / **04** allocate bits (**v1.0** remains **out of band** per **07** §4)
 - Full binding table schema, provisioning UI, and conflict/drift recovery rules
 - Custom attribute definitions and vss-tools overlay profile
 - Catalog versioning and backward compatibility
