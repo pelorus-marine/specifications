@@ -1,7 +1,7 @@
 # Pelorus Core — Installation Guide
 
 **Version:** 0.1 Draft  
-**Last Updated:** April 26, 2026  
+**Last Updated:** May 3, 2026  
 **Status:** Pre-specification  
 **Trust:** Unverified
 
@@ -9,9 +9,9 @@
 
 ## About This Document
 
-This document provides **non-normative** installation guidance for Pelorus Core networks: planning, wiring, termination, power, repeaters, and commissioning. **Normative** physical and electrical rules are in [02-physical-layer.md](./02-physical-layer.md); the v1.0 installation policy summary is one line in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary).
+This document provides **installation guidance** for Pelorus Core networks: planning, wiring, termination, power, repeaters, hubs, path redundancy, and commissioning. **Normative** physical and electrical rules are in [02-physical-layer.md](./02-physical-layer.md); **criticality and dual-bus** rules are normative in [17-criticality-and-redundant-paths.md](./17-criticality-and-redundant-paths.md). Where this guide uses **SHALL**, it restates or points to those documents — it does not invent lighter requirements.
 
-Prerequisites: [02-physical-layer.md](./02-physical-layer.md), [08-network-architecture.md](./08-network-architecture.md), [10-repeater-specification.md](./10-repeater-specification.md), [12-hardware-design-guide.md](./12-hardware-design-guide.md).
+Prerequisites: [02-physical-layer.md](./02-physical-layer.md), [08-network-architecture.md](./08-network-architecture.md), [10-repeater-specification.md](./10-repeater-specification.md), [12-hardware-design-guide.md](./12-hardware-design-guide.md), [17-criticality-and-redundant-paths.md](./17-criticality-and-redundant-paths.md).
 
 ---
 
@@ -24,6 +24,7 @@ Prerequisites: [02-physical-layer.md](./02-physical-layer.md), [08-network-archi
 3. Plan repeater locations (if needed) to respect the hop limit in [08-network-architecture.md](./08-network-architecture.md).
 4. Identify power injection points and ensure 9–32 V DC supply with reverse polarity protection.
 5. Decide on isolation requirements (mandatory for high-power devices).
+6. Prepare a **critical zone map** per **[17](./17-criticality-and-redundant-paths.md)** §6: assign **C0 / C1 / C2** to each function and decide where **Bus A** and **Bus B** run.
 
 ---
 
@@ -33,7 +34,7 @@ Prerequisites: [02-physical-layer.md](./02-physical-layer.md), [08-network-archi
 - Backbone runs between terminators; drops use T-connectors.
 - Observe stub and backbone length limits in [08-network-architecture.md](./08-network-architecture.md).
 - All connectors must be fully mated and sealed (IP67/IP68).
-- Label every cable and drop clearly.
+- Label every cable and drop clearly; for dual-bus domains, label **A** vs **B** at both ends and at every tee.
 
 ---
 
@@ -80,12 +81,24 @@ Prerequisites: [02-physical-layer.md](./02-physical-layer.md), [08-network-archi
 - Bus errors or no communication → check termination and stub lengths
 - High standby current → verify isolation and transceiver sleep behavior
 - Address conflicts → check NAME uniqueness
-- Binding table not updating → verify gateway is powered and publishing NM messages
+- Binding table not updating → verify gateway is powered; binding is **out of band** in v1.0 — use gateway UI, export/import, or diagnostic tool per **06** / **07** §4 (NM does **not** carry binding)
 - Intermittent faults → inspect connectors and cable shielding
+- One bus silent on dual-bus helm → check **Bus Health (0x0FF82)** on surviving bus; inspect failed backbone for opens, terminators, or transceiver damage (**17** §3 degraded mode)
 
 ---
 
-## 8. Open Items (to be resolved before v1.0 promotion)
+## 8. Dual-bus (path redundancy) installation
+
+For **C0** / **C1** zones per **17**:
+
+- **SHALL** run **two** independent backbone pairs (Bus A, Bus B) per **02** §13; **SHALL NOT** route both through a single unprotected bundle through a single hazard zone without documenting residual risk on the critical zone map (**17** §5).
+- **SHOULD** use separated cable trays / penetrations where feasible; crossing is acceptable only with mechanical protection documented in the map.
+- **SHOULD** use independent fused feeds to Bus A and Bus B power injection points when the vessel DC distribution supports it.
+- Commission Bus Health (**07** §1.3) on a test display before declaring the dual-bus domain complete.
+
+---
+
+## 9. Open Items (to be resolved before v1.0 promotion)
 
 - Detailed wiring diagrams and example layouts
 - Recommended tools and test equipment list

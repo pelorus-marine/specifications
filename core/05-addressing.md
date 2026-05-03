@@ -1,7 +1,7 @@
 # Pelorus Core — Addressing Specification
 
 **Version:** 0.1 Draft  
-**Last Updated:** May 2, 2026  
+**Last Updated:** May 3, 2026  
 **Status:** Pre-specification  
 **Trust:** Unverified
 
@@ -12,6 +12,8 @@
 This document specifies source addressing, address claiming, conflict resolution, and device identification for Pelorus Core. The v1.0 addressing policy (J1939-81 / ISO 11783-5 parity) is summarized in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary). **Normative** procedures are defined here; **64-bit NAME** bit fields are cited in [07-dcid-registry.md](./07-dcid-registry.md#name-field-64-bit-device-identity). Commanded Address (**0xFED8**) is registered in [07-dcid-registry.md](./07-dcid-registry.md#commanded-address-dcid-0xfed8).
 
 **Physical layer:** The procedures in this document apply to nodes on **Pelorus Core CAN FD** segments. **LMDE** segments use the **same J1939-81 rules on Classical CAN**; each electrical segment has its own address space. Correlation across segments (e.g. a device visible on both buses) is handled by **gateways** and the binding table, not by sharing one CAN segment between classical-only and CAN FD populations.
+
+**Dual-bus domains:** Path-redundant installations (**Bus A** and **Bus B**) are defined in **[17-criticality-and-redundant-paths.md](./17-criticality-and-redundant-paths.md)**. **§7** extends claiming for **Class D** / **Class H** nodes.
 
 ---
 
@@ -75,6 +77,19 @@ Source Address alone does not carry semantic meaning (same limitation as the Leg
 
 ---
 
+## 7. Dual-bus address claiming (Class D and Class H)
+
+For nodes with two Pelorus Core ports attached to **Bus A** and **Bus B** in the same dual-bus domain (**[17](./17-criticality-and-redundant-paths.md)**, **[02](./02-physical-layer.md)**):
+
+1. **Simultaneous claim:** On power-up, reset, or join, a **Class D** node **shall** run the **§3** procedure on **both** buses **in parallel** (same preferred SA and same NAME on A and B).
+2. **Data transmission gate:** The node **shall not** transmit application DCIDs (other than address-management traffic and **0x0FF82** / **0x0FF83** per **07**) on **either** bus until it has successfully claimed the **same** SA on **both** buses, **unless** it enters **degraded single-bus** mode per **17** §3 (operator-visible fault; continues on the surviving bus only).
+3. **Conflict asymmetry:** If claiming succeeds on Bus A but fails on Bus B, the node **shall** either (a) select a **new** SA and re-claim on **both** buses from step 1, or (b) declare **degraded single-bus** on A per **17** and **shall not** transmit on B until B succeeds.
+4. **Class H hubs** **shall** claim a unique SA on each bus segment they terminate; downstream **Class S** devices use normal **§3** on their single attached segment — the hub performs replication onto both backbones per **10**.
+
+Address-claim and commanded-address frames **shall not** be subject to duplicate discard (**03** §6.2).
+
+---
+
 ## Open Items
 
 - Informative preferred source-address ranges or device-class tables (optional future addition to **07** — does not replace **SAE J1939-81** NAME layout)
@@ -83,4 +98,4 @@ Source Address alone does not carry semantic meaning (same limitation as the Leg
 
 ---
 
-*This document completes the minimum viable specification together with documents 01–04.*
+*This document, together with documents 01–04, **07**, **17**, and **03** §6, completes addressing for Pelorus Core including dual-bus domains.*

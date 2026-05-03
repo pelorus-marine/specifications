@@ -1,7 +1,7 @@
 # Pelorus Core — DCID Registry
 
 **Version:** 0.1 Draft  
-**Last Updated:** May 2, 2026  
+**Last Updated:** May 3, 2026  
 **Status:** Pre-specification  
 **Trust:** Unverified
 
@@ -49,6 +49,44 @@ These DCIDs are defined exclusively for Pelorus and ratify the candidates from *
 | 1 | Active functional groups — low byte (**04** §7.4) |
 | 2–7 | Reserved — transmit **`0x00`**, ignore on receive (**04** §7.4) |
 
+### 1.3 Bus health (DCID 0x0FF82)
+
+- **Priority:** 6 (same band as NM / diagnostics — see **[03 §3.3](./03-data-link-layer.md#33-priority-allocation)**)
+- **Type:** PDU2 broadcast
+- **Length:** 12 bytes (CAN FD single frame)
+- **Transmission:** Every **Class D** or **Class H** node in a **dual-bus domain** **shall** transmit this DCID on **each** bus independently at **2 s** nominal interval while **Active** (per **04**). **Class S** nodes **may** transmit on their attached bus only.
+- **Purpose:** Operator-visible transceiver/controller health, duplicate-discard statistics, and wake-generation for **path redundancy** (**[17](./17-criticality-and-redundant-paths.md)**, **[03 §6](./03-data-link-layer.md#6-path-redundancy-dual-bus)**).
+
+**Wire layout (normative):**
+
+| Byte(s) | Field |
+|---------|--------|
+| 0–1 | **Sequence** — `uint16` little-endian; rolling counter per `(SA, DCID 0x0FF82)` for duplicate discard (**03** §6.4.1) |
+| 2 | **BusId_WakeGen** — bits **0**: Bus ID (**0** = Bus A, **1** = Bus B); bits **4–1**: Wake generation (**0–15**), incremented on each exit from Sleep/Deep Sleep to Active (**04** §13); bits **7–5**: reserved — transmit **`0`**, ignore on receive |
+| 3 | TX error counter (CAN controller; saturates at **255**) |
+| 4 | RX error counter (saturates at **255**) |
+| 5 | Bus-off event count since power-on (saturates at **255**) |
+| 6–7 | Duplicate frames discarded since power-on (`uint16` LE, saturates at **65535**) |
+| 8–9 | Missed-frame / sequence-gap count (`uint16` LE, saturates at **65535**) — informative |
+| 10 | Node class: **0** = Class S, **1** = Class D, **2** = Class H (**17** / **02**) |
+| 11 | Bus state: **0** = Active / Error-active; **1** = Error-passive; **2** = Bus-off; **3** = Degraded single-bus (peer bus silent per **17** §3) |
+
+### 1.4 Time sync (DCID 0x0FF83, optional)
+
+- **Priority:** 6  
+- **Type:** PDU2 broadcast  
+- **Length:** 8 bytes  
+- **Transmission:** If implemented, a designated **Time Master** node (gateway, hub, or GNSS-equipped device) **shall** transmit at **1 s** nominal while Active. Receivers **may** use this to tighten `DISCARD_WINDOW` uncertainty (**03** §6.4.1). **Stream**-layer time sync remains **[IEEE 802.1AS](https://standards.ieee.org/standard/802_1AS-2020.html)** where Ethernet is present — this DCID is **Core-only**.
+
+**Wire layout (normative):**
+
+| Byte(s) | Field |
+|---------|--------|
+| 0–1 | **Sequence** — `uint16` LE per `(SA, DCID 0x0FF83)` |
+| 2 | **BusId_WakeGen** — same encoding as **§1.3** byte 2 |
+| 3–6 | **CoreTime** — `uint32` LE: milliseconds since UTC midnight, or monotonic millisecond counter if UTC unavailable (implementation-defined; **shall** be documented in product literature) |
+| 7 | Reserved — transmit **`0x00`**, ignore on receive |
+
 ---
 
 ## 2. Compatibility DCIDs
@@ -94,7 +132,7 @@ Numeric DCIDs follow derivation in **[03 §3.2](./03-data-link-layer.md#32-dcid-
 
 1. **0x00000–0x0FF7F** — Compatibility, standard marine, vendor proprietary bands, and Pelorus protocol reservations **except** the Pelorus extension block below — subdivisions and reserved slots (address claim, transport protocol, proprietary **A** / **B** windows, etc.) are normative in **[03 §4](./03-data-link-layer.md#4-reserved-identifier-ranges)**. This document registers **which** compatibility DCIDs Pelorus uses for interoperability; bit layouts for legacy families remain in their respective standards (**§2** above).
 
-2. **0x0FF80–0x0FFFF** — **Pelorus extensions** — assignments in **§1** of this document; gaps (**e.g.** **0x0FF82–0x0FF8F**) reserved per **[03 §4](./03-data-link-layer.md#4-reserved-identifier-ranges)**.
+2. **0x0FF80–0x0FFFF** — **Pelorus extensions** — assignments in **§1** of this document (**0x0FF82**, **0x0FF83** per **§1.3** / **§1.4**); **0x0FF84–0x0FF8F** reserved per **[03 §4](./03-data-link-layer.md#4-reserved-identifier-ranges)**.
 
 3. **0x10000 and above** — Reserved for future manufacturer-specific or Pelorus **v2+** numeric allocation policy (document here when used). Shall not collide with **[03](./03-data-link-layer.md)** derivation rules.
 
@@ -112,6 +150,7 @@ Assignment authority: Pelorus DCIDs are allocated in this registry. Future addit
 
 ## 5. Open Items (to be resolved before v1.0 promotion)
 
+- Unify **CoreTime** (**§1.4**) with a future Pelorus-wide time scale (GNSS, **802.1AS** bridge, or `Vessel.*` signal)
 - Expand compatibility DCIDs beyond **§2** initial J1939 assignments (e.g. additional propulsion, navigation, environment PGNs; NMEA2000-specific mappings via gateway profiles)
 - Optional informative tables: preferred SA ranges per device class (non-normative supplement to **SAE J1939-81** NAME rules — does not replace **05** / **§2** NAME citations above)
 - Whether **future** WUF / NM payloads use reserved bytes **1–7** / **2–7** for extended masks, binding hints, or authority — today reserved (**04** §7)
@@ -121,4 +160,4 @@ Assignment authority: Pelorus DCIDs are allocated in this registry. Future addit
 
 ---
 
-*This registry, together with documents 01–06, completes the minimum viable specification.*
+*This registry, together with documents 01–06, **03** §6, **17**, and **15**, supports the minimum viable Core wire and management contract.*

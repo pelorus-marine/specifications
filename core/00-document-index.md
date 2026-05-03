@@ -1,7 +1,7 @@
 # Pelorus Core — Specification Document Index
 
 **Version:** Living  
-**Last Updated:** May 2, 2026  
+**Last Updated:** May 3, 2026  
 **Status:** Active  
 **Trust:** Trusted
 
@@ -11,7 +11,7 @@
 
 Numbered list of all documents that constitute a complete Pelorus Core specification. Numbers are stable references — once assigned, they do not change. New documents get new numbers; deprecated documents are marked but keep their numbers.
 
-**Layout:** Tiers **1–4** (`00`–`16`) live in the repository’s **`core/`** directory (e.g. `specifications/core/01-overview.md`). **Tier 5** community files (`README.md`, `LICENSE.md`, `ARCHITECTURE.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`) live at the **repository root** next to `core/`.
+**Layout:** Tiers **1–4** (`00`–`17`) live in the repository’s **`core/`** directory (e.g. `specifications/core/01-overview.md`). **Tier 5** community files (`README.md`, `LICENSE.md`, `ARCHITECTURE.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`) live at the **repository root** next to `core/`.
 
 This index is the authoritative list of Pelorus Core specification documents. Update when documents are added, drafted, or completed.
 
@@ -50,6 +50,7 @@ Every document is annotated with a trust level so contributors know what to rely
 | 08 | `08-network-architecture.md` | Segmentation, multi-segment networks, scaling | v0.1 draft | Unverified |
 | 09 | `09-gateway-specification.md` | Classical CAN (LMDE) ↔ CAN FD (Pelorus Core) gateway | v0.1 draft | Unverified |
 | 10 | `10-repeater-specification.md` | Pelorus Core repeater functional spec | v0.1 draft | Unverified |
+| 17 | `17-criticality-and-redundant-paths.md` | Criticality classes (C0/C1/C2), dual-bus domains, path redundancy policy | v0.1 draft | Unverified |
 
 ### Tier 3 — Implementation Guidance
 
@@ -71,17 +72,17 @@ Every document is annotated with a trust level so contributors know what to rely
 
 | # | Filename | Purpose | Status | Trust |
 |---|---|---|---|---|
-| 17 | `README.md` | GitHub org/repo landing page | v0.1 | Trusted |
-| 18 | `LICENSE.md` | Creative Commons Attribution 4.0 | Final | Final |
-| 19 | `ARCHITECTURE.md` | Architectural background and subsystem overview (non-normative) | v0.4 | Trusted |
-| 20 | `CONTRIBUTING.md` | How to contribute to the specification | v0.1 draft | Unverified |
-| 21 | `CODE_OF_CONDUCT.md` | Community behavior standards | v0.1 draft | Unverified |
+| 18 | `README.md` | GitHub org/repo landing page | v0.1 | Trusted |
+| 19 | `LICENSE.md` | Creative Commons Attribution 4.0 | Final | Final |
+| 20 | `ARCHITECTURE.md` | Architectural background and subsystem overview (non-normative) | v0.4 | Trusted |
+| 21 | `CONTRIBUTING.md` | How to contribute to the specification | v0.1 draft | Unverified |
+| 22 | `CODE_OF_CONDUCT.md` | Community behavior standards | v0.1 draft | Unverified |
 
 ---
 
 ## 3. Numbering Conventions
 
-- Tier 1–4 documents use numeric prefixes (`01-`, `02-`, etc.) under **`core/`** so they sort in logical reading order
+- Tier 1–4 documents use numeric prefixes (`01-` … `17`) under **`core/`** so they sort in logical reading order
 - Tier 5 documents use conventional names without prefixes at the **repo root** because GitHub and other tools expect them at known names
 - Numbers are assigned at document creation and never reused
 - Deprecated documents keep their number but get marked deprecated in this index
@@ -90,7 +91,7 @@ Every document is annotated with a trust level so contributors know what to rely
 
 ## 4. Completion Tracking
 
-**Trusted or final:** 8 of 21
+**Trusted or final:** 8 of 22
 
 - `core/00-document-index.md`
 - `core/01-overview.md` (v0.1)
@@ -101,10 +102,10 @@ Every document is annotated with a trust level so contributors know what to rely
 - `LICENSE.md` (final) (repo root)
 - `README.md` (v0.1) (repo root)
 
-**Unverified — needs review:** 13 of 21
+**Unverified — needs review:** 14 of 22
 
 - `core/05-addressing.md`, `core/06-signal-catalog.md`, `core/07-dcid-registry.md`
-- `core/08-network-architecture.md`, `core/09-gateway-specification.md`, `core/10-repeater-specification.md`
+- `core/08-network-architecture.md`, `core/09-gateway-specification.md`, `core/10-repeater-specification.md`, `core/17-criticality-and-redundant-paths.md`
 - `core/11-reference-implementations.md`, `core/12-hardware-design-guide.md`, `core/13-firmware-design-guide.md`, `core/14-installation-guide.md`
 - `core/15-conformance-test-plan.md`, `core/16-compliance-self-declaration.md`
 - `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md` (repo root)
@@ -114,4 +115,4 @@ Every document is annotated with a trust level so contributors know what to rely
 1. **05–07 cross-document alignment** (binding distribution, NAME / **0xFED8**, overview §9): **completed** May 2026. **Still open:** expand **07** §2 compatibility table; optional **future** on-bus binding format; real traffic capture for instance binding.
 2. Capture real LMDE bus traffic from a representative vessel (prerequisite for instance binding design — coordinate on [Pelorus Specifications — GitHub Issues](https://github.com/pelorus-marine/specifications/issues))
 3. Reconcile **instance binding** and catalog mechanics (**06**) against captured traffic and gateways (internal doc alignment: **03** / **04** / **07** DCID bands and **WUF** / **NM** wire layouts)
-4. Track cross-cutting work: [Issue #3 (DCID evolution)](https://github.com/pelorus-marine/specifications/issues/3), [Issue #6 (dual-bus redundancy RFC)](https://github.com/pelorus-marine/specifications/issues/6)
+4. Track cross-cutting work: [Issue #3 (DCID evolution)](https://github.com/pelorus-marine/specifications/issues/3). **Issue #6** ([dual-bus redundancy RFC](https://github.com/pelorus-marine/specifications/issues/6)): normative mechanisms are absorbed into **`core/17`**, **`02`**, **`03`**, **`05`**, **`07`**, **`08`**, **`10`**, **`15`**, **`16`**; keep the issue for discussion until closed.

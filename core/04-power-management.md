@@ -1,7 +1,7 @@
 # Pelorus Core — Power Management Specification
 
 **Version:** 0.4 Draft  
-**Last Updated:** April 26, 2026  
+**Last Updated:** May 3, 2026  
 **Status:** Pre-specification  
 **Trust:** Trusted (§1–5 ISO-validated; §6+ proposals subject to validation)
 
@@ -476,7 +476,27 @@ For developers integrating Pelorus power management into a node:
 
 ---
 
-## 13. Open Items
+## 13. Path redundancy and duplicate-discard interaction with power states
+
+Normative interaction between **[17-criticality-and-redundant-paths.md](./17-criticality-and-redundant-paths.md)** dual-bus operation, **[03 §6](./03-data-link-layer.md#6-path-redundancy-dual-bus)** duplicate discard, and power states (**§8** / **§9**):
+
+### 13.1 Wake generation counter
+
+- Each node that participates in **path redundancy** (**Class D** or **Class H**) **shall** maintain a **4-bit wake generation** counter in retained or non-volatile storage, incremented modulo **16** on every transition from **Sleep** or **Deep Sleep** to **Active** (first NM **Normal-Operation** participation counts as Active for this purpose).
+- The current value **shall** appear in **BusId_WakeGen** bits **4–1** of **[07 §1.3](./07-dcid-registry.md#13-bus-health-dcid-0x0ff82)** (and **§1.4** when Time Sync is implemented).
+
+### 13.2 DDT invalidation on wake
+
+- Receivers **shall** treat a change in **wake generation** for source `S` (observed via Bus Health or, if Bus Health not yet received, on first post-wake application frame) as a signal to **delete all DDT entries** for `S` (**03** §6.6).
+- Until Bus Health is transmitted, **Class D** nodes **shall** still increment wake generation on wake so that the first **0x0FF82** frame reflects the new value.
+
+### 13.3 Sleep and duplicate discard
+
+- Nodes entering **Sleep** or **Deep Sleep** **shall** cease application transmissions per existing **§8** rules; duplicate discard state on **peer** nodes is governed by **NODE_FORGET_TIME** (**03** §6.4.1).
+
+---
+
+## 14. Open Items
 
 These remain unresolved:
 

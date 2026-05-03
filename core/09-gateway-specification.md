@@ -1,7 +1,7 @@
 # Pelorus Core — Gateway Specification
 
 **Version:** 0.1 Draft  
-**Last Updated:** May 2, 2026  
+**Last Updated:** May 3, 2026  
 **Status:** Pre-specification  
 **Trust:** Unverified
 
@@ -12,6 +12,8 @@
 This document defines the **normative** functional specification for Pelorus Core gateway nodes: bridging, binding-table authority, and role in recommended topologies. A one-paragraph summary of gateway policy is in [01-overview.md §9](./01-overview.md#9-cross-cutting-decisions-authoritative-summary). Non-gateway-specific binding and instance rules remain in [06-signal-catalog.md](./06-signal-catalog.md) and [ARCHITECTURE.md](../ARCHITECTURE.md).
 
 **Physical boundary:** A gateway connects at least one **Pelorus Core** segment (**CAN FD** per **02**/**03**) and at least one **LMDE** segment (**Classical CAN / CAN 2.0** per industry practice). Bridging **always** spans that physical and framing difference; **do not** attach classical-only J1939 devices to a Pelorus Core backbone as “just another node.”
+
+**Dual Pelorus buses:** In a **dual-bus domain** (**[17-criticality-and-redundant-paths.md](./17-criticality-and-redundant-paths.md)**), a gateway **should**, where it is the binding-authority and network-management hub, attach to **both** Bus A and Bus B with **Class D**-equivalent behavior so that LMDE↔Pelorus bridging and binding distribution remain available if one Pelorus bus fails. If the gateway attaches to **one** Pelorus bus only, the installation **shall** document the residual single-bus risk for **C0**/**C1** in the **critical zone map** (**17** §6). The gateway **shall** replicate mapped Pelorus→LMDE and LMDE→Pelorus traffic onto **both** Pelorus buses when it is dual-attached, preserving **SA**, **DCID**, and payload semantics on each bus (subject to **03** duplicate discard on receivers).
 
 ---
 
@@ -90,6 +92,7 @@ The gateway shall expose:
 
 ## 7. Open Items (to be resolved before v1.0 promotion)
 
+- Normative **Stream→Core** injection when the target Core zone is dual-bus (which bus, or both) for **capable bidirectional gateway** tier (**§8**)
 - Optional **future** on-bus binding-table DCID or NM/WUF payload layout (v1.0 is **out of band** per **07** §4); delta encoding on Stream or diagnostic channel
 - Web UI wireframes and minimum feature set
 - Bridging conformance test plan for LMDE compatibility DCIDs

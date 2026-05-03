@@ -1,7 +1,7 @@
 # Pelorus Core — Overview
 
 **Version:** 0.1 Draft  
-**Last Updated:** May 2, 2026  
+**Last Updated:** May 3, 2026  
 **Status:** Pre-specification  
 **Trust:** Trusted
 
@@ -99,7 +99,7 @@ The v1.0 specification covers Pelorus Core only. The minimum viable specificatio
 | 06 | [06-signal-catalog.md](./06-signal-catalog.md) | VSS-syntax catalog format, `Vessel.*` data model, instance handling |
 | 07 | [07-dcid-registry.md](./07-dcid-registry.md) | Specific DCID assignments and definitions |
 
-Tier 2 (network architecture, gateway, repeater) and Tier 3 (implementation guidance) documents extend the core but are not required for an interoperable v1.0 device. See [00-document-index.md](./00-document-index.md) for the full document list.
+Tier 2 (network architecture, gateway, repeater, **[17-criticality-and-redundant-paths.md](./17-criticality-and-redundant-paths.md)**) and Tier 3 (implementation guidance) documents extend the core. **17** is mandatory for declarations that include **C0**/**C1** path redundancy or dual-bus domains; other v1.0 devices may omit dual-bus behavior per **17** §2.3. See [00-document-index.md](./00-document-index.md) for the full document list.
 
 ### Explicitly Deferred From v1.0
 
@@ -120,6 +120,7 @@ These guide every concrete decision in downstream documents.
 
 - **Sailor-first.** Every design decision asks "what is best for the sailor at sea" before "what is best for the manufacturer."
 - **Reliability over features.** A device that works for ten years beats a device with twenty features that fails after three.
+- **Reliability and durability over installation convenience.** When a decision trades installer time, cable count, or configuration simplicity against fault tolerance or spec compliance, Pelorus **shall** prefer the **reliable** outcome unless **[17-criticality-and-redundant-paths.md](./17-criticality-and-redundant-paths.md)** explicitly allows a lighter option for a given **criticality class**.
 - **Power awareness as architecture.** Boats are not on unlimited shore power. Power management matches **operational context** — which devices matter for this leg, this watch, this weather — not a single "anchor vs underway" caricature.
 - **Open all the way down.** Specification, reference implementations, test fixtures, documentation. No purchases required to participate.
 - **Static and debuggable for v1.0.** Auto-negotiation, dynamic reconfiguration, and complex state machines are deferred. Static profiles, fixed bit rates, and simple state machines win.
@@ -148,10 +149,12 @@ Implementations targeting v0.x should expect to update before v1.0 ships.
 | If you want to... | Read |
 |---|---|
 | Understand the hardware-level requirements | [02-physical-layer.md](./02-physical-layer.md) |
+| Criticality classes, dual-bus domains, path redundancy policy | [17-criticality-and-redundant-paths.md](./17-criticality-and-redundant-paths.md) |
 | Implement selective wake-up and power management | [04-power-management.md](./04-power-management.md) |
 | See what is decided and why | [ARCHITECTURE.md](../ARCHITECTURE.md) |
 | Track open work | [GitHub Issues](https://github.com/pelorus-marine/specifications/issues) |
 | Track specification document status | [00-document-index.md](./00-document-index.md) |
+| Criticality, dual-bus domains, path redundancy policy | [17-criticality-and-redundant-paths.md](./17-criticality-and-redundant-paths.md) |
 
 ---
 
@@ -175,7 +178,9 @@ Downstream documents (02–16) state **normative requirements** and rationale. T
 
 - **Gateway (09):** The gateway is a **convenient, not mandatory** authority (no single point of failure for the network). It bridges **CAN FD (Pelorus Core)** and **Classical CAN (LMDE)** segments, coordinates binding-table provisioning (**out-of-band** distribution for v1.0 per **07** §4 / **06** §3–4), and may offer a web UI — **operation without** that UI must remain possible.
 
-- **Repeater (10):** Repeaters **shall** isolate segments electrically, **transparently** forward valid CAN FD frames, and **fully** participate in power management and addressing.
+- **Repeater (10):** Repeaters **shall** isolate segments electrically, **transparently** forward valid CAN FD frames, and **fully** participate in power management and addressing. **Hub (Class H)** behavior for attaching **Class S** devices to **both** backbone buses in a dual-bus domain is normative in **10** and **17**.
+
+- **Criticality and path redundancy (17):** Installations declare **C0 / C1 / C2** per **[17-criticality-and-redundant-paths.md](./17-criticality-and-redundant-paths.md)**. **Path-redundant CAN FD** (Bus A and Bus B, active-active, duplicate discard per **03**) is **mandatory** only where **17** requires it for **C0** or **C1**; it is **orthogonal** to **repeater segmentation** (length and fault containment per **08**). **Reliability and durability** take precedence over **ease of installation** when they conflict (**§6**).
 
 - **Reference implementations (11):** Official reference code is **Rust**, **`no_std`** where practical, and **`forbid(unsafe_code)`**.
 

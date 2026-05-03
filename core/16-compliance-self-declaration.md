@@ -1,7 +1,7 @@
 # Pelorus Core — Compliance Self-Declaration
 
 **Version:** 0.1 Draft  
-**Last Updated:** April 26, 2026  
+**Last Updated:** May 3, 2026  
 **Status:** Pre-specification  
 **Trust:** Unverified
 
@@ -21,6 +21,12 @@ This document provides the manufacturer self-declaration template for Pelorus Co
 - Hardware Revision: _______________________________  
 - Firmware Version: _______________________________  
 - Date of Declaration: _______________________________  
+
+**Path redundancy (if applicable)**  
+- Node class: **Class S** / **Class D** / **Class H** (circle one; see **`core/17`** §4 and **`core/02`** §13)  
+- Criticality tier claimed for this product/install: **C2-only** / **includes C1** / **includes C0** (circle one; definitions in **`core/17`** §2)  
+- Critical zone map attached: **Yes** / **No** (required when **C0** or **C1** or **Class D**/**H** dual-bus is claimed — **`core/17`** §6)  
+- Dual-bus conformance tests (**`core/15`**, IDs prefixed **P-** and marked **(D)**): **executed** / **not applicable**
 
 **Declaration**
 
@@ -42,6 +48,7 @@ Specifically, the product has been verified to comply with the Pelorus Core docu
 - Firmware Design Requirements (`core/13-firmware-design-guide.md`)
 - Installation Requirements (`core/14-installation-guide.md`)
 - Conformance Test Plan (`core/15-conformance-test-plan.md`)
+- Criticality and Path Redundancy (`core/17-criticality-and-redundant-paths.md`) — **when dual-bus or C0/C1 is claimed**
 
 **Test Results**  
 All mandatory tests in `core/15-conformance-test-plan.md` were executed and passed. Test logs and results are available upon request.

@@ -1,6 +1,6 @@
 # Pelorus — architecture record
 
-**Last Updated:** April 28, 2026  
+**Last Updated:** May 3, 2026  
 **Status:** Living (non-normative)
 
 ## 1. Project
@@ -65,6 +65,8 @@ Weaknesses of [**Legacy Marine Data Ecosystem**](#lmde) that Pelorus addresses:
 ### [Core](./core/01-overview.md)
 
 **CAN FD fieldbus** for safety-critical instrumentation and controls. Application traffic is defined by Pelorus [**DCIDs**](./core/07-dcid-registry.md) — the wire contracts naming payloads and semantics on the bus—with selective wake groups and **M12 DeviceNet** physical plant.
+
+**Path redundancy:** Where **[criticality class](./core/17-criticality-and-redundant-paths.md)** **C0** or **C1** requires it, Pelorus Core uses **dual** independent CAN FD buses (**Bus A** / **Bus B**) with active-active replication and receiver duplicate discard (**[03 §6](./core/03-data-link-layer.md#6-path-redundancy-dual-bus)**). That is **orthogonal** to **repeater segmentation** (length and fault containment). **Reliability and durability** are ordered ahead of install convenience when they conflict (**[01 §6](./core/01-overview.md#6-design-principles)**).
 
 The rest of Pelorus stacks around **Core** as the authoritative source of wired device contracts; Stream and higher layers must not degrade Core when they fail.
 

@@ -1,7 +1,7 @@
 # Pelorus Core — Signal Catalog Specification
 
 **Version:** 0.1 Draft  
-**Last Updated:** May 2, 2026  
+**Last Updated:** May 3, 2026  
 **Status:** Pre-specification  
 **Trust:** Unverified
 
@@ -107,7 +107,15 @@ This approach enables clean bridging via gateways while keeping Pelorus itself a
 
 ---
 
-## 7. Tooling and Implementation
+## 7. Criticality classes and node class (not in `Vessel.*`)
+
+**C0 / C1 / C2** criticality and **Class S / D / H** node roles are **installation and product** attributes. They are **normative** in **[17-criticality-and-redundant-paths.md](./17-criticality-and-redundant-paths.md)** and **SHALL** appear in the **critical zone map** and conformance declaration (**16**) when path redundancy is claimed.
+
+The **`Vessel.*`** catalog **does not** add parallel branches for “criticality” in v0.1 — doing so would duplicate **17** and invite drift. Optional **overlay attributes** (e.g. `pelorus-criticality`) **may** be introduced later for tooling if they remain **derivable** from **17** and are documented in the overlay profile; until then, implementers **shall** treat **17** + declaration as authoritative.
+
+---
+
+## 8. Tooling and Implementation
 
 - Catalog source: `catalog/vessel.vspec` (plus overlay files)
 - Validation: `vss-tools` with Pelorus overlay profile
@@ -116,7 +124,7 @@ This approach enables clean bridging via gateways while keeping Pelorus itself a
 
 ---
 
-## 8. Open Items (to be resolved before v1.0 promotion)
+## 9. Open Items (to be resolved before v1.0 promotion)
 
 - Exact tree structure and initial signal set (target: cover all common marine data observed on a representative liveaboard vessel)
 - **Future** optional on-bus binding sync: DCID or NM/WUF payload format, publication cadence, and authority conflict rules when **07** / **04** allocate bits (**v1.0** remains **out of band** per **07** §4)

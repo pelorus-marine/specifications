@@ -1,7 +1,7 @@
 # Pelorus Core — Data Link Layer Specification
 
 **Version:** 0.1 Draft  
-**Last Updated:** April 26, 2026  
+**Last Updated:** May 3, 2026  
 **Status:** Pre-specification  
 **Trust:** Trusted
 
@@ -153,7 +153,9 @@ The following DCIDs and ranges are reserved for Pelorus Core protocol use and sh
 | 0x0EC00 | Transport Protocol – Connection Mgmt | This document §5 |
 | 0x0FF80 | Pelorus Wake-Up Group Frame | [04-power-management.md §7.1](./04-power-management.md) |
 | 0x0FF81 | Pelorus Network Management | [04-power-management.md §7.3](./04-power-management.md) |
-| 0x0FF82 – 0x0FF8F | Reserved for future Pelorus protocol use | — |
+| 0x0FF82 | Pelorus Bus Health (per **[07 §1.3](./07-dcid-registry.md#13-bus-health-dcid-0x0ff82)**) | [07](./07-dcid-registry.md), [17](./17-criticality-and-redundant-paths.md) |
+| 0x0FF83 | Pelorus Time Sync (optional; per **[07 §1.4](./07-dcid-registry.md#14-time-sync-dcid-0x0ff83-optional)**) | [07](./07-dcid-registry.md), [17](./17-criticality-and-redundant-paths.md) |
+| 0x0FF84 – 0x0FF8F | Reserved for future Pelorus protocol use | — |
 | 0x0EF00 – 0x0EFFF | Proprietary A (per-vendor, peer-to-peer) | Vendor-managed |
 | 0x0FF00 – 0x0FF7F | Proprietary B (per-vendor, broadcast) | Vendor-managed |
 
@@ -193,11 +195,71 @@ Pelorus Core does not implement the LMDE Fast Packet protocol. Senders shall not
 
 ---
 
-## 6. Error Handling
+## 6. Path redundancy (dual bus)
+
+Pelorus **path redundancy** uses two independent CAN FD media — **Bus A** and **Bus B** — in a **dual-bus domain** as defined in **[17-criticality-and-redundant-paths.md](./17-criticality-and-redundant-paths.md)**. **Segmentation** (repeaters, multiple segments) is orthogonal: each of Bus A and Bus B may comprise one or more segments per **08** / **10**.
+
+### 6.1 Normative goals
+
+- **Active-active:** Producers on **Class D** or **Class H** nodes **shall** transmit the same logical frame on both buses (same 29-bit identifier and same data field for that logical message), subject to **§6.5** bus-ID bit where applicable.
+- **Single logical delivery:** Receivers **shall** apply **duplicate discard** so each logical message is delivered to the application layer **once** per transmission instant.
+
+### 6.2 Exemptions from duplicate discard
+
+The following **shall not** pass through the duplicate-discard algorithm (each bus is processed independently for network-management correctness):
+
+- **Address Claimed** and all **address-management** traffic (DCID **0x0EE00**, Commanded Address **0xFED8**, and any future address-management DCIDs registered in **07**).
+- **Transport Protocol** frames (**0x0EB00**, **0x0EC00**) — reassembly **shall** occur per **§5** on each bus independently until a future revision defines TP-level deduplication.
+- **Wake-Up** (**0x0FF80**) and **Network Management** (**0x0FF81**) frames — processed independently on each bus.
+
+All other application DCIDs **shall** be subject to **§6.4** on receivers in dual-bus domains.
+
+### 6.3 PRH — Pelorus redundancy header (management DCIDs)
+
+For **Pelorus-defined** DCIDs **0x0FF82** (Bus Health) and **0x0FF83** (Time Sync), the data field layout **includes** a **PRH** as specified in **07**. Receivers **shall** use the **16-bit sequence** in the PRH for duplicate discard (**§6.4.1**).
+
+### 6.4 Duplicate discard algorithm
+
+Receivers in a dual-bus domain **shall** maintain a **Duplicate Discard Table (DDT)** with at most one entry per **source address** `S` that has been heard on either bus.
+
+#### 6.4.1 Entries keyed with PRH (DCIDs 0x0FF82, 0x0FF83)
+
+For each received frame of DCID **0x0FF82** or **0x0FF83** from source `S` with PRH sequence `N` received on bus `B` (`A` or `B`):
+
+1. If no DDT entry for `S` for this DCID: **accept**; create entry `(S, DCID, N, B, now)`.
+2. If entry exists:
+   - If `N == entry.last_sequence` **and** `(now - entry.last_seen_time) < DISCARD_WINDOW`: **discard** (duplicate).
+   - Else: **accept**; update entry to `(S, DCID, N, B, now)`.
+
+| Parameter | Value | Notes |
+|-----------|-------|--------|
+| `DISCARD_WINDOW` | **50 ms** | Minimum; implementations **may** use a larger window if local clock uncertainty exceeds **10 ms** relative to peer (see **17** / time sync). |
+| `NODE_FORGET_TIME` | **60 s** | Remove entry if no frame from `(S, DCID)` on either bus. |
+
+#### 6.4.2 Compatibility and other application DCIDs (no PRH)
+
+For frames **without** a PRH (including all **§2** compatibility layouts in **07** where Digital Annex byte positions are preserved), receivers **shall** use **payload-and-ID duplicate discard**:
+
+- Key: `(S, DCID, DLC, data[0..DLC-1])`.
+- On receive on bus `B`: if an entry exists for the same key from the **other** bus within `DISCARD_WINDOW`, **discard** this frame; else **accept** and record `(key, B, now)`.
+
+**Note:** Identical legitimate retransmissions of the **same** payload within `DISCARD_WINDOW` on one bus are rare for marine periodic data; if an application requires identical back-to-back payloads faster than `DISCARD_WINDOW`, it **shall** use a DCID or transport that carries an explicit sequence (future catalog overlay or Pelorus-native DCID).
+
+### 6.5 Multi-frame (J1939 TP) and duplicate discard
+
+Until a future revision specifies TP-level deduplication, receivers **shall** run **§5** reassembly **independently per bus** for TP traffic. Application consumers **should** merge only after complete reassembly and **may** treat identical completed messages from A and B within `DISCARD_WINDOW` as one logical delivery.
+
+### 6.6 Interaction with power management
+
+After any transition from **Sleep** or **Deep Sleep** to **Active** (per **04**), the node **shall** increment a **4-bit wake generation** counter (stored in non-volatile or retained RAM) exposed in Bus Health (**07**) when implemented; receivers **shall** invalidate all DDT entries for that source when the generation value changes. If generation is not yet implemented, receivers **shall** invalidate DDT entries for a source on **first** NM **Normal-Operation** indication after bus activity resumes (**04** §9). See **[04 §13](./04-power-management.md#13-path-redundancy-and-duplicate-discard-interaction-with-power-states)** (Path redundancy and duplicate-discard interaction with power states).
+
+---
+
+## 7. Error Handling
 
 CAN FD's error handling mechanisms (CRC, ACK, error frames, error counters per ISO 11898-1) operate unchanged on Pelorus Core. Application-level error handling is layered on top.
 
-### 6.1 Bus-Level Errors
+### 7.1 Bus-level errors
 
 The CAN controller handles:
 
@@ -209,7 +271,7 @@ The CAN controller handles:
 
 A node observing repeated errors transitions to error-passive and eventually bus-off per ISO 11898-1.
 
-### 6.2 Bus-Off Recovery
+### 7.2 Bus-off recovery
 
 A node entering bus-off shall:
 
@@ -219,19 +281,19 @@ A node entering bus-off shall:
 
 Pelorus does not specify additional bus-off recovery procedures. Implementations may add backoff or alarm signaling at the application layer.
 
-### 6.3 Application-Layer Error Handling
+### 7.3 Application-layer error handling
 
 The data link layer does not guarantee delivery of any single frame. Applications requiring guaranteed delivery must implement acknowledgement at the application layer. Pelorus does not provide a generic ACK mechanism.
 
 For periodic data (GNSS position, wind speed, depth), the natural retransmit cadence absorbs occasional frame loss. For commanded actions (autopilot setpoint changes, alarm acknowledgement), the originator should expect and verify a status response.
 
-### 6.4 Transmit Retry Policy
+### 7.4 Transmit retry policy
 
 Pelorus Core nodes shall use the CAN controller's automatic retransmission. Manual retry suppression is permitted only for time-critical messages where stale data is worse than no data (e.g., heading updates older than 100 ms should be discarded rather than retransmitted).
 
-### 6.5 Error Counters and Diagnostics
+### 7.5 Error counters and diagnostics
 
-Each Pelorus Core node shall expose, via a diagnostic DCID (assignment in [07-dcid-registry.md](./07-dcid-registry.md)):
+Each Pelorus Core node shall expose, via **[DCID 0x0FF82](./07-dcid-registry.md#13-bus-health-dcid-0x0ff82)** (Bus Health) when in a dual-bus domain, and **may** use additional diagnostic DCIDs registered in [07-dcid-registry.md](./07-dcid-registry.md):
 
 - TX error count
 - RX error count
@@ -242,28 +304,28 @@ This makes the network sailor-debuggable as required by [01-overview.md §6](./0
 
 ---
 
-## 7. Bus Arbitration
+## 8. Bus arbitration
 
 CAN FD arbitration uses the standard CSMA/CR (Carrier Sense Multiple Access with Collision Resolution by bitwise priority). The lowest numerical identifier wins arbitration.
 
-### 7.1 Arbitration Implications for Pelorus
+### 8.1 Arbitration implications for Pelorus
 
 - Priority 0 messages (WUF) preempt all other traffic
 - Priority 1–2 messages preempt routine sensor traffic
 - A node with low-priority bulk traffic must not starve higher-priority messages — implementations shall not back-pressure higher priorities
 
-### 7.2 Identifier Uniqueness
+### 8.2 Identifier uniqueness
 
 The full 29-bit identifier (priority + reserved + DP + PF + PS + SA) must be unique among messages active on the bus at any moment. Two nodes simultaneously transmitting the same identifier with different data is a CAN-level error and indicates an addressing conflict (handled per [05-addressing.md](./05-addressing.md)).
 
 ---
 
-## 8. Open Items
+## 9. Open items
 
 The following remain unresolved:
 
 - Final priority assignments for specific DCIDs (in [07-dcid-registry.md](./07-dcid-registry.md))
-- Diagnostic DCID definitions for error counter exposure
+- Additional diagnostic DCIDs beyond **0x0FF82** / **0x0FF83** for vendor-specific maintenance
 - Behavior under sustained bus saturation (denial-of-service mitigation)
 - Multi-frame message reassembly behavior across repeater hops (depends on [10-repeater-specification.md](./10-repeater-specification.md))
 - Whether Pelorus adopts J1939-21 TP unchanged or defines a CAN-FD-aware variant that uses 64-byte data frames natively

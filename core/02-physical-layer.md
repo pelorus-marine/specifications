@@ -1,7 +1,7 @@
 # Pelorus Core — Physical Layer Specification
 
 **Version:** 0.1 Draft  
-**Last Updated:** April 26, 2026  
+**Last Updated:** May 3, 2026  
 **Status:** Pre-specification  
 **Trust:** Trusted
 
@@ -459,7 +459,40 @@ The Pelorus project will maintain a reference implementation and compatibility t
 
 ---
 
-## 13. Open Items
+## 13. Path redundancy — Bus A and Bus B (dual-bus domain)
+
+Normative policy for **when** dual buses are required: **[17-criticality-and-redundant-paths.md](./17-criticality-and-redundant-paths.md)**. This section defines **physical** requirements for Bus A and Bus B on Pelorus Core.
+
+### 13.1 Electrical independence
+
+- **Bus A** and **Bus B** **shall** be separate **CAN_H / CAN_L** pairs (separate segment topology per bus), each with its own **split termination** per **§6**.
+- Neither bus **shall** share a single two-wire pair with the other; **Class D** devices **shall** use two independent transceivers (or an integrated dual-transceiver solution meeting the same isolation goals).
+
+### 13.2 Segment limits
+
+- **Each** of Bus A and Bus B **shall** observe the same per-segment limits as a single Pelorus backbone (**§5.2**, **[08-network-architecture.md](./08-network-architecture.md)**).
+- **Repeaters** apply **per bus**; hop counts and lengths are **not** shared across Bus A and Bus B.
+
+### 13.3 Node and port classes
+
+| Class | Physical requirement |
+|-------|----------------------|
+| **Class S** | One M12 A-coded Pelorus Core port (or one approved segment attachment) to **either** Bus A **or** Bus B. |
+| **Class D** | **Two** ports: one to Bus A, one to Bus B. **SHALL** use **two** M12 A-coded connectors **or** one integrated dual-port assembly until a future single-connector pinout is registered in this document. |
+| **Class H** | At minimum **two** backbone ports (Bus A, Bus B) plus one or more downstream segment ports per **[10-repeater-specification.md](./10-repeater-specification.md)**; galvanic isolation between downstream segments and between each backbone port as specified in **10**. |
+
+### 13.4 Connector strategy (v0.1)
+
+- **Interim mandatory profile for Class D:** **two** **M12 A-coded 5-pin** connectors, labeled **A** and **B** adjacent to each connector body.
+- A **future** single-connector dual-bus pinout **may** be added without removing the two-port option; until ratified, single-connector Class D is **not** Pelorus Core conformant.
+
+### 13.5 Power diversity (informative)
+
+- For **C0** / **C1** zones, **[17](./17-criticality-and-redundant-paths.md)** encourages independent protected feeds for the two transceiver supplies where the vessel design permits — see **14** for installation notes.
+
+---
+
+## 14. Open Items
 
 The following items are not yet specified and will be addressed in future revisions:
 
