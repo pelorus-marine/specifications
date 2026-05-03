@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- Workspace **`rust-version`** and pinned toolchain (**`rust-toolchain.toml`**) raised to **Rust 1.90.0**.
+
 ### Added
 
 - **`CONTRIBUTORS.md`** — credits and mission alignment (open, non-commercial, Rust tooling, safety); **`[workspace.package].authors`** on Rust crates.
