@@ -71,4 +71,4 @@ See **[`SPEC_BOOK.md`](./SPEC_BOOK.md)** for install and build instructions.
 
 Questions and PRs: [GitHub Issues](https://github.com/pelorus-marine/specifications/issues). Guidelines: [`CONTRIBUTING.md`](./CONTRIBUTING.md).
 
-Specifications: [CC BY 4.0](./LICENSE.md). Third-party names: [ARCHITECTURE §4](./ARCHITECTURE.md#4-trademarks-and-third-party-names). Pelorus branding on the website remains proprietary.
+Specifications: [CC BY 4.0](./LICENSE.md). Third-party names: [ARCHITECTURE §5](./ARCHITECTURE.md#5-trademarks-and-third-party-names). Pelorus branding on the website remains proprietary.

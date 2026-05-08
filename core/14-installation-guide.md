@@ -1,7 +1,7 @@
 # Pelorus Core — Installation Guide
 
 **Version:** 0.1 Draft  
-**Last Updated:** May 3, 2026  
+**Last Updated:** May 4, 2026  
 **Status:** Pre-specification  
 **Trust:** Unverified
 
@@ -95,6 +95,7 @@ For **C0** / **C1** zones per **17**:
 - **SHOULD** use separated cable trays / penetrations where feasible; crossing is acceptable only with mechanical protection documented in the map.
 - **SHOULD** use independent fused feeds to Bus A and Bus B power injection points when the vessel DC distribution supports it.
 - Commission Bus Health (**07** §1.3) on a test display before declaring the dual-bus domain complete.
+- **`DISCARD_WINDOW` sizing:** Verify the receiver `DISCARD_WINDOW` against **[03 §6.4.3](./03-data-link-layer.md#643-discard_window-lower-bound-formula)**: `DISCARD_WINDOW >= 2 * H * L_hop + 2 * D_clk + safety_margin`. Floor is **50 ms**. If the dual-bus domain has more than two hops on either bus, or no Time Master (**[07 §1.4](./07-dcid-registry.md#14-time-sync-dcid-0x0ff83-optional)**), use a larger value and record it in the **critical zone map** (**[17 §6](./17-criticality-and-redundant-paths.md#6-critical-zone-map-and-conformance)**).
 
 ---
 

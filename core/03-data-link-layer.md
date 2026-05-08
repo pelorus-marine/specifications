@@ -1,7 +1,7 @@
 # Pelorus Core — Data Link Layer Specification
 
 **Version:** 0.1 Draft  
-**Last Updated:** May 3, 2026  
+**Last Updated:** May 4, 2026  
 **Status:** Pre-specification  
 **Trust:** Trusted
 
@@ -214,9 +214,25 @@ The following **shall not** pass through the duplicate-discard algorithm (each b
 
 All other application DCIDs **shall** be subject to **§6.4** on receivers in dual-bus domains.
 
-### 6.3 PRH — Pelorus redundancy header (management DCIDs)
+### 6.3 PRH — Pelorus redundancy header (Pelorus-native DCIDs)
 
-For **Pelorus-defined** DCIDs **0x0FF82** (Bus Health) and **0x0FF83** (Time Sync), the data field layout **includes** a **PRH** as specified in **07**. Receivers **shall** use the **16-bit sequence** in the PRH for duplicate discard (**§6.4.1**).
+The **Pelorus Redundancy Header (PRH)** is a fixed 3-byte preamble used at the **start** of the CAN FD data field for **Pelorus-native broadcast** DCIDs that participate in **path redundancy**.
+
+**Layout (normative):**
+
+| Byte(s) | Field |
+|---------|--------|
+| 0–1 | **Sequence** — `uint16` little-endian; rolling counter per `(SA, DCID)`. |
+| 2 | **BusId_WakeGen** — bit **0**: Bus ID (**0** = Bus A, **1** = Bus B); bits **4–1**: Wake generation (**0–15**, per **[04 §13](./04-power-management.md#13-path-redundancy-and-duplicate-discard-interaction-with-power-states)**); bits **7–5**: reserved — transmit **`0`**, ignore on receive. |
+
+**Scope (normative):**
+
+- DCIDs **0x0FF82** (Bus Health) and **0x0FF83** (Time Sync) **shall** use this PRH; their full payload layouts are in **[07 §1.3 / §1.4](./07-dcid-registry.md#13-bus-health-dcid-0x0ff82)**.
+- Any **future** Pelorus-native broadcast DCID assigned in the range **`0x0FF84`–`0x0FFFF`** with a payload of **4 bytes or more** **shall** include this PRH at bytes **0–2** before its application fields. Pelorus-native DCIDs with payload **< 4 bytes** **may** omit the PRH (such DCIDs use **§6.4.2** payload-and-ID dedup).
+- **Compatibility DCIDs** (per **[07 §2](./07-dcid-registry.md)** — J1939 / NMEA-2000 heritage layouts) **shall not** carry a PRH; their bit layouts remain bound to the SAE J1939 Digital Annex and are deduplicated via **§6.4.2**.
+- **Reserved transport DCIDs** (**0x0EA00** request, **0x0EB00 / 0x0EC00** TP, **0x0EE00** address claim, **0x0FF80** WUF, **0x0FF81** NM) **shall not** carry a PRH; they are exempt from duplicate discard (**§6.2**).
+
+Receivers **shall** use the 16-bit sequence in the PRH for duplicate discard per **§6.4.1**.
 
 ### 6.4 Duplicate discard algorithm
 
@@ -233,7 +249,7 @@ For each received frame of DCID **0x0FF82** or **0x0FF83** from source `S` with 
 
 | Parameter | Value | Notes |
 |-----------|-------|--------|
-| `DISCARD_WINDOW` | **50 ms** | Minimum; implementations **may** use a larger window if local clock uncertainty exceeds **10 ms** relative to peer (see **17** / time sync). |
+| `DISCARD_WINDOW` | **50 ms** | **Minimum**; per-installation value **shall** satisfy the formula in **§6.4.3**. |
 | `NODE_FORGET_TIME` | **60 s** | Remove entry if no frame from `(S, DCID)` on either bus. |
 
 #### 6.4.2 Compatibility and other application DCIDs (no PRH)
@@ -245,13 +261,33 @@ For frames **without** a PRH (including all **§2** compatibility layouts in **0
 
 **Note:** Identical legitimate retransmissions of the **same** payload within `DISCARD_WINDOW` on one bus are rare for marine periodic data; if an application requires identical back-to-back payloads faster than `DISCARD_WINDOW`, it **shall** use a DCID or transport that carries an explicit sequence (future catalog overlay or Pelorus-native DCID).
 
+#### 6.4.3 `DISCARD_WINDOW` lower-bound formula
+
+For an installation with a maximum of `H` repeater / hub hops between any producer and any consumer on **either** bus (per **[08 §2](./08-network-architecture.md#2-multi-segment-networks-and-repeaters)**), declared per-hop maximum forwarding latency `L_hop`, and bounded inter-node clock drift `D_clk`, the configured `DISCARD_WINDOW` **shall** satisfy:
+
+```
+DISCARD_WINDOW >= 2 * H * L_hop  +  2 * D_clk  +  safety_margin
+```
+
+with **default** `safety_margin = 10 ms`. The **50 ms** value above is the absolute floor; a deeper or higher-drift installation **shall** use a larger value and document it in the **critical zone map** (**[17 §6](./17-criticality-and-redundant-paths.md#6-critical-zone-map-and-conformance)**).
+
+`D_clk` defaults to **10 ms** when **0x0FF83** Time Sync is implemented in the dual-bus domain per **[07 §1.4](./07-dcid-registry.md#14-time-sync-dcid-0x0ff83-optional)**; otherwise the installation **shall** declare a measured or worst-case `D_clk` and use the formula.
+
 ### 6.5 Multi-frame (J1939 TP) and duplicate discard
 
 Until a future revision specifies TP-level deduplication, receivers **shall** run **§5** reassembly **independently per bus** for TP traffic. Application consumers **should** merge only after complete reassembly and **may** treat identical completed messages from A and B within `DISCARD_WINDOW` as one logical delivery.
 
-### 6.6 Interaction with power management
+### 6.6 Interaction with power management and bus return
 
-After any transition from **Sleep** or **Deep Sleep** to **Active** (per **04**), the node **shall** increment a **4-bit wake generation** counter (stored in non-volatile or retained RAM) exposed in Bus Health (**07**) when implemented; receivers **shall** invalidate all DDT entries for that source when the generation value changes. If generation is not yet implemented, receivers **shall** invalidate DDT entries for a source on **first** NM **Normal-Operation** indication after bus activity resumes (**04** §9). See **[04 §13](./04-power-management.md#13-path-redundancy-and-duplicate-discard-interaction-with-power-states)** (Path redundancy and duplicate-discard interaction with power states).
+**Power-state transitions.** After any transition from **Sleep** or **Deep Sleep** to **Active** (per **04**), the node **shall** increment a **4-bit wake generation** counter (stored in non-volatile or retained RAM) exposed in Bus Health (**07**) when implemented; receivers **shall** invalidate all DDT entries for that source when the generation value changes. If generation is not yet implemented, receivers **shall** invalidate DDT entries for a source on **first** NM **Normal-Operation** indication after bus activity resumes (**04** §9). See **[04 §13](./04-power-management.md#13-path-redundancy-and-duplicate-discard-interaction-with-power-states)** (Path redundancy and duplicate-discard interaction with power states).
+
+**Bus return after a failed-bus interval.** When a previously failed bus (Bus A or Bus B) recovers and resumes carrying valid CAN FD traffic, receivers **shall**:
+
+1. **Accept** frames on the returning bus immediately and apply the normal **§6.4** duplicate-discard rules — there is **no** re-sync handshake or replay protocol in v1.0.
+2. **Not** treat sequence numbers or payloads observed on the returning bus as duplicates of frames already delivered from the surviving bus during the outage **unless** they fall inside the active `DISCARD_WINDOW` for the same `(S, DCID)` per **§6.4.1** / **§6.4.2**.
+3. Continue the existing **DDT** entries for sources whose **wake generation** has not changed; only invalidate when generation changes per the rule above.
+
+This makes bus return **transparent** to the application layer when failover convergence is met (**[17 §3.1](./17-criticality-and-redundant-paths.md#31-failover-convergence-c0--c1)**).
 
 ---
 

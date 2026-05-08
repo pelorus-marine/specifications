@@ -1,7 +1,7 @@
 # Pelorus Core — Criticality, Path Redundancy, and Dual-Bus Domains
 
 **Version:** 0.1 Draft  
-**Last Updated:** May 3, 2026  
+**Last Updated:** May 4, 2026  
 **Status:** Pre-specification  
 **Trust:** Unverified
 
@@ -84,6 +84,17 @@ When **Bus A** or **Bus B** is lost, powered down, or in bus-off:
 - **SHALL** set **operator-visible** fault indication (display annunciator, alarm DCID, or gateway UI — minimum one path per **15**) within **5 s** of detecting sustained loss of the peer bus (per **07** Bus Health DCID thresholds or controller error-passive / bus-off on the failed path).
 - **SHALL** continue to apply **duplicate discard** on the surviving bus so that when the failed bus returns, transient duplicates do not corrupt application state (**03**).
 
+### 3.1 Failover convergence (C0 / C1)
+
+For **C0** and **C1** producers transmitting **active-active** on both buses at their declared steady-state cadence:
+
+- **SHALL NOT** introduce an application-layer message gap, on a sustained single-bus failure, **larger than** `DISCARD_WINDOW + max(producer_period)` for any logical message that was being delivered immediately before the failure (**[03 §6](./03-data-link-layer.md#6-path-redundancy-dual-bus)**).
+- **SHALL NOT** require an operator action, restart, or re-binding to keep delivering messages on the surviving bus.
+- On **bus return** (peer bus recovers), the receiver **shall** resume normal duplicate discard without producing **false duplicates** for messages that were already delivered from the surviving bus during the outage (per **[03 §6.6](./03-data-link-layer.md#66-interaction-with-power-management-and-bus-return)**).
+- **Failover convergence** is a **conformance test** in **[15](./15-conformance-test-plan.md)** (P-03-005, P-03-006, P-17-002).
+
+This is the Pelorus equivalent of the “zero switchover time” property of IEC 62439-3 PRP / IEEE 802.1CB FRER, expressed in CAN FD terms.
+
 ---
 
 ## 4. Node and port classes (summary)
@@ -104,6 +115,10 @@ Path redundancy **alone** is insufficient for C0/C1. Where practical, installers
 
 - Route Bus A and Bus B along **physically separated** cable paths (different bundles, different penetrations where feasible); **shall not** claim full path redundancy if both buses share a **single** unprotected cable run through a single hazard zone without documenting the residual risk in the critical zone map.
 - Prefer **independent** protected feeds for transceiver / node power on Bus A vs Bus B when the vessel electrical design supports it (see **02** / **14**).
+
+### 5.1 Software / firmware common-mode (open item)
+
+Identical firmware on both transmit paths can produce identical incorrect data on **both** Bus A and Bus B; path redundancy does **not** mitigate this. v1.0 of this document does **not** require **dissimilar firmware** or **diversity-by-design** as a conformance gate. A future **C0 / SOLAS-aligned** profile may add such requirements (e.g. independent implementations or independent computation paths for safety-critical signals). Implementers targeting that future profile should design with diversity in mind today.
 
 ---
 
@@ -127,6 +142,19 @@ Path redundancy **alone** is insufficient for C0/C1. Where practical, installers
 - Harmonization with flag-state rules if **[Pelorus State](../stream/)** or a future state subsystem assigns regulatory **equipment classes**.
 - Minimum alarm DCID or UI channel for “degraded single-bus” (cross-reference **07** when assigned).
 - Interaction with **LMDE** bridging when one Pelorus bus is failed (**09**).
+- Diversity-by-design rules for a future **C0 / SOLAS-aligned** profile per **§5.1**.
+
+---
+
+## 9. Phased deployment (informative)
+
+Vessels and product lines may roll out path redundancy incrementally:
+
+- **Stage 0 — single-bus C2 only:** Existing single-bus Pelorus Core install. Declared as **“Pelorus Core, single-bus (C2-only)”** per **§6**. No dual-bus or **C0 / C1** claims.
+- **Stage 1 — dual bus in critical zones:** Add Bus B in helm, autopilot, and propulsion-alarm zones; upgrade nodes there to **Class D** or add a **Class H** hub for **Class S** sensors. Other zones remain single-bus C2. Critical zone map shows the boundary and **Class** of every Core-attached function.
+- **Stage 2 — vessel-wide dual bus:** All Core-attached devices on dual-bus, including comfort and logging signals upgraded to C2-on-dual-bus (allowed; never required).
+
+At any intermediate stage, the **declaration** in **[16-compliance-self-declaration.md](./16-compliance-self-declaration.md)** **shall** reflect the actual configuration; do **not** advertise dual-bus conformance for zones that have not yet been physically dual-routed.
 
 ---
 

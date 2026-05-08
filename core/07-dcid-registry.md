@@ -1,7 +1,7 @@
 # Pelorus Core — DCID Registry
 
 **Version:** 0.1 Draft  
-**Last Updated:** May 3, 2026  
+**Last Updated:** May 4, 2026  
 **Status:** Pre-specification  
 **Trust:** Unverified
 
@@ -54,7 +54,7 @@ These DCIDs are defined exclusively for Pelorus and ratify the candidates from *
 - **Priority:** 6 (same band as NM / diagnostics — see **[03 §3.3](./03-data-link-layer.md#33-priority-allocation)**)
 - **Type:** PDU2 broadcast
 - **Length:** 12 bytes (CAN FD single frame)
-- **Transmission:** Every **Class D** or **Class H** node in a **dual-bus domain** **shall** transmit this DCID on **each** bus independently at **2 s** nominal interval while **Active** (per **04**). **Class S** nodes **may** transmit on their attached bus only.
+- **Transmission:** Every **Class D** or **Class H** node in a **dual-bus domain** **shall** transmit this DCID on **each** bus independently at **2 s** nominal interval (tolerance **± 500 ms**) while **Active** (per **04**). **Class S** nodes **may** transmit on their attached bus only. In **degraded single-bus** state (peer bus silent), transmission **shall** continue on the **surviving** bus with `Bus state = 3 (Degraded-Single)`; transmission on the failed bus **shall** stop until that bus returns to a usable state.
 - **Purpose:** Operator-visible transceiver/controller health, duplicate-discard statistics, and wake-generation for **path redundancy** (**[17](./17-criticality-and-redundant-paths.md)**, **[03 §6](./03-data-link-layer.md#6-path-redundancy-dual-bus)**).
 
 **Wire layout (normative):**
@@ -76,7 +76,8 @@ These DCIDs are defined exclusively for Pelorus and ratify the candidates from *
 - **Priority:** 6  
 - **Type:** PDU2 broadcast  
 - **Length:** 8 bytes  
-- **Transmission:** If implemented, a designated **Time Master** node (gateway, hub, or GNSS-equipped device) **shall** transmit at **1 s** nominal while Active. Receivers **may** use this to tighten `DISCARD_WINDOW` uncertainty (**03** §6.4.1). **Stream**-layer time sync remains **[IEEE 802.1AS](https://standards.ieee.org/standard/802_1AS-2020.html)** where Ethernet is present — this DCID is **Core-only**.
+- **Transmission:** If implemented, a designated **Time Master** node (gateway, hub, or GNSS-equipped device) **shall** transmit at **1 s** nominal while Active. Receivers **may** use this to tighten `DISCARD_WINDOW` uncertainty (**03** §6.4.1 / §6.4.3). **Stream**-layer time sync remains **[IEEE 802.1AS](https://standards.ieee.org/standard/802_1AS-2020.html)** where Ethernet is present — this DCID is **Core-only**.
+- **C0 recommendation:** Dual-bus domains carrying **C0** traffic per **[17 §2.1](./17-criticality-and-redundant-paths.md#21-c0--safety-critical-path)** **should** include at least one **Time Master** so that the steady-state **inter-node clock drift** `D_clk` per **[03 §6.4.3](./03-data-link-layer.md#643-discard_window-lower-bound-formula)** can be bounded at **`<= 10 ms`**, allowing the recommended `50 ms` `DISCARD_WINDOW` to be used. If no Time Master is present, the install **shall** widen `DISCARD_WINDOW` per the formula in **03 §6.4.3** and document the chosen value in the critical zone map (**[17 §6](./17-criticality-and-redundant-paths.md#6-critical-zone-map-and-conformance)**).
 
 **Wire layout (normative):**
 
@@ -150,6 +151,7 @@ Assignment authority: Pelorus DCIDs are allocated in this registry. Future addit
 
 ## 5. Open Items (to be resolved before v1.0 promotion)
 
+- Future Pelorus-native broadcast DCIDs in **`0x0FF84`–`0x0FFFF`** with payload **>= 4 bytes** **shall** include the PRH defined in **[03 §6.3](./03-data-link-layer.md#63-prh--pelorus-redundancy-header-pelorus-native-dcids)** at bytes 0–2 of the data field; assignments here will state PRH usage explicitly.
 - Unify **CoreTime** (**§1.4**) with a future Pelorus-wide time scale (GNSS, **802.1AS** bridge, or `Vessel.*` signal)
 - Expand compatibility DCIDs beyond **§2** initial J1939 assignments (e.g. additional propulsion, navigation, environment PGNs; NMEA2000-specific mappings via gateway profiles)
 - Optional informative tables: preferred SA ranges per device class (non-normative supplement to **SAE J1939-81** NAME rules — does not replace **05** / **§2** NAME citations above)

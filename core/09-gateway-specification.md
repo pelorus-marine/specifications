@@ -1,7 +1,7 @@
 # Pelorus Core — Gateway Specification
 
 **Version:** 0.1 Draft  
-**Last Updated:** May 3, 2026  
+**Last Updated:** May 4, 2026  
 **Status:** Pre-specification  
 **Trust:** Unverified
 
@@ -92,7 +92,6 @@ The gateway shall expose:
 
 ## 7. Open Items (to be resolved before v1.0 promotion)
 
-- Normative **Stream→Core** injection when the target Core zone is dual-bus (which bus, or both) for **capable bidirectional gateway** tier (**§8**)
 - Optional **future** on-bus binding-table DCID or NM/WUF payload layout (v1.0 is **out of band** per **07** §4); delta encoding on Stream or diagnostic channel
 - Web UI wireframes and minimum feature set
 - Bridging conformance test plan for LMDE compatibility DCIDs
@@ -110,6 +109,19 @@ Pelorus Stream (Ethernet) is **non-safety-critical** and orthogonal to Core **CA
 - **Capable bidirectional gateway** — **Includes** standard-gateway behavior **and** an explicitly designed, enumerated, and conformance-tested **Stream→Core** injection path. Ordinary Stream publishers **must not** originate frames on the Core fieldbus; reverse bridging **only** traverses this tier.
 
 Wire formats and APIs on the Stream side of these bridges are specified under **`stream/`**; Core-side semantics remain DCID- and catalog-bound (**06**/**07**).
+
+### 8.1 Stream→Core injection on a dual-bus target zone (normative)
+
+When the target Core zone is a **dual-bus domain** per **[17](./17-criticality-and-redundant-paths.md)**, a **capable bidirectional gateway** **shall** inject the resulting Core frames so that **path redundancy is preserved**:
+
+- **Pelorus-native broadcast DCIDs** that carry a **PRH** (per **[03 §6.3](./03-data-link-layer.md#63-prh--pelorus-redundancy-header-pelorus-native-dcids)** / **[07 §1.3 / §1.4](./07-dcid-registry.md#13-bus-health-dcid-0x0ff82)**): inject the **same** logical frame on **both** Bus A and Bus B with **identical** SA, DCID, payload, and PRH sequence; the gateway **shall** maintain the rolling sequence per `(SA, DCID)` like any Class D producer.
+- **Compatibility DCIDs** (per **[07 §2](./07-dcid-registry.md)**) and other application DCIDs **without** a PRH: inject the **same** SA, DCID, DLC, and data field on **both** Bus A and Bus B; receivers apply **payload-and-ID** duplicate discard per **[03 §6.4.2](./03-data-link-layer.md#642-compatibility-and-other-application-dcids-no-prh)**.
+- **Exempt DCIDs** (address claim, TP, WUF, NM — **[03 §6.2](./03-data-link-layer.md#62-exemptions-from-duplicate-discard)**): each bus is treated independently; no replication coordination beyond standard gateway behavior.
+- If the gateway is attached to **only one** Pelorus bus in the target dual-bus domain, it **shall not** advertise full **Stream→Core dual-bus** capability for that domain; the limitation **shall** be documented in the **critical zone map** (**17 §6**).
+
+### 8.2 Stream-side path redundancy (informative cross-link)
+
+Stream-layer redundancy is **out of scope** for this Core document. The recommended Stream-side mechanism is **[IEEE 802.1CB](https://standards.ieee.org/standard/802_1CB-2017.html)** (Frame Replication and Elimination for Reliability) on TSN Ethernet, with **[IEEE 802.1AS](https://standards.ieee.org/standard/802_1AS-2020.html)** for time synchronisation. Normative Stream-side wire format and gateway behavior live under **`stream/`**; Core only requires that Stream→Core injection respects **§8.1** above.
 
 ---
 

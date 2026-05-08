@@ -1,7 +1,7 @@
 # Pelorus Core — Repeater Specification
 
 **Version:** 0.1 Draft  
-**Last Updated:** May 3, 2026  
+**Last Updated:** May 4, 2026  
 **Status:** Pre-specification  
 **Trust:** Unverified
 
@@ -55,6 +55,25 @@ A **hub** is a repeater-class device that provides **at least two backbone ports
 ### 3.3 Fault containment
 
 - A short or stuck-dominant fault on a **downstream** segment **shall not** propagate to **either** backbone bus beyond what ISO 11898 fault confinement already imposes on the hub’s ports.
+
+### 3.4 Hub bidirectional duplicate discard
+
+A hub sees the **same logical frame** on **both** Bus A and Bus B whenever an upstream **Class D** producer (or another hub) is replicating active-active. To avoid double-injection onto downstream segments, a hub **shall** apply duplicate discard on its **backbone ingress** path before forwarding to downstream ports:
+
+- Maintain a **DDT** keyed per **[03 §6.4](./03-data-link-layer.md#64-duplicate-discard-algorithm)**, indexed across **both** Bus A and Bus B inputs.
+- For a downstream forwarding decision, **deliver one copy** of each logical message to each downstream segment within `DISCARD_WINDOW`; the second copy received from the peer backbone **shall be discarded** for downstream forwarding (the duplicate counter on the hub’s **0x0FF82** for that ingress bus is incremented per **[07 §1.3](./07-dcid-registry.md#13-bus-health-dcid-0x0ff82)**).
+- **Backbone-to-backbone** forwarding is **not** required (each backbone already carries its own copy from the producer); a hub **shall not** re-inject a Bus A frame onto Bus B or vice versa for **upstream** replication unless the originator is a **Class S** device on a downstream port (in which case **§3.1** applies).
+
+This rule applies to all DCIDs **subject to** duplicate discard (**§6.2** of **03**); exempt DCIDs (address claim, TP, WUF, NM) are forwarded independently per port as today.
+
+### 3.5 Hub bus-off and degraded backbone
+
+When one backbone port enters **bus-off** or sustained error-passive, the hub **shall**:
+
+- Continue forwarding between the **surviving backbone** and downstream segments so that downstream **Class S** devices remain reachable; this is a **degraded single-bus** path and **shall** be reflected in **0x0FF82** Bus Health on the surviving bus with `Bus state = Degraded-Single` (**[07 §1.3](./07-dcid-registry.md#13-bus-health-dcid-0x0ff82)**).
+- For frames sourced **from** a downstream **Class S** device that the hub would normally replicate to **both** backbones: continue replicating onto the **surviving** backbone; the missed-frame counter for the **failed** backbone in **0x0FF82** **shall** be incremented for each frame the hub could not forward there.
+- **Not** buffer cross-forwarded frames longer than `DISCARD_WINDOW` while waiting for the failed backbone to recover; queued frames older than `DISCARD_WINDOW` **shall** be dropped (counter in **0x0FF82** for the failed bus).
+- Resume normal active-active replication on **bus return** without manual intervention, consistent with **[03 §6.6](./03-data-link-layer.md#66-interaction-with-power-management-and-bus-return)**. Duplicate discard handles transient duplicates during recovery.
 
 ---
 

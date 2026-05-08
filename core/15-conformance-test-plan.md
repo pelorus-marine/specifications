@@ -1,7 +1,7 @@
 # Pelorus Core — Conformance Test Plan
 
 **Version:** 0.1 Draft  
-**Last Updated:** May 3, 2026  
+**Last Updated:** May 4, 2026  
 **Status:** Pre-specification  
 **Trust:** Unverified
 
@@ -54,6 +54,9 @@ Tests marked **(D)** apply only to dual-bus / path-redundancy declarations.
 | **P-03-002 (D)** | Same SA+DCID+payload compatibility frame on A then B within `DISCARD_WINDOW` | One delivery to app layer |
 | **P-03-003** | Address Claimed on both buses (D) | DUT processes both claims independently (**03** §6.2 exemption) |
 | **P-03-004 (D)** | Increment Bus Health sequence; resend same sequence on second bus within `DISCARD_WINDOW` | Second copy discarded |
+| **P-03-005 (D)** | Failover under steady traffic: 10 Hz Class D producer, kill Bus A mid-stream | Receiver application layer sees no message gap larger than `DISCARD_WINDOW + 100 ms` (**[17 §3.1](./17-criticality-and-redundant-paths.md#31-failover-convergence-c0--c1)**) |
+| **P-03-006 (D)** | Bus return without false duplicates: restore Bus A after a 10 s outage while Bus B continues | Receiver does not re-deliver any message already accepted from Bus B during the outage; DDT entries remain valid (**[03 §6.6](./03-data-link-layer.md#66-interaction-with-power-management-and-bus-return)**) |
+| **P-03-007 (D)** | PRH 16-bit sequence wrap on 0x0FF82 (drive past 65535) | Receiver continues to apply duplicate discard correctly across wrap; no spurious duplicate suppression (**[03 §6.3 / §6.4.1](./03-data-link-layer.md#63-prh--pelorus-redundancy-header-pelorus-native-dcids)**) |
 
 ### 3.3 Addressing (**05**)
 
@@ -80,12 +83,15 @@ Tests marked **(D)** apply only to dual-bus / path-redundancy declarations.
 |----|---------------------|---------------|
 | **P-08-001** | Repeater between two segments | Valid frame from seg1 appears on seg2 unmodified identifier+data (**10** §1) |
 | **P-10-001 (D)** | Class S node on hub downstream; frame to hub | Identical frame on Bus A and Bus B backbones |
+| **P-10-002 (D)** | Two upstream Class D producers run active-active; one downstream Class S consumer attached to a hub | Class S receives **one** copy of each logical frame; hub increments duplicate counter on whichever ingress bus arrived second (**[10 §3.4](./10-repeater-specification.md#34-hub-bidirectional-duplicate-discard)**) |
+| **P-10-003 (D)** | Force one hub backbone port into bus-off while traffic continues | Hub continues forwarding between surviving backbone and downstream segments; 0x0FF82 on surviving bus reports `Bus state = Degraded-Single`; missed-frame counter for failed bus increments (**[10 §3.5](./10-repeater-specification.md#35-hub-bus-off-and-degraded-backbone)**) |
 
 ### 3.7 Criticality & declaration cross-check (**17**, **16**)
 
 | ID | Procedure (summary) | Pass criteria |
 |----|---------------------|---------------|
 | **P-17-001** | Review submitted critical zone map + declaration | C0/C1 zones show dual-bus where required; no undocumented single-bus C0 paths |
+| **P-17-002 (D)** | Review failover convergence claim against measured P-03-005 / P-03-006 logs | Declared maximum gap is consistent with **[17 §3.1](./17-criticality-and-redundant-paths.md#31-failover-convergence-c0--c1)** and matches measured worst-case |
 
 ---
 
@@ -96,11 +102,16 @@ Tests marked **(D)** apply only to dual-bus / path-redundancy declarations.
 | **02** §13 dual transceiver | P-02-003 |
 | **03** §6 duplicate discard | P-03-001, P-03-002, P-03-004 |
 | **03** §6.2 exemptions | P-03-003 |
+| **03** §6.3 PRH (sequence wrap) | P-03-007 |
+| **03** §6.6 bus return | P-03-006 |
 | **04** §13 wake generation | P-04-001 |
 | **05** §7 dual claim | P-05-002 |
 | **07** §1.3 Bus Health | P-07-001 |
-| **10** §3 hub replication | P-10-001 |
+| **10** §3.1 hub replication | P-10-001 |
+| **10** §3.4 hub bidirectional dedup | P-10-002 |
+| **10** §3.5 hub backbone bus-off | P-10-003 |
 | **17** §2–§6 | P-17-001 |
+| **17** §3.1 failover convergence | P-03-005, P-17-002 |
 
 Expand this matrix as additional **SHALL** statements are added to **02**–**17**.
 

@@ -1,7 +1,7 @@
 # Pelorus Core — Physical Layer Specification
 
 **Version:** 0.1 Draft  
-**Last Updated:** May 3, 2026  
+**Last Updated:** May 4, 2026  
 **Status:** Pre-specification  
 **Trust:** Trusted
 
@@ -489,6 +489,18 @@ Normative policy for **when** dual buses are required: **[17-criticality-and-red
 ### 13.5 Power diversity (informative)
 
 - For **C0** / **C1** zones, **[17](./17-criticality-and-redundant-paths.md)** encourages independent protected feeds for the two transceiver supplies where the vessel design permits — see **14** for installation notes.
+
+### 13.6 Bit rate and segment-length scope (v1.0)
+
+Pelorus Core v1.0 specifies **exactly one** profile: **250 kbit/s arbitration / 500 kbit/s data**, **30 m** maximum backbone per segment, **6 m** maximum stub, **50** nodes maximum per segment (per **§2** and **§5**). These limits derive from the **stub-loaded LMDE Micro** topology and CAN FD signal-integrity headroom on that physical plant; they are **not** a generic CAN FD length-vs-rate calculation.
+
+Tables that map a single **bit rate** to a single **maximum length** without modeling **stub count, stub length, node count, transceiver class, and termination quality** (such as the indicative table in [GitHub Issue #6 §2](https://github.com/pelorus-marine/specifications/issues/6)) **shall not** be used to override **§5** for v1.0. Higher data-phase rates (1 Mbit/s, 2 Mbit/s) — when introduced — will be defined as **named profiles** in a future revision, each with their own complete topology and timing budget.
+
+### 13.7 Patent / IP notice for active-active dual CAN FD (informative)
+
+Active-active dual-CAN-FD redundancy and SYNC-based active/backup CAN-FD redundancy variants are an active patent area. **GitHub Issue #6** cites **US Patent 12,567,994** as describing a SYNC-based active/backup variant. The Pelorus Core design specified in **§13** and **[03 §6](./03-data-link-layer.md#6-path-redundancy-dual-bus)** is **active-active without a SYNC channel**, and is intended to avoid that specific construct.
+
+This notice is informational; it does **not** constitute legal advice. Implementers planning **commercial** Pelorus-conformant hardware that implements path redundancy **should** perform their own patent landscape and freedom-to-operate review before product release, in addition to the **selective wake-up** patent review already required by **[04 §3](./04-power-management.md#3-patent-notice-read-first)**.
 
 ---
 

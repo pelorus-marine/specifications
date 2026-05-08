@@ -1,6 +1,6 @@
 # Pelorus — architecture record
 
-**Last Updated:** May 3, 2026  
+**Last Updated:** May 4, 2026  
 **Status:** Living (non-normative)
 
 ## 1. Project
@@ -109,9 +109,74 @@ Ethernet **non-safety-critical** layer for bandwidth-heavy traffic: **M12** D-co
 
 Logical **event → snapshot → situation → policy/intent** pipeline **above** Core and Stream, with **no** fieldbus or Ethernet I/O of its own.
 
+For a worked example of how Core and Stream sit together on a real vessel, see [§4 Sample combined network](#4-sample-combined-network--40-ft-sailing-yacht).
+
 ---
 
-## 4. Trademarks and third-party names
+## 4. Sample combined network — 40 ft sailing yacht
+
+This section is **non-normative**. It illustrates how the pieces in §3 fit together on a representative cruising sailing yacht (~40 ft / ~12 m). Numbers — counts of sensors, exact bus lengths, gateway placement — are illustrative; a real install is captured in a **critical zone map** per [`core/17 §6`](./core/17-criticality-and-redundant-paths.md#6-critical-zone-map-and-conformance).
+
+### 4.1 Vessel context and choices
+
+- One **dual-bus C0 zone** at the helm: autopilot, GNSS + heading, helm display, masthead wind. This is the only zone where loss of Core would imminently affect vessel control, so it gets **path redundancy** ([`core/17 §2.1`](./core/17-criticality-and-redundant-paths.md#21-c0--safety-critical-path)).
+- **Single-bus C2** everywhere else: engine telemetry, battery monitor, tank levels, cabin lighting state. Loss of these does not affect safe navigation; they share a single backbone (Bus A) that extends out from the helm zone.
+- One **standard gateway** ([`core/09 §8`](./core/09-gateway-specification.md#8-core--stream-coupling-gateway-tiers)) bridges Core onto Pelorus Stream and acts as binding authority. It is **Class D**, so it remains reachable on whichever bus survives in the helm zone.
+- **Pelorus Stream** carries non-safety media: cameras, NAS, a bridge tablet that subscribes to mirrored Core telemetry, and a Wi-Fi AP. Stream **does not** originate Core traffic — there is no capable bidirectional gateway here ([`core/09 §8`](./core/09-gateway-specification.md#8-core--stream-coupling-gateway-tiers); [`stream/01 §3.1`](./stream/01-overview.md#31-the-stream--core-boundary)).
+
+### 4.2 Topology diagram
+
+![Sample combined network topology — Pelorus Core + Stream on a 40 ft sailing yacht](./diagrams/topology.drawio.svg)
+
+> Diagram source: [`diagrams/topology.drawio.svg`](./diagrams/topology.drawio.svg). The file follows the `.drawio.svg` convention — a regular SVG image that is also editable in [draw.io](https://app.diagrams.net) (File → Open from device, or drag-drop). Plain text, lives alongside the spec, edits diff cleanly in git. The first time you save from draw.io, it will embed its own `<mxGraphModel>` source in the SVG's `content` attribute for full round-trip fidelity.
+>
+> **Legend.** `D` = Class D (dual transceiver), `S` = Class S (single), `H` = Class H (hub). Bus A is the single backbone outside the helm zone; Bus B exists only inside the helm dual-bus domain. Filled dots are bus taps.
+
+### 4.3 Walk-through — Core side
+
+| Where | Class | Criticality | What it does |
+|---|---|---|---|
+| Helm — autopilot ECU | **D** | **C0** | Closes the rudder loop on heading from the GNSS+heading unit; needs both buses to keep operating through a single-bus failure. |
+| Helm — GNSS + heading | **D** | **C0** | Primary nav source; replicates active-active on Bus A and Bus B with **PRH** in any future Pelorus-native broadcast DCID, payload-and-ID dedup for J1939 heritage messages ([`core/03 §6`](./core/03-data-link-layer.md#6-path-redundancy-dual-bus)). |
+| Helm — display | **D** | **C0** | Primary chartplotter / autopilot console. |
+| Helm — Class H hub | **H** | C0 (within helm) | Bridges the masthead **Class S** wind sensor into the dual-bus domain; applies bidirectional duplicate discard before forwarding upstream ([`core/10 §3.4`](./core/10-repeater-specification.md#34-hub-bidirectional-duplicate-discard)). On a hub backbone bus-off it surfaces `Bus state = Degraded-Single` in **0x0FF82** ([`core/10 §3.5`](./core/10-repeater-specification.md#35-hub-bus-off-and-degraded-backbone)). |
+| Masthead — wind sensor | **S** | informs C0 helm | Single cable down the mast; dual-bus visibility comes from the hub, not from the sensor itself. |
+| Engine bay — engine telemetry, battery monitor | **S** | **C2** | Informational; engine alarms / shutdown remain on the dedicated engine harness, not on Pelorus Core. |
+| Saloon — tank sensors, lighting state | **S** | **C2** | Comfort and logging. |
+| Helm — gateway | **D** | spans C0 + Stream | Standard gateway tier per [`core/09 §8`](./core/09-gateway-specification.md#8-core--stream-coupling-gateway-tiers); attaches to **both** Bus A and Bus B to remain reachable in degraded single-bus operation. |
+
+**Selected DCIDs in play.** [`core/07`](./core/07-dcid-registry.md):
+
+- **0x0FF82** — Bus Health, transmitted by every Class D / Class H node on each bus at 2 s ± 500 ms.
+- **0x0FF83** — Time Sync (optional). Recommended here since the helm zone is C0; the gateway acts as Time Master so `D_clk ≤ 10 ms` and the receiver `DISCARD_WINDOW = 50 ms` is sufficient ([`core/03 §6.4.3`](./core/03-data-link-layer.md#643-discard_window-lower-bound-formula)).
+- Compatibility DCIDs (J1939 heritage) for engine, heading, GNSS, etc. ([`core/07 §2`](./core/07-dcid-registry.md)) — replicated with identical SA/payload on Bus A and Bus B inside the helm zone, deduplicated by payload-and-ID ([`core/03 §6.4.2`](./core/03-data-link-layer.md#642-compatibility-and-other-application-dcids-no-prh)).
+
+### 4.4 Walk-through — Stream side
+
+- **PoE M12 D-coded switch** powers the cameras and Wi-Fi AP. The bridge tablet and the NAS sit on the same switch.
+- **Bridge tablet** subscribes to mirrored Core telemetry that the gateway publishes on Stream (Core → Stream, standard gateway tier). It is **read-only** — it cannot originate frames on Core ([`stream/01 §3.1`](./stream/01-overview.md#31-the-stream--core-boundary)).
+- **Cameras** stream live video to the NAS / bridge tablet over best-effort UDP (or QUIC for retained clips). They do not touch Core at all.
+- **Wi-Fi AP** is for cabin / crew devices; same isolation rules apply.
+
+### 4.5 What happens during a single-bus failure (helm zone)
+
+1. A connector on **Bus B** opens between the autopilot and the gateway.
+2. Class D nodes on the helm continue transmitting active-active; receivers on the helm zone now see only **Bus A** copies.
+3. The **DDT** on each receiver was already accepting one copy per logical frame, so application delivery is uninterrupted — no message gap larger than `DISCARD_WINDOW + max(producer_period)` ([`core/17 §3.1`](./core/17-criticality-and-redundant-paths.md#31-failover-convergence-c0--c1)).
+4. Bus Health on Bus A reports `Bus state = Degraded-Single`; the helm display lights an operator-visible annunciator within 5 s ([`core/17 §3`](./core/17-criticality-and-redundant-paths.md#3-degraded-mode-behavior-dual-bus-domain)).
+5. The single-bus C2 domain (engine, tanks, lighting) is unaffected — it was already on Bus A only.
+6. Stream is unaffected — its substrate is independent.
+7. When the connector is repaired, Bus B returns. Receivers accept frames on the returning bus and apply normal duplicate discard; no re-sync handshake ([`core/03 §6.6`](./core/03-data-link-layer.md#66-interaction-with-power-management-and-bus-return)).
+
+### 4.6 What this example deliberately does **not** show
+
+- **Class D mandate everywhere** — the C2 zone deliberately stays single-bus to keep cost and cabling proportionate to the safety case.
+- **Capable bidirectional gateway** — none here; the bridge tablet cannot drive helm or autopilot. Adding one is a future option for vessels that need Stream-originated Core writes and is gated by [`core/09 §8`](./core/09-gateway-specification.md#8-core--stream-coupling-gateway-tiers).
+- **Higher data rates** — v1.0 is a single named profile (250 / 500 kbit/s, 30 m / 6 m / 50 nodes per bus) per [`core/02 §13.6`](./core/02-physical-layer.md#136-bit-rate-and-segment-length-scope-v10). Higher rates will arrive as additional named profiles, not via a generic length-vs-rate scaling.
+
+---
+
+## 5. Trademarks and third-party names
 
 Pelorus is an independent open specification. **This is not legal advice**; consult counsel before shipping product packaging, marketing, or certifications that cite other organizations’ brands.
 
