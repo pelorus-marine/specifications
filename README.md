@@ -16,7 +16,7 @@ Sailors deserve better. **Pelorus** exists to provide it.
 
 ## What it is
 
-Incumbent marine networking ([**LMDE**](./ARCHITECTURE.md#lmde) — *Legacy Marine Data Ecosystem*) works but sits behind certification gates, closed catalogs, and vendor-first incentives. **Pelorus** specifies an open stack sailors and builders can inspect, extend, and debug: power-aware **Pelorus Core** (CAN FD), **Pelorus Stream** (Ethernet, non-safety-critical media), and **Pelorus State** (coordination — planned), bridged sensibly to classical buses where needed.
+Incumbent marine networking ([**LMDE**](./ARCHITECTURE.md#lmde) — *Legacy Marine Data Ecosystem*) works but sits behind certification gates, closed catalogs, and vendor-first incentives. **Pelorus** specifies an open stack sailors and builders can inspect, extend, and debug: power-aware **Pelorus Core** (CAN FD), **Pelorus Stream** (Ethernet, non-safety-critical media), and **Pelorus State** (fused world-state — early draft), bridged sensibly to classical buses where needed.
 
 ---
 
@@ -24,9 +24,7 @@ Incumbent marine networking ([**LMDE**](./ARCHITECTURE.md#lmde) — *Legacy Mari
 
 **→ [`ARCHITECTURE.md`](./ARCHITECTURE.md)** — non-normative project record: why Pelorus exists, **LMDE** context and examples, Core / Stream / State roles, trademark and editorial rules.
 
-**→ [`PELORUS_ALIGNMENT.md`](./PELORUS_ALIGNMENT.md)** — traceability and feedback-loop rituals across specs, `platform`, ECDIS, and reference implementations (when those repos are checked out beside this one).
-
-Normative drafts live under **[`core/`](./core/)** and **[`stream/`](./stream/)** (each has a **`00-document-index.md`**). Cold start: [Core overview](./core/01-overview.md) · [Stream overview](./stream/01-overview.md). Track backlog and design threads on [**GitHub Issues**](https://github.com/pelorus-marine/specifications/issues).
+Normative drafts live under **[`core/`](./core/)**, **[`stream/`](./stream/)**, and **[`state/`](./state/)** (each has a **`00-document-index.md`**; State is the least mature). Cold start: [Core overview](./core/01-overview.md) · [Stream overview](./stream/01-overview.md) · [State overview](./state/01-overview.md). Track backlog and design threads on [**GitHub Issues**](https://github.com/pelorus-marine/specifications/issues).
 
 ---
 
@@ -48,7 +46,7 @@ Normative drafts live under **[`core/`](./core/)** and **[`stream/`](./stream/)*
 
 ## Releases
 
-Tagged snapshots for citations and tooling: **[GitHub Releases](https://github.com/pelorus-marine/specifications/releases)** · **[CHANGELOG.md](./CHANGELOG.md)**
+Tagged snapshots for citations and tooling: **[GitHub Releases](https://github.com/pelorus-marine/specifications/releases)**
 
 ---
 
