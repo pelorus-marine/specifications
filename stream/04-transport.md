@@ -4,7 +4,7 @@
 **Last Updated:** May 10, 2026
 **Trust:** Unverified
 
-QUIC over IPv6 link-local on a dual-fabric Ethernet plant. Datagram framing for unreliable streams; reliable QUIC streams for everything else. Dual-fabric state machine, deduplication, and recovery are in [`07-redundancy.md`](./07-redundancy.md). Service-level use of these primitives is in [`10-services-audio.md`](./10-services-audio.md) and [`11-services-nav.md`](./11-services-nav.md).
+QUIC over IPv6 link-local on a dual-fabric Ethernet plant. Datagram framing for unreliable streams; reliable QUIC streams for everything else. Dual-fabric state machine, deduplication, and recovery are in [`07-redundancy.md`](./07-redundancy.md). Service-level use of these primitives is in [`10-services-nav.md`](./10-services-nav.md).
 
 ## 1. QUIC as Single Transport
 
@@ -23,7 +23,7 @@ Pelorus Stream uses **QUIC v1 (RFC 9000)**. QUIC v2 (RFC 9369) is permitted for 
 
 ALPN identifier: `pelorus-stream/0.2`.
 
-There is no plain-UDP control plane and no multicast in v1.0. Fan-out (one publisher, many subscribers) is provided by **replication nodes** ([`11-services-nav.md`](./11-services-nav.md)), not by IP multicast.
+There is no plain-UDP control plane and no multicast in v1.0. Fan-out (one publisher, many subscribers) is provided by **replication nodes** ([`10-services-nav.md`](./10-services-nav.md)), not by IP multicast.
 
 ## 2. IPv6 Addressing
 

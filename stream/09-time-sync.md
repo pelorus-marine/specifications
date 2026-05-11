@@ -12,7 +12,7 @@ IEEE 802.1AS (gPTP) on the Stream Ethernet plant. The datagram header timestamp 
 
 Radar spoke timestamps must be accurate to better than one antenna beamwidth in time. At 24 RPM with a 2° beamwidth, this is ~1.4 ms. Sub-millisecond synchronisation is required. IEEE 802.1AS achieves sub-microsecond on commodity hardware.
 
-Class S nodes should implement gPTP where the service they participate in requires accurate timestamps. Stream services that do not require timestamps (audio playback over a single fabric) may run without gPTP, but the receiver shall mark the datagram header `time sync valid` flag (bit 0 of `Flags`) as 0 to inform the consumer.
+Class S nodes should implement gPTP where the service they participate in requires accurate timestamps. Stream services that do not require timestamps may run without gPTP, but the receiver shall mark the datagram header `time sync valid` flag (bit 0 of `Flags`) as 0 to inform the consumer.
 
 ## 2. Per-Fabric Operation
 

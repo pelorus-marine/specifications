@@ -71,13 +71,13 @@ A subscriber attaches by opening a QUIC connection to the publisher's link-local
 - Transitions to `ACTIVE` if this is the first subscriber.
 - Begins or continues payload emission on the QUIC connection.
 
-The first payload after a transition into `ACTIVE` may be a key/anchor PU defined per service (for audio see [`10-services-audio.md`](./10-services-audio.md)).
+The first payload after a transition into `ACTIVE` may be a key/anchor PU defined per service.
 
 ## 4. Active
 
 In `ACTIVE`, the publisher emits payloads at the cadence appropriate to the service. The session remains `ACTIVE` while at least one subscriber is attached or the publisher's policy keeps the stream alive without subscribers (default: drop to `IDLE-ATTACHED` after the last subscriber leaves).
 
-For high-fan-out services (radar video to multiple ECDIS displays), the publisher publishes once to a **Replication Node** ([`11-services-nav.md`](./11-services-nav.md)) and the Replication Node fans out to display subscribers; from the original publisher's perspective there is only one downstream subscriber.
+For high-fan-out services (radar video to multiple ECDIS displays), the publisher publishes once to a **Replication Node** ([`10-services-nav.md`](./10-services-nav.md)) and the Replication Node fans out to display subscribers; from the original publisher's perspective there is only one downstream subscriber.
 
 ## 5. Lease and Renewal
 
@@ -133,7 +133,7 @@ The "subscriber" in the publisher's table is identified by the QUIC connection. 
 
 ### 6.5 No Wildcard Subscriptions in v1.0
 
-A subscriber that wants every audio stream subscribes one-by-one, browsing mDNS as new streams appear.
+A subscriber that wants every stream of a given service type subscribes one-by-one, browsing mDNS as new streams appear.
 
 ## 7. Per-Stream State Object
 
@@ -154,7 +154,7 @@ Per-stream state is exposed as a CBOR map:
 
 This is the canonical state representation, published in two ways:
 
-- **Snapshot:** in any `state-update` message ([`12-events-and-errors.md`](./12-events-and-errors.md)) with the full map.
+- **Snapshot:** in any `state-update` message ([`11-events-and-errors.md`](./11-events-and-errors.md)) with the full map.
 - **Delta:** `state-update` with only changed keys (omission means unchanged).
 
 ### 7.1 Push and Pull
@@ -190,7 +190,7 @@ A publisher closes the session by:
 
 The Stream ID is now retired and shall not be reused.
 
-A publisher that exits without sending `closing` is permitted; subscribers detect this through QUIC connection close and the loss of mDNS announcements. Subscribers shall surface `publisher-disappeared` ([`12-events-and-errors.md`](./12-events-and-errors.md)) only after the lease has expired with no renewal traffic.
+A publisher that exits without sending `closing` is permitted; subscribers detect this through QUIC connection close and the loss of mDNS announcements. Subscribers shall surface `publisher-disappeared` ([`11-events-and-errors.md`](./11-events-and-errors.md)) only after the lease has expired with no renewal traffic.
 
 ## 9. Crash and Recovery
 

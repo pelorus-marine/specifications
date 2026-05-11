@@ -15,7 +15,6 @@ The reference Rust library that implements Pelorus Stream and the public API sur
 | `pelorus-stream-cbor` | Pelorus-CBOR-1 deterministic encoder/decoder | Planned |
 | `pelorus-stream-quic` | QUIC transport, dual-fabric connection management, datagram header | Planned |
 | `pelorus-stream-redundancy` | Dual-fabric state machine, DDT, RedBox primitives | Planned |
-| `pelorus-stream-audio` | Opus integration, format codes, frame helpers | Planned |
 | `pelorus-stream-radar` | Radar video and control framing | Planned |
 | `pelorus-stream-charts` | HTTP/3 client/server for S-100 distribution | Planned |
 | `pelorus-stream-discovery` | mDNS-SD service browse and advertise | Planned |
@@ -28,8 +27,8 @@ All Pelorus crates publish under the `pelorus-marine` GitHub organisation. Licen
 ## 2. Implementation Principles
 
 - **Rust 2024 edition** (or latest stable at release).
-- **`forbid(unsafe_code)`** at every crate root. Unsafe is permitted only behind FFI boundaries (e.g. `libopus`).
-- **`no_std`-friendly** for `pelorus-stream-id`, `pelorus-stream-cbor`, and on-wire types in `pelorus-stream-audio`. Transport, discovery, registry crates require `std`.
+- **`forbid(unsafe_code)`** at every crate root. Unsafe is permitted only behind FFI boundaries.
+- **`no_std`-friendly** for `pelorus-stream-id` and `pelorus-stream-cbor`. Transport, discovery, registry crates require `std`.
 - **No heap allocation in the realtime media path.** Buffers are pre-allocated; PUs are encoded into caller-provided slices.
 - **Async via `tokio` for `std` builds.** Embedded targets use `embassy` async or callback APIs.
 - **Determinism over cleverness.** Where the spec gives one canonical encoding, the library exposes one canonical encoder.
@@ -69,7 +68,6 @@ pub struct Publisher { /* ... */ }
 impl Publisher {
     pub fn new(node: NodeIdentity, fabric: FabricBindings) -> Result<Self>;
 
-    pub fn announce_audio(&mut self, format: AudioFormat, meta: AudioMetadata) -> Result<AudioStream>;
     pub fn announce_radar_video(&mut self, instance: u16, meta: RadarMetadata) -> Result<RadarVideoStream>;
     pub fn announce_telemetry(&mut self, meta: TelemetryMetadata) -> Result<TelemetryStream>;
     pub fn serve_charts(&mut self, root: &Path, meta: ChartMetadata) -> Result<ChartServer>;
@@ -78,7 +76,7 @@ impl Publisher {
 }
 ```
 
-`AudioStream`, `RadarVideoStream`, `TelemetryStream`, and `ChartServer` extend `Stream` with type-specific emit APIs.
+`RadarVideoStream`, `TelemetryStream`, and `ChartServer` extend `Stream` with type-specific emit APIs.
 
 ### 4.3 Subscriber
 
@@ -118,7 +116,7 @@ impl Registry {
 
 ### 4.5 Errors
 
-All public APIs return `Result<T, StreamError>` where `StreamError` carries the codes from [`12-events-and-errors.md`](./12-events-and-errors.md). Errors are non-exhaustive enums so adding new variants does not break callers.
+All public APIs return `Result<T, StreamError>` where `StreamError` carries the codes from [`11-events-and-errors.md`](./11-events-and-errors.md). Errors are non-exhaustive enums so adding new variants does not break callers.
 
 ## 5. Embedded Targets
 
@@ -127,8 +125,8 @@ All public APIs return `Result<T, StreamError>` where `StreamError` carries the 
 | Linux x86_64 (gateway, head units) | Primary |
 | Linux ARM (Raspberry Pi-class gateways) | Primary |
 | FreeBSD | Best-effort |
-| `no_std` ARM Cortex-M (embedded amplifiers) | Audio publish/subscribe only; no registry |
-| `no_std` ESP32 / similar Wi-Fi MCUs | Audio subscribe only |
+| `no_std` ARM Cortex-M (embedded sensors) | Publish/subscribe only; no registry |
+| `no_std` ESP32 / similar Wi-Fi MCUs | Subscribe only |
 
 Embedded targets ship as a profile that excludes the registry, full QUIC, and full mDNS responder. They depend on a gateway-class node to handle service discovery.
 

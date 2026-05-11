@@ -80,7 +80,7 @@ Level is advisory. A State subsystem aggregator may re-classify based on stream 
 
 ### 1.6 Persistence
 
-Stream does not persist events. Subscribers, the registry ([`08-discovery-and-registry.md §11`](./08-discovery-and-registry.md)), or the Pelorus State subsystem may keep ring buffers; Stream itself emits and forgets. The reference library shall offer at least a 256-event ring buffer for diagnostic UIs ([`13-lib.md`](./13-lib.md)).
+Stream does not persist events. Subscribers, the registry ([`08-discovery-and-registry.md §11`](./08-discovery-and-registry.md)), or the Pelorus State subsystem may keep ring buffers; Stream itself emits and forgets. The reference library shall offer at least a 256-event ring buffer for diagnostic UIs ([`12-lib.md`](./12-lib.md)).
 
 ## 2. Updates
 
@@ -103,9 +103,9 @@ Carries the new value of each mutable metadata field that has changed:
 ```cbor
 {
   "id": h'<sid>',
-  ? "name": "Saloon Speakers",
+  ? "name": "Bow Radar",
   ? "prio": 9,
-  ? "tags": ["entertainment", "saloon"],
+  ? "tags": ["nav", "bow"],
   ? "extra": {<merged extras>}
 }
 ```

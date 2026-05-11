@@ -65,7 +65,7 @@ Each pair of QUIC connections (A+B) to a given peer operates as a three-state ma
 
 - All data transmits on the surviving connection only.
 - Reliable streams: QUIC handles retransmission of unacknowledged data via connection migration. Application sees a brief stall (~1 RTT) then continuity. No data loss.
-- Alert generated: a fabric-failure event is published on the Stream Health service ([`11-services-nav.md`](./11-services-nav.md)).
+- Alert generated: a fabric-failure event is published on the Stream Health service ([`10-services-nav.md`](./10-services-nav.md)).
 
 ### 3.3 RECOVERING
 
@@ -115,7 +115,7 @@ For each received datagram from `(source, service, instance)` with sequence `N` 
 When a node reboots, its sequence numbers reset to 0. A receiver sees a sequence number far below the last accepted value:
 
 - If `last_seen` is older than `FORGET_TIMEOUT`: **accept** as a fresh start.
-- If `last_seen` is recent: flag as unexpected reset — may indicate a node fault. Log a `sequence-reset` event ([`12-events-and-errors.md`](./12-events-and-errors.md)) and accept the new sequence.
+- If `last_seen` is recent: flag as unexpected reset — may indicate a node fault. Log a `sequence-reset` event ([`11-events-and-errors.md`](./11-events-and-errors.md)) and accept the new sequence.
 
 ## 5. Stream RedBox
 
@@ -128,7 +128,7 @@ A RedBox shall:
 - Maintain DUAL_ACTIVE QUIC connections to upstream peers.
 - For each downstream Class S node, transmit identical datagrams on both fabrics with the same sequence numbers as the originator.
 - Apply DDT on its own ingress to avoid forwarding duplicates back.
-- Surface RedBox health on the Stream Health service ([`11-services-nav.md`](./11-services-nav.md)).
+- Surface RedBox health on the Stream Health service ([`10-services-nav.md`](./10-services-nav.md)).
 
 ## License
 

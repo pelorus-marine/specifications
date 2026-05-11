@@ -152,9 +152,9 @@ Capabilities are advertised in the mDNS TXT record (`caps=<hex>`), the `subscrib
 | 0 | `payload-cbor` | Sender supports CBOR control plane (always 1 in v1.0) |
 | 1 | `quic-datagrams` | Sender supports QUIC datagrams (RFC 9221) — always 1 in v1.0 |
 | 2 | `quic-reliable` | Sender supports QUIC reliable streams — always 1 in v1.0 |
-| 3 | `audio-opus-48k-mono` | Sender supports Opus 48 kHz mono |
-| 4 | `audio-opus-48k-stereo` | Sender supports Opus 48 kHz stereo |
-| 5 | `audio-opus-16k-narrowband` | Sender supports Opus 16 kHz narrowband (low-bandwidth voice) |
+| 3 | Reserved | Formerly `audio-opus-48k-mono`; audio is out of scope ([`01-overview.md §1`](./01-overview.md)) |
+| 4 | Reserved | Formerly `audio-opus-48k-stereo`; audio is out of scope |
+| 5 | Reserved | Formerly `audio-opus-16k-narrowband`; audio is out of scope |
 | 6 | `playback-control` | Sender accepts/sends playback control messages |
 | 7 | `metadata-update` | Sender emits/handles metadata updates |
 | 8 | `state-update` | Sender emits/handles state updates |
@@ -164,7 +164,7 @@ Capabilities are advertised in the mDNS TXT record (`caps=<hex>`), the `subscrib
 | 12 | `s100-charts` | Sender produces or consumes S-100 chart distribution |
 | 13 | Reserved | Formerly `ais-targets`; AIS lives on Core ([`10-services-nav.md`](./10-services-nav.md)) |
 | 14 | `nav-high-rate` | Sender produces or consumes high-rate nav |
-| 15 | `replication-node` | Sender is or supports a replication node ([`11-services-nav.md`](./11-services-nav.md)) |
+| 15 | `replication-node` | Sender is or supports a replication node ([`10-services-nav.md`](./10-services-nav.md)) |
 | 16–55 | Reserved future v1.x | |
 | 56–63 | Reserved future v2.x preview | |
 | 64+ | Vendor-defined | Paired with vendor identifier |
@@ -215,7 +215,7 @@ Within a single map, keys shall not mix integer and text.
 
 Decoders shall:
 
-- Reject any deviation from the rules in this section with a `decode-error` ([`12-events-and-errors.md`](./12-events-and-errors.md)).
+- Reject any deviation from the rules in this section with a `decode-error` ([`11-events-and-errors.md`](./11-events-and-errors.md)).
 - Reject duplicate keys.
 - Reject map keys in non-canonical order.
 - Ignore unknown text keys at the top level of message bodies.

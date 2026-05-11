@@ -28,7 +28,7 @@ Stream is **non–hard-real-time-control**. It may carry safety-relevant data th
 - Ordinary Stream endpoints shall not transmit on Core, originate Core frames, or hold authoritative Core resources.
 - Stream→Core injection is permitted only through a capable bidirectional gateway that explicitly implements and validates the Stream→Core policy surface (see [`core/09-network.md §6`](../core/09-network.md)).
 - Stream may read Core via the standard Core→Stream gateway path (gateway-published identity, mirrored telemetry).
-- Soft control on Stream (radar range/gain, audio playback volume) is permitted; hard actuator control is not.
+- Soft control on Stream (radar range/gain) is permitted; hard actuator control is not.
 
 A node that participates in both Core and Stream runs them as separate stacks with no shared safety-critical state.
 
@@ -51,13 +51,13 @@ A node that participates in both Core and Stream runs them as separate stacks wi
    └──────────────────────┘   └──────────────────────┘
 ```
 
-Stream emits events ([`12-events-and-errors.md`](./12-events-and-errors.md)) and exposes per-stream observable state ([`06-session-and-state.md`](./06-session-and-state.md)). The State subsystem subscribes, aggregates, and derives intents. Stream code shall not link or import State APIs; State imports Stream.
+Stream emits events ([`11-events-and-errors.md`](./11-events-and-errors.md)) and exposes per-stream observable state ([`06-session-and-state.md`](./06-session-and-state.md)). The State subsystem subscribes, aggregates, and derives intents. Stream code shall not link or import State APIs; State imports Stream.
 
 ## 4. Design Principles
 
 - **Non–hard-real-time-control.** Stream carries safety-relevant data; it does not carry actuator authority. See §2.
 - **State decides, Stream transports.** Prioritisation, suppression, and coordination are State concerns. Stream documents specify mechanism, not policy.
-- **One transport.** QUIC for everything. No bare UDP control plane, no multicast fan-out — fan-out is done by replication nodes ([`11-services-nav.md`](./11-services-nav.md)).
+- **One transport.** QUIC for everything. No bare UDP control plane, no multicast fan-out — fan-out is done by replication nodes ([`10-services-nav.md`](./10-services-nav.md)).
 - **Bounded latency over guaranteed delivery for media.** For radar video and high-rate nav, fresh data beats complete data.
 - **Discoverable, not configured.** Stream nodes appear via mDNS-SD with all the metadata a subscriber needs. Static configuration is permitted but never required.
 - **Dual fabric is the default.** Class D is the standard node profile; Class S is for non-safety auxiliary nodes only.

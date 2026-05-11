@@ -1,6 +1,6 @@
 # Pelorus — architecture record
 
-**Last Updated:** May 4, 2026  
+**Last Updated:** May 11, 2026  
 **Status:** Living (non-normative)
 
 ## 1. Project
@@ -64,7 +64,7 @@ Weaknesses of [**Legacy Marine Data Ecosystem**](#lmde) that Pelorus addresses:
 
 ### [Core](./core/01-overview.md)
 
-**CAN FD fieldbus** for safety-critical instrumentation and controls. Application traffic is defined by Pelorus [**DCIDs**](./core/07-dcid-registry.md) — the wire contracts naming payloads and semantics on the bus—with selective wake groups and **M12 DeviceNet** physical plant.
+**CAN FD fieldbus** for safety-critical instrumentation and controls. Application traffic is defined by Pelorus [**DCIDs**](./core/07-dcid-registry.md) — the wire contracts naming payloads and semantics on the bus—with selective wake groups and **M12 A-coded 5-pin** (per IEC 61076-2-101, identical to LMDE micro) physical plant.
 
 **Path redundancy:** Where **[criticality class](./core/08-redundancy.md)** **C0** or **C1** requires it, Pelorus Core uses **dual** independent CAN FD buses (**Bus A** / **Bus B**) with active-active replication and receiver duplicate discard (**[08 §6](./core/08-redundancy.md#6-active-active-transmission-and-duplicate-discard)**). That is **orthogonal** to **repeater segmentation** (length and fault containment). **Reliability and durability** are ordered ahead of install convenience when they conflict (**[01 §6](./core/01-overview.md#6-design-principles)**).
 
@@ -74,28 +74,20 @@ The rest of Pelorus stacks around **Core** as the authoritative source of wired 
 
 ### [Stream](./stream/01-overview.md)
 
-Ethernet **non-safety-critical** layer for bandwidth-heavy traffic: **M12** D-coded 100 Mbit/s, IPv6, discovery—a **transport** substrate, **not** an actuator or safety plane. Example use cases include:
+Ethernet **non-safety-critical** layer for bandwidth-heavy traffic: **M12 X-coded 8-pin** (per IEC 61076-2-109 with 802.3bt PoE), IPv6, discovery—a **transport** substrate, **not** an actuator or safety plane. Example use cases include:
 
 - Bridge monitoring
 - Engine diagnostics
 - Voyage data recording
-- Radar integration
+- Radar video and control
 - ECDIS connectivity
-- AIS data sharing
-- Remote vessel monitoring
-- Smart sensor networks
-- Autonomous navigation support
-- Cybersecure marine networking
-- Cloud data synchronization
-- Fleet management analytics
-- Real-time weather data integration
-- Port communication systems
-- Onboard IoT device integration
+- S-100 chart distribution
+- High-rate navigation data
+- Stream health monitoring
 - CCTV and video surveillance streaming
 - Docking and situational awareness cameras
-- Passenger infotainment systems
-- Distributed audio/music systems
-- Crew communication and video conferencing
+
+AIS targets are low-rate instrument data and live on Pelorus Core, not Stream (see [`stream/01-overview.md §1`](./stream/01-overview.md) and [`core/07-dcid-registry.md`](./core/07-dcid-registry.md)). Cabin audio, intercom, and entertainment are out of scope ([`stream/01-overview.md §1`](./stream/01-overview.md)).
 
 **Core stays authoritative** for safety-critical semantics.
 
@@ -107,7 +99,7 @@ Ethernet **non-safety-critical** layer for bandwidth-heavy traffic: **M12** D-co
 
 **Pelorus State** (when specified) coordinates priorities among publishers. Stream transports payloads; it does **not** replace Core as nautical truth.
 
-Logical **event → snapshot → situation → policy/intent** pipeline **above** Core and Stream, with **no** fieldbus or Ethernet I/O of its own.
+Logical **ingest → snapshot → situation → policy/intent** pipeline **above** Core and Stream, with **no** fieldbus or Ethernet I/O of its own.
 
 For a worked example of how Core and Stream sit together on a real vessel, see [§4 Sample combined network](#4-sample-combined-network--40-ft-sailing-yacht).
 
@@ -153,7 +145,7 @@ This section is **non-normative**. It illustrates how the pieces in §3 fit toge
 
 ### 4.4 Walk-through — Stream side
 
-- **PoE M12 D-coded switch** powers the cameras and Wi-Fi AP. The bridge tablet and the NAS sit on the same switch.
+- **PoE M12 X-coded switch** powers the cameras and Wi-Fi AP. The bridge tablet and the NAS sit on the same switch.
 - **Bridge tablet** subscribes to mirrored Core telemetry that the gateway publishes on Stream (Core → Stream, standard gateway tier). It is **read-only** — it cannot originate frames on Core ([`stream/01 §3.1`](./stream/01-overview.md#31-the-stream--core-boundary)).
 - **Cameras** stream live video to the NAS / bridge tablet over best-effort UDP (or QUIC for retained clips). They do not touch Core at all.
 - **Wi-Fi AP** is for cabin / crew devices; same isolation rules apply.

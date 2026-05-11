@@ -16,8 +16,6 @@ Each Pelorus Stream service has its own mDNS service type. Service catalog (v1.0
 | `_pelorus-radar-ctrl._quic.local` | QUIC reliable stream | Radar control commands |
 | `_pelorus-chart._quic.local` | QUIC reliable stream (HTTP/3) | S-100 chart file distribution |
 | `_pelorus-nav._quic.local` | QUIC datagram | High-rate navigation data |
-| `_pelorus-audio._quic.local` | QUIC datagram | Audio (Opus) |
-| `_pelorus-audio-ctrl._quic.local` | QUIC reliable stream | Audio playback control |
 | `_pelorus-stream-health._quic.local` | QUIC datagram | Stream node health reporting |
 | `_pelorus-replicator._quic.local` | QUIC datagram | Replication node fan-out |
 | `_pelorus-timesync._ptp.local` | IEEE 802.1AS | Time synchronisation (not QUIC) — see [`09-time-sync.md`](./09-time-sync.md) |
@@ -127,11 +125,11 @@ Two publishers attempting to claim the same service-instance name (different str
 A per-node software construct that:
 
 1. Listens to mDNS-SD for advertisements of every Pelorus service type.
-2. Subscribes opportunistically to `metadata-update` and `state-update` messages ([`12-events-and-errors.md`](./12-events-and-errors.md)) for streams it cares about.
+2. Subscribes opportunistically to `metadata-update` and `state-update` messages ([`11-events-and-errors.md`](./11-events-and-errors.md)) for streams it cares about.
 3. Maintains a local table keyed by Stream ID with the most recently observed metadata and state.
 4. Exposes that table to local applications, UIs, and the Pelorus State subsystem.
 
-Heads, gateways, and dedicated UI displays typically run a registry; bare audio publishers may not.
+Heads, gateways, and dedicated UI displays typically run a registry; bare publishers (e.g. single-purpose embedded sensors) may not.
 
 ### 11.1 Authority
 
@@ -181,7 +179,7 @@ There is no replication of registries in v1.0. Each registry constructs its own 
 
 ### 11.5 Application API
 
-The registry exposes a read-only API to local applications via the reference library ([`13-lib.md`](./13-lib.md)):
+The registry exposes a read-only API to local applications via the reference library ([`12-lib.md`](./12-lib.md)):
 
 | Operation | Description |
 |---|---|
