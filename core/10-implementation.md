@@ -17,6 +17,7 @@ The canonical Rust tree is `pelorus-marine/platform`. Logical components below m
 | `pelorus-address` | Address claiming and NAME handling | `platform/pelorus-core/dcid::protocol` (claim sequence TBD) | Partial |
 | `pelorus-catalog` | VSS catalog parsing, binding table, runtime mapping | `platform/pelorus-core/correlation` + `semantics`; VSS editor in `platform/pelorus-inspector` | Partial |
 | `pelorus-gateway` | Reference gateway firmware (bridge + web UI) | `reference-implementations/pelorus-gateway` (scaffold) | Scaffold |
+| `pelorus-vdr` | Reference voyage data recorder (MDF4 on Linux / A55) | `reference-implementations/pelorus-vdr` (scaffold) | Scaffold |
 | `pelorus-repeater` | Reference repeater firmware | TBD | Planned |
 
 Optional standalone `pelorus-*` package splits and crates.io releases are TBD; until then, consumers depend on `pelorus-marine/platform` and the semantic versioning of `pelorus-core` as the release unit.
