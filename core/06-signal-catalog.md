@@ -1,10 +1,10 @@
 # Pelorus Core — Signal Catalog
 
-**Version:** 0.2 Draft
-**Last Updated:** May 10, 2026
+**Version:** 0.3 Draft
+**Last Updated:** May 19, 2026
 **Trust:** Unverified
 
-The canonical semantic data model for Pelorus Core signals, expressed in COVESA VSS under a `Vessel.*` root. Protocol-agnostic: meaning, type, units, and instance binding live here; CAN FD wire contracts live in [`07-dcid-registry.md`](./07-dcid-registry.md).
+The canonical semantic data model for Pelorus Core signals, expressed in COVESA VSS under a `Vessel.*` root. Protocol-agnostic: meaning, type, units, and instance binding live here; Pelorus Data Contracts (DCs) and CAN FD wire contracts live in [`07-dcid-registry.md`](./07-dcid-registry.md).
 
 ## 1. Catalog Structure
 
@@ -28,7 +28,7 @@ Standard VSS `.vspec` (YAML) format:
 
 - **Branches** (structural nodes)
 - **Leaves** (signals) with mandatory attributes: `type`, `unit`, `description`, `min`/`max`/`enum`
-- **Pelorus overlay attributes** via vss-tools: `dcid`, `instance-field`, `pelorus-priority`
+- **Pelorus overlay attributes** via vss-tools: `data_contract` (references a `PelorusDC.<Name>`), `instance-field`, `pelorus-priority`
 
 ## 3. Instance Handling and Binding
 
@@ -40,9 +40,9 @@ Pelorus uses numeric indexed arrays as the canonical form:
 
 Named branches (Port/Starboard) are not used in the canonical catalog because they do not scale to boats with arbitrary numbers of identical devices.
 
-**Binding table.** The mapping `(Source Address + 64-bit NAME + DCID + DCID-internal instance field) → VSS array index [n]` is stored in a binding table. Sailor-assigned friendly labels ("Port Main", "Starboard", "Wing Engine #3", "Generator") live as metadata on each entry.
+**Binding table.** The mapping `(Source Address + 64-bit NAME + DC_ID + DC-internal instance field) → VSS array index [n]` is stored in a binding table. Sailor-assigned friendly labels ("Port Main", "Starboard", "Wing Engine #3", "Generator") live as metadata on each entry.
 
-**v1.0 distribution.** Binding-table contents are not defined for on-bus publication over Pelorus Core CAN in v1.0. Distribution is out of band: gateway/local configuration export, diagnostic session, Pelorus Stream, companion app, or NV backup restored by the operator. A future revision may assign a dedicated DCID or NM/WUF payload fields for binding sync.
+**v1.0 distribution.** Binding-table contents are not defined for on-bus publication over Pelorus Core CAN in v1.0. Distribution is out of band: gateway/local configuration export, diagnostic session, Pelorus Stream, companion app, or NV backup restored by the operator. A future revision may assign a dedicated DC or `PelorusDC.NetworkManagement` / `PelorusDC.WakeUp` payload fields for binding sync.
 
 ## 4. Fault Tolerance
 
@@ -51,28 +51,29 @@ The binding table must not create a single point of failure.
 - Any authorised role (primary gateway, secondary display head, diagnostic tool) can hold binding authority: merge edits in NV and distribute updates out of band.
 - Nodes that need semantics cache the latest binding table in their own non-volatile memory.
 - The primary gateway typically provides the web UI for editing/provisioning but is not required for continued Core operation.
-- If the gateway is absent or failed: Core raw DCID traffic continues unaffected; semantic consumers fall back to the last cached binding table (or to raw DCID + instance display); new devices join and transmit data immediately in raw mode.
+- If the gateway is absent or failed: Core raw DC traffic continues unaffected; semantic consumers fall back to the last cached binding table (or to raw `DC_ID` + instance display); new devices join and transmit data immediately in raw mode.
 - When a gateway or tool returns, it reapplies the authoritative table through the same out-of-band channels.
 
 ## 5. LMDE Compatibility
 
-Pelorus signals carry the same semantic information sailors already see on LMDE networks. Those semantics are exchanged on Classical CAN segments; Pelorus Core carries equivalent meaning in CAN FD frames where mapped. Gateways perform frame translation; the signal catalog and binding table describe meaning independent of which side produced the frame.
+Pelorus signals carry the same semantic information sailors already see on LMDE networks. Those semantics are exchanged on Classical CAN segments; Pelorus Core carries equivalent meaning in CAN FD frames where mapped. Gateways translate identifiers and reframe between formats; the signal catalog and binding table describe meaning independent of which side produced the frame.
 
-Where a Pelorus DCID transports data equivalent to fields commonly observed on LMDE buses, the correspondence is documented in [`07-dcid-registry.md`](./07-dcid-registry.md). These mappings derive from public observation of live networks and open-source reverse-engineering (e.g. canboat). Proprietary or vendor-specific extensions are not carried forward.
+Where a Pelorus DC corresponds to a legacy J1939 / NMEA 2000 message, the DC declares a `bridges[*]` entry naming the legacy identifier. Gateways use the bridge table to translate between the Pelorus DC_ID on Core and the legacy PGN on LMDE. These mappings derive from public observation of live networks and open-source reverse-engineering (e.g. canboat). Proprietary or vendor-specific extensions are not carried forward.
 
-## 6. DCID and VSS — Roles
+## 6. Three-Layer Roles
 
-| Layer | Responsibility | Authoritative in |
-|---|---|---|
-| **Semantics** | Units, types, valid range, human meaning, relationships | This document — `Vessel.*`, COVESA VSS syntax |
-| **Core wire contract** | Which CAN FD or Classical CAN message layout carries bits for a signal | [`07-dcid-registry.md`](./07-dcid-registry.md), compatibility tables, gateway behaviour |
-| **Instance binding** | Which physical device / bus instance maps to `Vessel.*[n]` | Binding table — out-of-band distribution for v1.0; see §3–4 |
-| **Pelorus Stream** | High-bandwidth or media sessions (UUIDv7 stream ID), not CAN frames | [`stream/`](../stream/) — metadata may reference `Vessel.*` paths |
+| Layer | Representation | Responsibility | Authoritative in |
+|---|---|---|---|
+| **Semantics** | `Vessel.*` path in COVESA VSS | Units, types, valid range, human meaning, relationships | This document |
+| **Data Contract** | `PelorusDC.<Name>` with `dc_id`, priority, payload layout, optional `bridges[*]` | Naming, prioritisation, payload bit layout, legacy-protocol bridging | [`07-dcid-registry.md`](./07-dcid-registry.md) |
+| **Wire** | 29-bit identifier `[PRIO 3b \| DC_ID 18b \| SA 8b]` | Bus arbitration, transmission, addressing | [`03-data-link.md §2`](./03-data-link.md) |
+| **Instance binding** | `(SA + NAME + DC_ID + DC-internal instance field) → VSS index` | Which physical device / bus instance maps to `Vessel.*[n]` | Binding table — out-of-band distribution for v1.0; see §3–4 |
+| **Pelorus Stream** | UUIDv7 stream ID, not a CAN frame | High-bandwidth or media sessions | [`stream/`](../stream/) — metadata may reference `Vessel.*` paths |
 
 Rules:
 
-- VSS does not define CAN bitpacking. The catalog points to a DCID; bitfields live in the DCID registry.
-- DCID does not define nautical meaning. Two signals with the same rough name in different namespaces must resolve to distinct `Vessel.*` leaves or explicit aliases.
+- VSS does not define CAN bitpacking. The catalog references a Pelorus DC via the `data_contract` overlay attribute; bit layouts live in the DC registry.
+- A DC does not define nautical meaning. Two signals with the same rough name in different namespaces must resolve to distinct `Vessel.*` leaves or explicit aliases.
 - Stream telemetry that mirrors Core quantities should carry the optional `vss` metadata key (full `Vessel.*` path) per [`stream/02-data-model.md`](../stream/02-data-model.md).
 
 ## 7. Criticality
@@ -106,7 +107,7 @@ Vessel:
         type: float
         unit: m/s
         description: Engine crankshaft rotational speed
-        dcid: 0xF004
+        data_contract: PelorusDC.EngineController1
         instance-field: engine-instance
 ```
 

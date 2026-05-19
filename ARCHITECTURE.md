@@ -64,7 +64,7 @@ Weaknesses of [**Legacy Marine Data Ecosystem**](#lmde) that Pelorus addresses:
 
 ### [Core](./core/01-overview.md)
 
-**CAN FD fieldbus** for safety-critical instrumentation and controls. Application traffic is defined by Pelorus [**DCIDs**](./core/07-dcid-registry.md) — the wire contracts naming payloads and semantics on the bus—with selective wake groups and **M12 A-coded 5-pin** (per IEC 61076-2-101, identical to LMDE micro) physical plant.
+**CAN FD fieldbus** for safety-critical instrumentation and controls. Application traffic is defined by Pelorus [**Data Contracts (DCIDs)**](./core/07-dcid-registry.md) — Pelorus-owned, named definitions with their own numeric DC_ID, payload bit layout, priority, and optional bridges to legacy J1939 / NMEA 2000 identifiers. Selective wake groups and **M12 A-coded 5-pin** (per IEC 61076-2-101, identical to LMDE micro) physical plant.
 
 **Path redundancy:** Where **[criticality class](./core/08-redundancy.md)** **C0** or **C1** requires it, Pelorus Core uses **dual** independent CAN FD buses (**Bus A** / **Bus B**) with active-active replication and receiver duplicate discard (**[08 §6](./core/08-redundancy.md#6-active-active-transmission-and-duplicate-discard)**). That is **orthogonal** to **repeater segmentation** (length and fault containment). **Reliability and durability** are ordered ahead of install convenience when they conflict (**[01 §6](./core/01-overview.md#6-design-principles)**).
 
@@ -129,7 +129,7 @@ This section is **non-normative**. It illustrates how the pieces in §3 fit toge
 | Where | Class | Criticality | What it does |
 |---|---|---|---|
 | Helm — autopilot ECU | **D** | **C0** | Closes the rudder loop on heading from the GNSS+heading unit; needs both buses to keep operating through a single-bus failure. |
-| Helm — GNSS + heading | **D** | **C0** | Primary nav source; replicates active-active on Bus A and Bus B with **PRH** in any future Pelorus-native broadcast DCID, payload-and-ID dedup for J1939 heritage messages ([`core/08 §6`](./core/08-redundancy.md#6-active-active-transmission-and-duplicate-discard)). |
+| Helm — GNSS + heading | **D** | **C0** | Primary nav source; replicates active-active on Bus A and Bus B with **PRH** in any future Pelorus-native broadcast Data Contract, payload-and-ID dedup for J1939 heritage messages ([`core/08 §6`](./core/08-redundancy.md#6-active-active-transmission-and-duplicate-discard)). |
 | Helm — display | **D** | **C0** | Primary chartplotter / autopilot console. |
 | Helm — Class H hub | **H** | C0 (within helm) | Bridges the masthead **Class S** wind sensor into the dual-bus domain; applies bidirectional duplicate discard before forwarding upstream ([`core/09 §3.3`](./core/09-network.md#33-hub-bidirectional-duplicate-discard)). On a hub backbone bus-off it surfaces `Bus state = Degraded-Single` in **0x0FF82** ([`core/09 §3.4`](./core/09-network.md#34-hub-bus-off-and-degraded-backbone)). |
 | Masthead — wind sensor | **S** | informs C0 helm | Single cable down the mast; dual-bus visibility comes from the hub, not from the sensor itself. |

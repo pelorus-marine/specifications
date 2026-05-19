@@ -1,7 +1,7 @@
 # Pelorus Core — Overview
 
-**Version:** 0.2 Draft
-**Last Updated:** May 10, 2026
+**Version:** 0.3 Draft
+**Last Updated:** May 19, 2026
 **Trust:** Trusted
 
 Entry point to the Pelorus Core specification. Normative requirements live in [`02`](./02-physical.md) onward.
@@ -12,7 +12,7 @@ The safety-critical CAN FD subsystem of the Pelorus marine data network. CAN FD 
 
 The high-bandwidth Ethernet counterpart is Pelorus Stream ([`stream/01-overview.md`](../stream/01-overview.md)).
 
-**LMDE** = Legacy Marine Data Ecosystem. Project code name for the incumbent J1939-on-Classical-CAN (CAN 2.0) marine instrumentation fieldbus and its physical plant. Pelorus Core uses CAN FD; it is not electrically interoperable with LMDE on the same wire, but reuses identifier layout, DCID numbering, transport, and addressing.
+**LMDE** = Legacy Marine Data Ecosystem. Project code name for the incumbent J1939-on-Classical-CAN (CAN 2.0) marine instrumentation fieldbus and its physical plant. Pelorus Core uses CAN FD; it is not electrically interoperable with LMDE on the same wire. Pelorus reuses the J1939 physical layer connector standard, address-claim protocol, and 64-bit NAME field, but defines its own Pelorus-native Data Contract ID namespace and multi-frame transport. Compatibility with legacy J1939 / NMEA 2000 messages is provided via gateway-mediated bridges declared in [`07-dcid-registry.md`](./07-dcid-registry.md).
 
 ## 2. Two-Layer Architecture
 
@@ -40,7 +40,7 @@ Detailed wire requirements: [`02-physical.md`](./02-physical.md), [`03-data-link
 
 Same connectors and cable, different frame format. Classical CAN nodes do not correctly receive CAN FD frames; cross-connecting cables produces a non-functional bus but does not damage equipment.
 
-A vessel typically runs both networks during transition, bridged by a gateway that performs frame-format translation, preserves DCID semantics, handles instance binding, and adapts rates. See [`09-network.md`](./09-network.md).
+A vessel typically runs both networks during transition, bridged by a gateway that translates identifiers via the bridge table in [`07-dcid-registry.md`](./07-dcid-registry.md), reframes between CAN FD and Classical CAN, handles instance binding, and adapts rates. See [`09-network.md`](./09-network.md).
 
 ## 5. Boundary with Pelorus Stream
 
@@ -58,7 +58,7 @@ Stream is non–hard-real-time-control: it carries safety-relevant but loss-tole
 
 ## 7. v1.0 Scope and Compatibility
 
-v1.0 covers Pelorus Core only. Permanent for v1.0: bit rate profile, connector type and pinout, frame format. Refining before v1.0 ships: power state model, DCID assignments, signal catalog.
+v1.0 covers Pelorus Core only. Permanent for v1.0: bit rate profile, connector type and pinout, frame format, wire identifier layout, Data Contract namespace structure. Refining before v1.0 ships: power state model, signal catalog.
 
 ## License
 

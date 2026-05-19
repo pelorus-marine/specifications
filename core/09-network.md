@@ -1,7 +1,7 @@
 # Pelorus Core — Network
 
-**Version:** 0.2 Draft
-**Last Updated:** May 10, 2026
+**Version:** 0.3 Draft
+**Last Updated:** May 19, 2026
 **Trust:** Unverified
 
 Network architecture, repeaters and hubs, and LMDE gateway behaviour. Single-segment limits and physical requirements are in [`02-physical.md`](./02-physical.md). Dual-bus topology and Class H rules live in [`08-redundancy.md`](./08-redundancy.md).
@@ -50,25 +50,25 @@ The hub shall not change the source address of replicated downstream traffic —
 
 ### 3.2 Hub-Generated Management Traffic
 
-- The hub shall transmit DCID 0x0FF82 (Bus Health) on each backbone port it serves.
-- The hub may implement DCID 0x0FF83 (Time Sync) on one or both buses.
+- The hub shall transmit `PelorusDC.BusHealth` on each backbone port it serves.
+- The hub may implement `PelorusDC.TimeSync` on one or both buses.
 
 ### 3.3 Hub Bidirectional Duplicate Discard
 
 A hub sees the same logical frame on both Bus A and Bus B whenever an upstream Class D producer is replicating active-active. To avoid double-injection onto downstream segments, a hub shall apply duplicate discard on its backbone ingress before forwarding to downstream ports:
 
 - Maintain a DDT keyed per [`08-redundancy.md §6.3`](./08-redundancy.md), indexed across both Bus A and Bus B inputs.
-- Deliver one copy of each logical message to each downstream segment within `DISCARD_WINDOW`; the second copy received from the peer backbone shall be discarded for downstream forwarding (the duplicate counter on the hub's 0x0FF82 for that ingress bus is incremented).
+- Deliver one copy of each logical message to each downstream segment within `DISCARD_WINDOW`; the second copy received from the peer backbone shall be discarded for downstream forwarding (the duplicate counter on the hub's `PelorusDC.BusHealth` for that ingress bus is incremented).
 - Backbone-to-backbone forwarding is not required (each backbone already carries its own copy from the producer); a hub shall not re-inject a Bus A frame onto Bus B or vice versa for upstream replication unless the originator is a Class S device on a downstream port (in which case §3.1 applies).
 
-This rule applies to all DCIDs subject to duplicate discard. Exempt DCIDs (address claim, TP, WUF, NM) are forwarded independently per port.
+This rule applies to all DCs subject to duplicate discard. Exempt DCs (address claim, multi-frame transport, `PelorusDC.WakeUp`, `PelorusDC.NetworkManagement`) are forwarded independently per port.
 
 ### 3.4 Hub Bus-Off and Degraded Backbone
 
 When one backbone port enters bus-off or sustained error-passive, the hub shall:
 
-- Continue forwarding between the surviving backbone and downstream segments so that downstream Class S devices remain reachable. This is reflected in 0x0FF82 Bus Health on the surviving bus with `Bus state = 3` (Degraded single-bus).
-- For frames sourced from a downstream Class S device that the hub would normally replicate to both backbones: continue replicating onto the surviving backbone; the missed-frame counter for the failed backbone in 0x0FF82 shall be incremented for each frame the hub could not forward there.
+- Continue forwarding between the surviving backbone and downstream segments so that downstream Class S devices remain reachable. This is reflected in `PelorusDC.BusHealth` on the surviving bus with `Bus state = 3` (Degraded single-bus).
+- For frames sourced from a downstream Class S device that the hub would normally replicate to both backbones: continue replicating onto the surviving backbone; the missed-frame counter for the failed backbone in `PelorusDC.BusHealth` shall be incremented for each frame the hub could not forward there.
 - Not buffer cross-forwarded frames longer than `DISCARD_WINDOW` while waiting for the failed backbone to recover; older queued frames shall be dropped.
 - Resume normal active-active replication on bus return without manual intervention; duplicate discard handles transient duplicates during recovery.
 
@@ -107,9 +107,10 @@ A vessel may have zero, one, or multiple gateways. Multiple gateways are support
 
 ### 5.2 Bridging Requirements
 
-- Terminate different physical layers correctly on each side (CAN FD vs Classical CAN). Translate between frame formats and multi-frame rules (LMDE Fast Packet vs Pelorus CAN FD and J1939 TP per [`03-data-link.md`](./03-data-link.md)).
-- Forward all valid Pelorus DCIDs (including WUF 0x0FF80 and NM 0x0FF81) transparently.
-- Map selected compatibility DCIDs from LMDE to the corresponding `Vessel.*` paths in the signal catalog ([`06-signal-catalog.md`](./06-signal-catalog.md), [`07-dcid-registry.md`](./07-dcid-registry.md)).
+- Terminate different physical layers correctly on each side (CAN FD vs Classical CAN). Translate between frame formats and multi-frame rules (LMDE Fast Packet vs Pelorus-native multi-frame transport per [`03-data-link.md §4`](./03-data-link.md)).
+- For each LMDE message bridged to Core, look up the corresponding Pelorus DC via the `bridges[*]` entry in [`07-dcid-registry.md`](./07-dcid-registry.md). Emit the Pelorus CAN FD frame using the DC's Pelorus-native wire identifier and the same payload bytes; the bit layout is preserved by registry constraint so payload passes through without parsing.
+- For each Pelorus DC bridged to LMDE, perform the inverse: emit the legacy CAN frame using the bridged identifier and the same payload bytes.
+- Forward Pelorus protocol DCs (`PelorusDC.WakeUp`, `PelorusDC.NetworkManagement`, etc.) only between Pelorus segments; they have no LMDE counterpart and shall not be emitted on the LMDE side.
 - Perform instance mapping using the current binding table.
 - Support both directions: legacy → Pelorus and Pelorus → legacy.
 - Preserve priority and timing where possible.
@@ -156,15 +157,15 @@ Pelorus Stream is non–hard-real-time-control and orthogonal to Core. Vessels i
 - **Standard gateway** — required capability to expose Core toward Stream: bridge Core-sourced telemetry, identity, and catalog-aligned metadata onto the Stream substrate (Core→Stream). The normal productised path.
 - **Capable bidirectional gateway** — includes standard-gateway behaviour plus an explicitly designed, enumerated, and conformance-tested Stream→Core injection path. Ordinary Stream publishers must not originate frames on the Core fieldbus; reverse bridging only traverses this tier.
 
-Wire formats and APIs on the Stream side of these bridges are specified under [`stream/`](../stream/); Core-side semantics remain DCID- and catalog-bound.
+Wire formats and APIs on the Stream side of these bridges are specified under [`stream/`](../stream/); Core-side semantics remain DC- and catalog-bound.
 
 ### 6.1 Stream→Core Injection on a Dual-Bus Target
 
 When the target Core zone is a dual-bus domain per [`08-redundancy.md`](./08-redundancy.md), a capable bidirectional gateway shall inject frames so path redundancy is preserved:
 
-- **Pelorus-native broadcast DCIDs that carry a PRH:** inject the same logical frame on both Bus A and Bus B with identical SA, DCID, payload, and PRH sequence; the gateway maintains the rolling sequence per `(SA, DCID)` like any Class D producer.
-- **Compatibility DCIDs and other application DCIDs without a PRH:** inject the same SA, DCID, DLC, and data field on both Bus A and Bus B; receivers apply payload-and-ID duplicate discard.
-- **Exempt DCIDs** (address claim, TP, WUF, NM): each bus is treated independently; no replication coordination beyond standard gateway behaviour.
+- **Pelorus-native broadcast DCs that carry a PRH:** inject the same logical frame on both Bus A and Bus B with identical SA, DC_ID, payload, and PRH sequence; the gateway maintains the rolling sequence per `(SA, DC_ID)` like any Class D producer.
+- **Compatibility DCs and other application DCs without a PRH:** inject the same SA, DC_ID, DLC, and data field on both Bus A and Bus B; receivers apply payload-and-ID duplicate discard.
+- **Exempt DCs** (address claim, multi-frame transport, `PelorusDC.WakeUp`, `PelorusDC.NetworkManagement`): each bus is treated independently; no replication coordination beyond standard gateway behaviour.
 - If the gateway is attached to only one Pelorus bus in the target dual-bus domain, it shall not advertise full Stream→Core dual-bus capability; the limitation shall be documented in the critical zone map.
 
 Stream-layer redundancy is out of scope for Core. Stream uses dual-fabric QUIC over Ethernet with IEEE 802.1AS time sync; Core only requires that Stream→Core injection respects §6.1 above.

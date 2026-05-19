@@ -1,10 +1,10 @@
 # Pelorus Core — Implementation Guide
 
-**Version:** 0.2 Draft
-**Last Updated:** May 10, 2026
+**Version:** 0.3 Draft
+**Last Updated:** May 19, 2026
 **Trust:** Unverified
 
-Non-normative guidance for building Pelorus Core hardware, firmware, and installations, plus the inventory of official reference implementations. Normative requirements live in [`02-physical.md`](./02-physical.md), [`03-data-link.md`](./03-data-link.md), [`04-power.md`](./04-power.md), [`05-addressing.md`](./05-addressing.md), [`06-signal-catalog.md`](./06-signal-catalog.md), [`07-dcid-registry.md`](./07-dcid-registry.md), [`08-redundancy.md`](./08-redundancy.md), and [`09-network.md`](./09-network.md). Where this guide says "shall," it restates a normative rule from one of those.
+Non-normative guidance for building Pelorus Core hardware, firmware, and installations, plus the inventory of official reference implementations. Normative requirements live in [`02-physical.md`](./02-physical.md), [`03-data-link.md`](./03-data-link.md), [`04-power.md`](./04-power.md), [`05-addressing.md`](./05-addressing.md), [`06-signal-catalog.md`](./06-signal-catalog.md), [`07-dcid-registry.md`](./07-dcid-registry.md), [`08-redundancy.md`](./08-redundancy.md), [`09-network.md`](./09-network.md), and [`12-firmware-update.md`](./12-firmware-update.md). Where this guide says "shall," it restates a normative rule from one of those.
 
 ## 1. Reference Implementations
 
@@ -12,9 +12,9 @@ The canonical Rust tree is `pelorus-marine/platform`. Logical components below m
 
 | Component | Purpose | Home | Maturity |
 |---|---|---|---|
-| `pelorus-dcid` | DCID encoding/decoding and validation | `platform/pelorus-core/dcid` | Evolving |
-| `pelorus-pm` | Power management state machine and selective wake-up | `platform/pelorus-core/dcid::wire` (full state machine TBD) | Partial |
-| `pelorus-address` | Address claiming and NAME handling | `platform/pelorus-core/dcid::protocol` (claim sequence TBD) | Partial |
+| `pelorus-dc` | Data Contract encoding/decoding and validation (wire identifier + payload bit layouts) | `platform/pelorus-core/dc` | Evolving |
+| `pelorus-pm` | Power management state machine and selective wake-up | `platform/pelorus-core/dc::wire` (full state machine TBD) | Partial |
+| `pelorus-address` | Address claiming and NAME handling | `platform/pelorus-core/dc::protocol` (claim sequence TBD) | Partial |
 | `pelorus-catalog` | VSS catalog parsing, binding table, runtime mapping | `platform/pelorus-core/correlation` + `semantics`; VSS editor in `platform/pelorus-inspector` | Partial |
 | `pelorus-gateway` | Reference gateway firmware (bridge + web UI) | `reference-implementations/pelorus-gateway` (scaffold) | Scaffold |
 | `pelorus-vdr` | Reference voyage data recorder (MDF4 on Linux / A55) | `reference-implementations/pelorus-vdr` (scaffold) | Scaffold |
@@ -98,16 +98,16 @@ A device or software component is conformant only if it passes the applicable te
 
 ### 3.2 Required State Machines
 
-- **Power management** ([`04-power.md`](./04-power.md)): Active / Standby / Sleep / Deep Sleep; selective wake-up via WUF (DCID 0x0FF80); PNC mask processing; NM (DCID 0x0FF81) transmission
+- **Power management** ([`04-power.md`](./04-power.md)): Active / Standby / Sleep / Deep Sleep; selective wake-up via `PelorusDC.WakeUp`; PNC mask processing; `PelorusDC.NetworkManagement` transmission
 - **Address claiming** ([`05-addressing.md`](./05-addressing.md)): Listen → Claim → Defend → Cannot Claim
-- **Binding table cache** ([`06-signal-catalog.md`](./06-signal-catalog.md)): receive, validate, cache the latest table; fallback to raw DCID + instance mode when cache invalid or absent
+- **Binding table cache** ([`06-signal-catalog.md`](./06-signal-catalog.md)): receive, validate, cache the latest table; fallback to raw DC_ID + instance mode when cache invalid or absent
 - **Repeater forwarding** ([`09-network.md`](./09-network.md)): transparent CAN FD frame forwarding with fault isolation
-- **Dual-bus receive** ([`08-redundancy.md`](./08-redundancy.md)) for Class D / Class H products: Duplicate Discard Table; single RX pipeline into application layer; Bus Health (0x0FF82) transmission and local error-counter sampling; degraded single-bus annunciation when peer bus silent
+- **Dual-bus receive** ([`08-redundancy.md`](./08-redundancy.md)) for Class D / Class H products: Duplicate Discard Table; single RX pipeline into application layer; `PelorusDC.BusHealth` transmission and local error-counter sampling; degraded single-bus annunciation when peer bus silent
 
 ### 3.3 Dual-Bus RX Implementation Patterns
 
 - **Peripheral layout:** prefer two independent CAN controllers (or controller + validated secondary) with separate transceivers; align RX timestamps to a common monotonic clock for `DISCARD_WINDOW`
-- **DDT storage:** fixed-size table indexed by SA (and DCID for PRH-capable messages); evict on wake-generation change or `NODE_FORGET_TIME` timeout
+- **DDT storage:** fixed-size table indexed by SA (and DC_ID for PRH-capable messages); evict on wake-generation change or `NODE_FORGET_TIME` timeout
 - **Logging:** rate-limit duplicate-discard and sequence-gap logs; surface saturating counters in Bus Health payload
 
 ### 3.4 CAN FD Driver
@@ -179,8 +179,8 @@ For C0 / C1 zones per [`08-redundancy.md`](./08-redundancy.md):
 - Run two independent backbone pairs (Bus A, Bus B) per [`08-redundancy.md §4`](./08-redundancy.md). Do not route both through a single unprotected bundle through a single hazard zone without documenting residual risk on the critical zone map.
 - Use separated cable trays / penetrations where feasible; crossing is acceptable only with mechanical protection documented in the map.
 - Use independent fused feeds to Bus A and Bus B power injection points when vessel DC distribution supports it.
-- Commission Bus Health (DCID 0x0FF82) on a test display before declaring the dual-bus domain complete.
-- **`DISCARD_WINDOW` sizing:** verify against the formula in [`08-redundancy.md §6.3.3`](./08-redundancy.md). Floor is 50 ms. If the domain has more than two hops on either bus, or no Time Master (DCID 0x0FF83), use a larger value and record it in the critical zone map.
+- Commission `PelorusDC.BusHealth` on a test display before declaring the dual-bus domain complete.
+- **`DISCARD_WINDOW` sizing:** verify against the formula in [`08-redundancy.md §6.3.3`](./08-redundancy.md). Floor is 50 ms. If the domain has more than two hops on either bus, or no Time Master (`PelorusDC.TimeSync`), use a larger value and record it in the critical zone map.
 
 ### 4.8 Troubleshooting
 

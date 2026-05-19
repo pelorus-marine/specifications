@@ -62,27 +62,22 @@ Vessel-wide mode transitions ("weighing anchor") are coordinated by the gateway:
 
 ## 4. Reserved Identifiers and Data Conventions
 
-### 4.1 WUF (DCID 0x0FF80)
+### 4.1 `PelorusDC.WakeUp`
 
 | Field | Value |
 |---|---|
+| DC_ID | `0x00001` |
 | Priority | 0 (highest) |
-| Reserved + DP | 0 |
-| PF | 0xFF (PDU2 broadcast) |
-| PS | 0x80 |
 | Source Address | originator's claimed address |
-| DCID | 0x0FF80 |
 
 DLC = 8. Byte 0 carries the marine functional-group bitmask (§3, lowest six bits; bits 6–7 of byte 0 reserved, transmit zero). Bytes 1–7 reserved — transmit `0x00`, ignore on receive.
 
-### 4.2 NM (DCID 0x0FF81)
+### 4.2 `PelorusDC.NetworkManagement`
 
 | Field | Value |
 |---|---|
+| DC_ID | `0x00002` |
 | Priority | 6 (below safety-critical) |
-| PF | 0xFF (PDU2 broadcast) |
-| PS | 0x81 |
-| DCID | 0x0FF81 |
 
 DLC = 8. Layout:
 

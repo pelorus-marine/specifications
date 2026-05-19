@@ -66,19 +66,19 @@ These standards apply to Rust reference implementations that live in their own r
 ## Specification Changes
 
 - Specification changes are treated as normative and require careful review.
-- If your change affects any numbered document (01–16), you must also update the corresponding section in `core/00-document-index.md`.
+- If your change affects any numbered document (00–12), you must also update the corresponding section in `core/00-document-index.md`.
 - Major architectural proposals must be discussed in an issue first.
 
-### DCID numbering, registry, and VSS linkage
+### Data Contract registry and VSS linkage
 
-Any change that **alters DCID assignment, DCID versioning, or the semantic meaning of the `dcid` overlay attribute** must be submitted as **one coherent Pull Request** that updates together:
+Any change that **alters Data Contract assignment, DC_ID allocation, bridge mappings, or the semantic meaning of the `data_contract` overlay attribute** must be submitted as **one coherent Pull Request** that updates together:
 
 - [`core/07-dcid-registry.md`](./core/07-dcid-registry.md)
-- [`core/06-signal-catalog.md`](./core/06-signal-catalog.md) §6 (and any affected `catalog/` entries)
+- [`core/06-signal-catalog.md`](./core/06-signal-catalog.md) §6 (and any affected `catalog/vessel.vspec` or `catalog/contracts/*.yaml` entries)
 - [`stream/01-overview.md`](./stream/01-overview.md) §3.3 if Stream–Core identifier narrative is affected
-- Any machine-readable **DCID contract** artifact that ships in-repo (schema, registry snapshot, generated bundle for compilers or gateways) — **update or re-version it in this same PR** when DCID assignment or semantics change. There is no separate generator committed yet; when one lands, this rule still applies.
+- Any machine-readable **Data Contract** artifact that ships in-repo (schema, registry snapshot, generated bundle for compilers or gateways) — **update or re-version it in this same PR** when DC assignment, payload layout, or bridges change. There is no separate generator committed yet; when one lands, this rule still applies.
 
-Rationale: prevents gateways, compilers, and docs from drifting out of sync. Exploratory DCID structure belongs in [Issue #3](https://github.com/pelorus-marine/specifications/issues/3) until promoted into **07**.
+Rationale: prevents gateways, compilers, and docs from drifting out of sync. Exploratory DC structure belongs in [Issue #3](https://github.com/pelorus-marine/specifications/issues/3) until promoted into **07**.
 
 ---
 
