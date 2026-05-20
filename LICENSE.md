@@ -69,4 +69,4 @@ This license does **not** apply to:
 
 ## Patent Notice
 
-This license does not grant patent rights. Specifically, ISO 11898-2:2016 discloses patents covering the selective wake-up function held by various automotive industry organizations. See [04-power-management.md](./core/04-power-management.md) §3 for details. Implementers are responsible for their own patent due diligence.
+This license does not grant patent rights. Specifically, ISO 11898-2:2016 discloses patents covering the selective wake-up function held by various automotive industry organizations. See [04-power.md](./core/04-power.md) §1 for details. Implementers are responsible for their own patent due diligence.

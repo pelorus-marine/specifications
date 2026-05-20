@@ -180,7 +180,7 @@ The signing scheme is **Ed25519 over the entire manifest excluding the `signatur
 
 Sub-state codes are status-specific:
 
-For `ManifestRejected` (`0x03`): `0x01` SignatureInvalid · `0x02` DeviceKindMismatch · `0x03` HardwareRevisionTooOld · `0x04` UnknownKeyId · `0x05` MalformedManifest.
+For `ManifestRejected` (`0xE0`): `0x01` SignatureInvalid · `0x02` DeviceKindMismatch · `0x03` HardwareRevisionTooOld · `0x04` UnknownKeyId · `0x05` MalformedManifest.
 
 For `TransferFailed` (`0xE1`): mirrors `PelorusDC.MultiFrameControl` reason codes from [`03-data-link.md §4.6`](./03-data-link.md).
 

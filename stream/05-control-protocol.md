@@ -97,9 +97,7 @@ Unknown integer keys shall be ignored by receivers (forward compatibility).
 
 ## 4. Idempotency and Acknowledgement
 
-`subscribe`, `unsubscribe`, `play`, `pause`, `set-volume`, and `metadata-update` are **idempotent** at the protocol level. A receiver applying a duplicate shall apply it as if it were the first.
-
-`seek` is **not** idempotent — the same seek-target arriving twice may or may not be a no-op depending on intervening state changes.
+`subscribe`, `unsubscribe`, and `metadata-update` are **idempotent** at the protocol level. A receiver applying a duplicate shall apply it as if it were the first.
 
 `event` and `state-update` are **monotonic** — receivers de-duplicate by `seq`.
 
@@ -107,7 +105,6 @@ Unknown integer keys shall be ignored by receivers (forward compatibility).
 |---|---|
 | `subscribe` | Yes — `subscribe-ack` within 1 s |
 | `unsubscribe` | No |
-| `play` / `pause` / `seek` / `set-volume` | No — observed via `state-update` if present |
 | `radar-control` | Yes — QUIC reliable stream guarantees delivery; explicit `state-update` echo expected |
 | `closing` | No |
 | Others | No |
@@ -155,7 +152,7 @@ Capabilities are advertised in the mDNS TXT record (`caps=<hex>`), the `subscrib
 | 3 | Reserved | Formerly `audio-opus-48k-mono`; audio is out of scope ([`01-overview.md §1`](./01-overview.md)) |
 | 4 | Reserved | Formerly `audio-opus-48k-stereo`; audio is out of scope |
 | 5 | Reserved | Formerly `audio-opus-16k-narrowband`; audio is out of scope |
-| 6 | `playback-control` | Sender accepts/sends playback control messages |
+| 6 | Reserved | Formerly `playback-control`; audio/media playback is out of scope |
 | 7 | `metadata-update` | Sender emits/handles metadata updates |
 | 8 | `state-update` | Sender emits/handles state updates |
 | 9 | `event-stream` | Sender emits/handles `event` messages |

@@ -61,8 +61,8 @@ There is no PDU1/PDU2 distinction, no R bit, no DP bit. A Data Contract that nee
 | 29-bit identifier | PRIO | DC_ID | SA | Pelorus DC |
 |---|---|---|---|---|
 | `0b000_000000000000000001_00000011` | 0 | `0x00001` | `0x03` | `PelorusDC.WakeUp` |
-| `0b110_000000000000000101_00000002` | 6 | `0x00005` | `0x02` | `PelorusDC.AddressClaim` |
-| `0b100_000000000100010000_00000007` | 4 | `0x00110` | `0x07` | `PelorusDC.AISClassAPosition` |
+| `0b110_000000000000000101_00000010` | 6 | `0x00005` | `0x02` | `PelorusDC.AddressClaim` |
+| `0b100_000000000100010000_00000111` | 4 | `0x00110` | `0x07` | `PelorusDC.AISClassAPosition` |
 
 ### 2.2 Priority Allocation
 

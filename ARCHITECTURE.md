@@ -70,7 +70,7 @@ Weaknesses of [**Legacy Marine Data Ecosystem**](#lmde) that Pelorus addresses:
 
 The rest of Pelorus stacks around **Core** as the authoritative source of wired device contracts; Stream and higher layers must not degrade Core when they fail.
 
-[**LMDE**](#lmde) and Pelorus Core are [**not** same-segment‑interoperable](./core/01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem).
+[**LMDE**](#lmde) and Pelorus Core are [**not** same-segment‑interoperable](./core/01-overview.md#4-coexistence-with-lmde).
 
 ### [Stream](./stream/01-overview.md)
 
@@ -113,7 +113,7 @@ This section is **non-normative**. It illustrates how the pieces in §3 fit toge
 
 - **Legacy NMEA 2000 instruments and autopilot stay where they are.** Wind, depth, AIS, heading, and the autopilot all arrived with the boat on a single classical CAN backbone; replacing them would mean re-rigging the masthead, re-pulling cable, and re-installing the rudder feedback loop, so they live on as the [**LMDE**](#lmde) side of the install. The classical heading-sensor-to-autopilot loop runs entirely on the LMDE bus and does **not** depend on Pelorus Core.
 - **Modern navigation runs on Pelorus Core.** The chart-and-plot station is **dual-bus C0** end-to-end ([`core/08 §2.1`](./core/08-redundancy.md#21-c0--safety-critical-path)): two ECDIS plotters and the primary GNSS all drop onto Bus A and Bus B as Class D nodes, so the helm survives a single-bus failure without operator action.
-- **The Pelorus Gateway is the only crossing point.** It is a **standard** gateway tier ([`core/01 §4`](./core/01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem)) that reads NMEA 2000 PGNs from the LMDE backbone and republishes them as Pelorus Data Contracts on Bus A and Bus B. It is **Class D**, so it remains reachable on whichever Pelorus Core bus survives. Pelorus Core publishers do **not** write back onto LMDE — in this MVP the autopilot follows the LMDE heading sensor, not ECDIS route guidance.
+- **The Pelorus Gateway is the only crossing point.** It is a **standard** gateway tier ([`core/01 §4`](./core/01-overview.md#4-coexistence-with-lmde)) that reads NMEA 2000 PGNs from the LMDE backbone and republishes them as Pelorus Data Contracts on Bus A and Bus B. It is **Class D**, so it remains reachable on whichever Pelorus Core bus survives. Pelorus Core publishers do **not** write back onto LMDE — in this MVP the autopilot follows the LMDE heading sensor, not ECDIS route guidance.
 - **No Pelorus Stream on this snapshot.** Cameras, NAS, bridge tablet, and chart distribution are out of scope here — the focus is the LMDE → Core bridge and the Core redundancy story. A real install typically pairs Pelorus Core with a Pelorus Stream switch ([`stream/01-overview.md`](./stream/01-overview.md)).
 
 ### 4.2 Topology diagram
@@ -122,7 +122,7 @@ This section is **non-normative**. It illustrates how the pieces in §3 fit toge
 
 > Diagram source: [`diagrams/topology.drawio.svg`](./diagrams/topology.drawio.svg). The file follows the `.drawio.svg` convention — a regular SVG image that is also editable in [draw.io](https://app.diagrams.net) (File → Open from device, or drag-drop). Plain text, lives alongside the spec, edits diff cleanly in git. The drawio source is embedded in the SVG's `content` attribute for full round-trip fidelity.
 >
-> **Legend.** The horizontal bar at the top is the single **NMEA 2000** (classical CAN) backbone of the **LMDE** group; five drops hang off it — Wind, Depth, AIS above, Autopilot and Heading below. The two vertical bars at the bottom are **Bus A** and **Bus B** of the **Pelorus Core** redundant CAN FD network; ECDIS 1, ECDIS 2, and Position (GNSS) sit between them, each with a drop onto **both** buses. The **Pelorus Gateway** drops onto the NMEA 2000 backbone and onto both Pelorus Core buses simultaneously, and is the only crossing point between LMDE and Pelorus Core. Reverse injection from Pelorus Core toward LMDE is out of scope for a standard gateway tier — see LMDE coexistence in [`core/01 §4`](./core/01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem).
+> **Legend.** The horizontal bar at the top is the single **NMEA 2000** (classical CAN) backbone of the **LMDE** group; five drops hang off it — Wind, Depth, AIS above, Autopilot and Heading below. The two vertical bars at the bottom are **Bus A** and **Bus B** of the **Pelorus Core** redundant CAN FD network; ECDIS 1, ECDIS 2, and Position (GNSS) sit between them, each with a drop onto **both** buses. The **Pelorus Gateway** drops onto the NMEA 2000 backbone and onto both Pelorus Core buses simultaneously, and is the only crossing point between LMDE and Pelorus Core. Reverse injection from Pelorus Core toward LMDE is out of scope for a standard gateway tier — see LMDE coexistence in [`core/01 §4`](./core/01-overview.md#4-coexistence-with-lmde).
 
 ### 4.3 Walk-through — LMDE NMEA 2000 side
 
@@ -136,7 +136,7 @@ The LMDE backbone is a single classical CAN bus carrying three instrument drops.
 | **Heading** | Heading reference (fluxgate or rate-compensated) feeding the LMDE autopilot directly via the bus, and bridged into Pelorus Core so the ECDIS plotters can render it. ~10 Hz. |
 | **Autopilot** | Closes the rudder loop on the LMDE heading sensor. The classical autopilot loop is **wholly contained on the NMEA 2000 backbone** — it does not depend on Pelorus Core. ECDIS-driven route following would require a capable bidirectional gateway and is out of scope for this MVP. |
 
-The backbone follows whatever cable plant the installed vendor prescribes (micro-C is most common). Pelorus does **not** assert bit-level compatibility with NMEA 2000 — LMDE and Pelorus Core are [not same-segment-interoperable](./core/01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem); the gateway is the only crossing point.
+The backbone follows whatever cable plant the installed vendor prescribes (micro-C is most common). Pelorus does **not** assert bit-level compatibility with NMEA 2000 — LMDE and Pelorus Core are [not same-segment-interoperable](./core/01-overview.md#4-coexistence-with-lmde); the gateway is the only crossing point.
 
 ### 4.4 Walk-through — Pelorus Core side
 
@@ -147,12 +147,12 @@ Pelorus Core runs as **dual independent CAN FD** buses (**Bus A** and **Bus B**)
 | **ECDIS 1** | **D** | **C0** | Primary electronic chart and route display. Active chartplotter under normal conditions. |
 | **ECDIS 2** | **D** | **C0** | Hot-standby chartplotter; consumes the same DCIDs from Bus A and Bus B and is one helm action away from becoming primary. |
 | **Position (GNSS)** | **D** | **C0** | Primary nav source; broadcasts position, COG/SOG, and heading active-active on Bus A and Bus B with **PRH** on Pelorus-native broadcast DCIDs ([`core/08 §6`](./core/08-redundancy.md#6-active-active-transmission-and-duplicate-discard)). |
-| **Pelorus Gateway** | **D** | spans C0 + LMDE | Bridges the LMDE NMEA 2000 backbone into Pelorus Core; drops onto Bus A and Bus B so it remains reachable through a single-bus failure ([`core/01 §4`](./core/01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem)). |
+| **Pelorus Gateway** | **D** | spans C0 + LMDE | Bridges the LMDE NMEA 2000 backbone into Pelorus Core; drops onto Bus A and Bus B so it remains reachable through a single-bus failure ([`core/01 §4`](./core/01-overview.md#4-coexistence-with-lmde)). |
 
 **Selected DCIDs in play** ([`core/07`](./core/07-dcid-registry.md)):
 
-- **0x0FF82** — Bus Health, transmitted by every Class D node on each bus at 2 s ± 500 ms.
-- **0x0FF83** — Time Sync (optional). Recommended here because the whole Pelorus Core fabric is C0; the gateway acts as Time Master so `D_clk ≤ 10 ms` and the receiver `DISCARD_WINDOW = 50 ms` is sufficient ([`core/08 §6.3.3`](./core/08-redundancy.md#633-discard_window-lower-bound)).
+- **0x00003** — Bus Health, transmitted by every Class D node on each bus at 2 s ± 500 ms.
+- **0x00004** — Time Sync (optional). Recommended here because the whole Pelorus Core fabric is C0; the gateway acts as Time Master so `D_clk ≤ 10 ms` and the receiver `DISCARD_WINDOW = 50 ms` is sufficient ([`core/08 §6.3.3`](./core/08-redundancy.md#633-discard_window-lower-bound)).
 - **Bridged DCIDs** for wind, depth, AIS, and heading — the gateway maps incoming NMEA 2000 PGNs to Pelorus-native or compatibility DCIDs and rebroadcasts them active-active on Bus A and Bus B ([`core/07 §2`](./core/07-dcid-registry.md)). The autopilot is **not** bridged onto Pelorus Core — it is a closed loop on the LMDE side.
 
 ### 4.5 What happens during a single-bus failure on Pelorus Core
@@ -168,7 +168,7 @@ Pelorus Core runs as **dual independent CAN FD** buses (**Bus A** and **Bus B**)
 
 - **Pelorus Stream** — no Ethernet substrate is depicted; cameras, NAS, bridge tablet, and chart distribution are out of scope for this snapshot. Real installs typically pair Pelorus Core with a Pelorus Stream switch ([`stream/01-overview.md`](./stream/01-overview.md)).
 - **Engine, tanks, battery, lighting** — a real cruiser carries more talkers; this example focuses on the navigation cluster to keep the LMDE bridge and Core redundancy story visible.
-- **Capable bidirectional gateway** — the gateway here is the **standard** tier: LMDE → Pelorus Core for bridged instrument data, authoritative metadata on the Core side. Pelorus Core publishers do **not** write back onto the LMDE bus, so **ECDIS-driven route following on the LMDE autopilot is not available in this MVP** — the autopilot operates in heading-hold (or manual follow-up) from the LMDE heading sensor. Adding a capable bidirectional gateway is a future option, gated by [`core/01 §4`](./core/01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem).
+- **Capable bidirectional gateway** — the gateway here is the **standard** tier: LMDE → Pelorus Core for bridged instrument data, authoritative metadata on the Core side. Pelorus Core publishers do **not** write back onto the LMDE bus, so **ECDIS-driven route following on the LMDE autopilot is not available in this MVP** — the autopilot operates in heading-hold (or manual follow-up) from the LMDE heading sensor. Adding a capable bidirectional gateway is a future option, gated by [`core/01 §4`](./core/01-overview.md#4-coexistence-with-lmde).
 - **Higher data rates** — v1.0 is a single named profile (250 / 500 kbit/s, 30 m / 6 m / 50 nodes per bus) per [`core/08 §4.4`](./core/08-redundancy.md#44-bit-rate-and-length-scope). Higher rates will arrive as additional named profiles, not via a generic length-vs-rate scaling.
 
 ---

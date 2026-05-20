@@ -12,7 +12,7 @@
 
 Thank you for considering a contribution to Pelorus.
 
-This is an open, sailor-first project. The specification (`core/00-document-index.md` through `core/16-…`) is the single source of truth. All code, hardware, and documentation must follow it exactly.
+This is an open, sailor-first project. The specification (`core/00-document-index.md` through `core/12-firmware-update.md`) is the single source of truth. All code, hardware, and documentation must follow it exactly.
 
 **Governance:** Major architectural choices documented in `ARCHITECTURE.md` and the trusted core under `core/` (especially **01–04**) should not be reopened for v1.0 unless the project maintainer explicitly invites reconsideration.
 

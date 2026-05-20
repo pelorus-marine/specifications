@@ -78,7 +78,7 @@ Tests marked **(D)** apply only to dual-bus / path-redundancy declarations.
 | **P-09-003 (D)** | Two upstream Class D producers run active-active; one downstream Class S consumer attached to a hub | Class S receives one copy of each logical frame; hub increments duplicate counter on whichever ingress bus arrived second |
 | **P-09-004 (D)** | Force one hub backbone port into bus-off while traffic continues | Hub continues forwarding between surviving backbone and downstream segments; `PelorusDC.BusHealth` reports `Bus state = 3`; missed-frame counter for failed bus increments |
 
-### 3.8 Firmware Update — Open Access
+### 3.7 Firmware Update — Open Access
 
 | ID | Procedure | Pass criteria |
 |---|---|---|
@@ -87,7 +87,7 @@ Tests marked **(D)** apply only to dual-bus / path-redundancy declarations.
 | **P-12-003** | Initiate a firmware update where the manifest carries a valid signature but the initiator's NAME manufacturer code does not match the device's manufacturer | Device proceeds with the update — no rejection based on initiator identity per [`12-firmware-update.md`](./12-firmware-update.md) |
 | **P-12-004** | Interrupt an in-progress update by cycling power; resume with the same `session_id` within the receiver's timeout | Update resumes from `next_expected_seq` without re-transmitting received frames |
 
-### 3.7 Criticality and Declaration Cross-Check
+### 3.8 Criticality and Declaration Cross-Check
 
 | ID | Procedure | Pass criteria |
 |---|---|---|
