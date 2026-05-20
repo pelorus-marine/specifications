@@ -111,59 +111,64 @@ This section is **non-normative**. It illustrates how the pieces in §3 fit toge
 
 ### 4.1 Vessel context and choices
 
-- One **dual-bus C0 zone** at the helm: autopilot, GNSS + heading, helm display, masthead wind. This is the only zone where loss of Core would imminently affect vessel control, so it gets **path redundancy** ([`core/08 §2.1`](./core/08-redundancy.md#21-c0--safety-critical-path)).
-- **Single-bus C2** everywhere else: engine telemetry, battery monitor, tank levels, cabin lighting state. Loss of these does not affect safe navigation; they share a single backbone (Bus A) that extends out from the helm zone.
-- One **standard gateway** ([`core/09 §6`](./core/09-network.md#6-core--stream-coupling)) bridges Core onto Pelorus Stream and acts as binding authority. It is **Class D**, so it remains reachable on whichever bus survives in the helm zone.
-- **Pelorus Stream** carries non-safety media: cameras, NAS, a bridge tablet that subscribes to mirrored Core telemetry, and a Wi-Fi AP. Stream **does not** originate Core traffic — there is no capable bidirectional gateway here ([`core/09 §6`](./core/09-network.md#6-core--stream-coupling); [`stream/01 §3.1`](./stream/01-overview.md#31-the-stream--core-boundary)).
+- **Legacy NMEA 2000 instruments and autopilot stay where they are.** Wind, depth, AIS, heading, and the autopilot all arrived with the boat on a single classical CAN backbone; replacing them would mean re-rigging the masthead, re-pulling cable, and re-installing the rudder feedback loop, so they live on as the [**LMDE**](#lmde) side of the install. The classical heading-sensor-to-autopilot loop runs entirely on the LMDE bus and does **not** depend on Pelorus Core.
+- **Modern navigation runs on Pelorus Core.** The chart-and-plot station is **dual-bus C0** end-to-end ([`core/08 §2.1`](./core/08-redundancy.md#21-c0--safety-critical-path)): two ECDIS plotters and the primary GNSS all drop onto Bus A and Bus B as Class D nodes, so the helm survives a single-bus failure without operator action.
+- **The Pelorus Gateway is the only crossing point.** It is a **standard** gateway tier ([`core/01 §4`](./core/01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem)) that reads NMEA 2000 PGNs from the LMDE backbone and republishes them as Pelorus Data Contracts on Bus A and Bus B. It is **Class D**, so it remains reachable on whichever Pelorus Core bus survives. Pelorus Core publishers do **not** write back onto LMDE — in this MVP the autopilot follows the LMDE heading sensor, not ECDIS route guidance.
+- **No Pelorus Stream on this snapshot.** Cameras, NAS, bridge tablet, and chart distribution are out of scope here — the focus is the LMDE → Core bridge and the Core redundancy story. A real install typically pairs Pelorus Core with a Pelorus Stream switch ([`stream/01-overview.md`](./stream/01-overview.md)).
 
 ### 4.2 Topology diagram
 
-![Sample combined network topology — Pelorus Core + Stream on a 40 ft sailing yacht](./diagrams/topology.drawio.svg)
+![Sample combined network topology — LMDE bridged into Pelorus Core](./diagrams/topology.drawio.svg)
 
-> Diagram source: [`diagrams/topology.drawio.svg`](./diagrams/topology.drawio.svg). The file follows the `.drawio.svg` convention — a regular SVG image that is also editable in [draw.io](https://app.diagrams.net) (File → Open from device, or drag-drop). Plain text, lives alongside the spec, edits diff cleanly in git. The first time you save from draw.io, it will embed its own `<mxGraphModel>` source in the SVG's `content` attribute for full round-trip fidelity.
+> Diagram source: [`diagrams/topology.drawio.svg`](./diagrams/topology.drawio.svg). The file follows the `.drawio.svg` convention — a regular SVG image that is also editable in [draw.io](https://app.diagrams.net) (File → Open from device, or drag-drop). Plain text, lives alongside the spec, edits diff cleanly in git. The drawio source is embedded in the SVG's `content` attribute for full round-trip fidelity.
 >
-> **Legend.** `D` = Class D (dual transceiver), `S` = Class S (single), `H` = Class H (hub). Bus A is the single backbone outside the helm zone; Bus B exists only inside the helm dual-bus domain. Filled dots are bus taps.
+> **Legend.** The horizontal bar at the top is the single **NMEA 2000** (classical CAN) backbone of the **LMDE** group; five drops hang off it — Wind, Depth, AIS above, Autopilot and Heading below. The two vertical bars at the bottom are **Bus A** and **Bus B** of the **Pelorus Core** redundant CAN FD network; ECDIS 1, ECDIS 2, and Position (GNSS) sit between them, each with a drop onto **both** buses. The **Pelorus Gateway** drops onto the NMEA 2000 backbone and onto both Pelorus Core buses simultaneously, and is the only crossing point between LMDE and Pelorus Core. Reverse injection from Pelorus Core toward LMDE is out of scope for a standard gateway tier — see LMDE coexistence in [`core/01 §4`](./core/01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem).
 
-### 4.3 Walk-through — Core side
+### 4.3 Walk-through — LMDE NMEA 2000 side
 
-| Where | Class | Criticality | What it does |
+The LMDE backbone is a single classical CAN bus carrying three instrument drops. None of these talkers are Pelorus-native; they originate as NMEA 2000 PGNs and only enter Pelorus Data Contracts via the **Pelorus Gateway**.
+
+| Drop | What it does |
+|---|---|
+| **Wind** | Apparent / true wind angle and speed from a masthead anemometer. Typical N2K cadence ~1–4 Hz. |
+| **Depth** | Depth below transducer (and optionally water temperature) from a hull-mounted sounder. ~1 Hz. |
+| **AIS** | AIS receiver / transponder publishing target reports onto the bus. AIS belongs on Pelorus Core in a Pelorus-native install ([`core/07`](./core/07-dcid-registry.md)); here it sits on LMDE because the installed transponder is N2K-only and is bridged. |
+| **Heading** | Heading reference (fluxgate or rate-compensated) feeding the LMDE autopilot directly via the bus, and bridged into Pelorus Core so the ECDIS plotters can render it. ~10 Hz. |
+| **Autopilot** | Closes the rudder loop on the LMDE heading sensor. The classical autopilot loop is **wholly contained on the NMEA 2000 backbone** — it does not depend on Pelorus Core. ECDIS-driven route following would require a capable bidirectional gateway and is out of scope for this MVP. |
+
+The backbone follows whatever cable plant the installed vendor prescribes (micro-C is most common). Pelorus does **not** assert bit-level compatibility with NMEA 2000 — LMDE and Pelorus Core are [not same-segment-interoperable](./core/01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem); the gateway is the only crossing point.
+
+### 4.4 Walk-through — Pelorus Core side
+
+Pelorus Core runs as **dual independent CAN FD** buses (**Bus A** and **Bus B**) with active-active replication and receiver duplicate discard ([`core/08 §6`](./core/08-redundancy.md#6-active-active-transmission-and-duplicate-discard)). Every device on this side is **Class D** (dual transceiver) and drops onto **both** buses.
+
+| Drop | Class | Criticality | What it does |
 |---|---|---|---|
-| Helm — autopilot ECU | **D** | **C0** | Closes the rudder loop on heading from the GNSS+heading unit; needs both buses to keep operating through a single-bus failure. |
-| Helm — GNSS + heading | **D** | **C0** | Primary nav source; replicates active-active on Bus A and Bus B with **PRH** in any future Pelorus-native broadcast Data Contract, payload-and-ID dedup for J1939 heritage messages ([`core/08 §6`](./core/08-redundancy.md#6-active-active-transmission-and-duplicate-discard)). |
-| Helm — display | **D** | **C0** | Primary chartplotter / autopilot console. |
-| Helm — Class H hub | **H** | C0 (within helm) | Bridges the masthead **Class S** wind sensor into the dual-bus domain; applies bidirectional duplicate discard before forwarding upstream ([`core/09 §3.3`](./core/09-network.md#33-hub-bidirectional-duplicate-discard)). On a hub backbone bus-off it surfaces `Bus state = Degraded-Single` in **0x0FF82** ([`core/09 §3.4`](./core/09-network.md#34-hub-bus-off-and-degraded-backbone)). |
-| Masthead — wind sensor | **S** | informs C0 helm | Single cable down the mast; dual-bus visibility comes from the hub, not from the sensor itself. |
-| Engine bay — engine telemetry, battery monitor | **S** | **C2** | Informational; engine alarms / shutdown remain on the dedicated engine harness, not on Pelorus Core. |
-| Saloon — tank sensors, lighting state | **S** | **C2** | Comfort and logging. |
-| Helm — gateway | **D** | spans C0 + Stream | Standard gateway tier per [`core/09 §6`](./core/09-network.md#6-core--stream-coupling); attaches to **both** Bus A and Bus B to remain reachable in degraded single-bus operation. |
+| **ECDIS 1** | **D** | **C0** | Primary electronic chart and route display. Active chartplotter under normal conditions. |
+| **ECDIS 2** | **D** | **C0** | Hot-standby chartplotter; consumes the same DCIDs from Bus A and Bus B and is one helm action away from becoming primary. |
+| **Position (GNSS)** | **D** | **C0** | Primary nav source; broadcasts position, COG/SOG, and heading active-active on Bus A and Bus B with **PRH** on Pelorus-native broadcast DCIDs ([`core/08 §6`](./core/08-redundancy.md#6-active-active-transmission-and-duplicate-discard)). |
+| **Pelorus Gateway** | **D** | spans C0 + LMDE | Bridges the LMDE NMEA 2000 backbone into Pelorus Core; drops onto Bus A and Bus B so it remains reachable through a single-bus failure ([`core/01 §4`](./core/01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem)). |
 
-**Selected DCIDs in play.** [`core/07`](./core/07-dcid-registry.md):
+**Selected DCIDs in play** ([`core/07`](./core/07-dcid-registry.md)):
 
-- **0x0FF82** — Bus Health, transmitted by every Class D / Class H node on each bus at 2 s ± 500 ms.
-- **0x0FF83** — Time Sync (optional). Recommended here since the helm zone is C0; the gateway acts as Time Master so `D_clk ≤ 10 ms` and the receiver `DISCARD_WINDOW = 50 ms` is sufficient ([`core/08 §6.3.3`](./core/08-redundancy.md#633-discard_window-lower-bound)).
-- Compatibility DCIDs (J1939 heritage) for engine, heading, GNSS, etc. ([`core/07 §2`](./core/07-dcid-registry.md)) — replicated with identical SA/payload on Bus A and Bus B inside the helm zone, deduplicated by payload-and-ID ([`core/08 §6.3.2`](./core/08-redundancy.md#632-compatibility-and-other-application-dcids-no-prh)).
+- **0x0FF82** — Bus Health, transmitted by every Class D node on each bus at 2 s ± 500 ms.
+- **0x0FF83** — Time Sync (optional). Recommended here because the whole Pelorus Core fabric is C0; the gateway acts as Time Master so `D_clk ≤ 10 ms` and the receiver `DISCARD_WINDOW = 50 ms` is sufficient ([`core/08 §6.3.3`](./core/08-redundancy.md#633-discard_window-lower-bound)).
+- **Bridged DCIDs** for wind, depth, AIS, and heading — the gateway maps incoming NMEA 2000 PGNs to Pelorus-native or compatibility DCIDs and rebroadcasts them active-active on Bus A and Bus B ([`core/07 §2`](./core/07-dcid-registry.md)). The autopilot is **not** bridged onto Pelorus Core — it is a closed loop on the LMDE side.
 
-### 4.4 Walk-through — Stream side
+### 4.5 What happens during a single-bus failure on Pelorus Core
 
-- **PoE M12 X-coded switch** powers the cameras and Wi-Fi AP. The bridge tablet and the NAS sit on the same switch.
-- **Bridge tablet** subscribes to mirrored Core telemetry that the gateway publishes on Stream (Core → Stream, standard gateway tier). It is **read-only** — it cannot originate frames on Core ([`stream/01 §3.1`](./stream/01-overview.md#31-the-stream--core-boundary)).
-- **Cameras** stream live video to the NAS / bridge tablet over best-effort UDP (or QUIC for retained clips). They do not touch Core at all.
-- **Wi-Fi AP** is for cabin / crew devices; same isolation rules apply.
-
-### 4.5 What happens during a single-bus failure (helm zone)
-
-1. A connector on **Bus B** opens between the autopilot and the gateway.
-2. Class D nodes on the helm continue transmitting active-active; receivers on the helm zone now see only **Bus A** copies.
-3. The **DDT** on each receiver was already accepting one copy per logical frame, so application delivery is uninterrupted — no message gap larger than `DISCARD_WINDOW + max(producer_period)` ([`core/08 §10.1`](./core/08-redundancy.md#101-failover-convergence-c0--c1)).
-4. Bus Health on Bus A reports `Bus state = Degraded-Single`; the helm display lights an operator-visible annunciator within 5 s ([`core/08 §10`](./core/08-redundancy.md#10-degraded-mode-behaviour)).
-5. The single-bus C2 domain (engine, tanks, lighting) is unaffected — it was already on Bus A only.
-6. Stream is unaffected — its substrate is independent.
-7. When the connector is repaired, Bus B returns. Receivers accept frames on the returning bus and apply normal duplicate discard; no re-sync handshake ([`core/08 §10.2`](./core/08-redundancy.md#102-bus-return-after-failure)).
+1. A connector on **Bus B** opens between the gateway and the ECDIS pair.
+2. Class D nodes continue transmitting active-active; receivers downstream of the break now see only **Bus A** copies.
+3. The **Duplicate Discard Table** on each receiver was already accepting one copy per logical frame, so application delivery is uninterrupted — no message gap larger than `DISCARD_WINDOW + max(producer_period)` ([`core/08 §10.1`](./core/08-redundancy.md#101-failover-convergence-c0--c1)).
+4. Bus Health on Bus A reports `Bus state = Degraded-Single`; both ECDIS plotters surface an operator-visible annunciator within 5 s ([`core/08 §10`](./core/08-redundancy.md#10-degraded-mode-behaviour)).
+5. The LMDE side is **unaffected** — its NMEA 2000 backbone is electrically separate. Bridged wind, depth, AIS, and heading traffic still arrives via the surviving Pelorus Core bus through the gateway, and the **classical LMDE heading-to-autopilot loop continues uninterrupted** because it never depended on Pelorus Core in the first place.
+6. When the connector is repaired, Bus B returns. Receivers accept frames on the returning bus and apply normal duplicate discard; no re-sync handshake ([`core/08 §10.2`](./core/08-redundancy.md#102-bus-return-after-failure)).
 
 ### 4.6 What this example deliberately does **not** show
 
-- **Class D mandate everywhere** — the C2 zone deliberately stays single-bus to keep cost and cabling proportionate to the safety case.
-- **Capable bidirectional gateway** — none here; the bridge tablet cannot drive helm or autopilot. Adding one is a future option for vessels that need Stream-originated Core writes and is gated by [`core/09 §6`](./core/09-network.md#6-core--stream-coupling).
+- **Pelorus Stream** — no Ethernet substrate is depicted; cameras, NAS, bridge tablet, and chart distribution are out of scope for this snapshot. Real installs typically pair Pelorus Core with a Pelorus Stream switch ([`stream/01-overview.md`](./stream/01-overview.md)).
+- **Engine, tanks, battery, lighting** — a real cruiser carries more talkers; this example focuses on the navigation cluster to keep the LMDE bridge and Core redundancy story visible.
+- **Capable bidirectional gateway** — the gateway here is the **standard** tier: LMDE → Pelorus Core for bridged instrument data, authoritative metadata on the Core side. Pelorus Core publishers do **not** write back onto the LMDE bus, so **ECDIS-driven route following on the LMDE autopilot is not available in this MVP** — the autopilot operates in heading-hold (or manual follow-up) from the LMDE heading sensor. Adding a capable bidirectional gateway is a future option, gated by [`core/01 §4`](./core/01-overview.md#4-coexistence-with-the-legacy-marine-data-ecosystem).
 - **Higher data rates** — v1.0 is a single named profile (250 / 500 kbit/s, 30 m / 6 m / 50 nodes per bus) per [`core/08 §4.4`](./core/08-redundancy.md#44-bit-rate-and-length-scope). Higher rates will arrive as additional named profiles, not via a generic length-vs-rate scaling.
 
 ---
