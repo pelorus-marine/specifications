@@ -5,7 +5,7 @@ The reference Rust library that implements Pelorus Stream and the public API sur
 ## 1. Crate Inventory
 
 | Crate | Purpose | Status |
-|---|---|---|
+| --- | --- | --- |
 | `pelorus-stream` | Top-level entry; re-exports the public API | Planned |
 | `pelorus-stream-id` | Stream ID (UUIDv7) types and helpers | Planned |
 | `pelorus-stream-cbor` | Pelorus-CBOR-1 deterministic encoder/decoder | Planned |
@@ -32,7 +32,7 @@ All Pelorus crates publish under the `pelorus-marine` GitHub organisation. Licen
 ## 3. Reference QUIC Stack
 
 | Concern | Crate |
-|---|---|
+| --- | --- |
 | QUIC transport | `quinn` (pure Rust QUIC) |
 | TLS 1.3 | `rustls` (pure Rust) |
 | Async runtime | `tokio` |
@@ -117,7 +117,7 @@ All public APIs return `Result<T, StreamError>` where `StreamError` carries the 
 ## 5. Embedded Targets
 
 | Target | Status |
-|---|---|
+| --- | --- |
 | Linux x86_64 (gateway, head units) | Primary |
 | Linux ARM (Raspberry Pi-class gateways) | Primary |
 | FreeBSD | Best-effort |
@@ -147,7 +147,7 @@ C ABI bindings will be provided via a `pelorus-stream-c` crate using `cbindgen`.
 A typical Pelorus Stream node has a small configuration surface:
 
 | Field | Default | Notes |
-|---|---|---|
+| --- | --- | --- |
 | `fabric_a_interface` | first M12 X-coded port found | Fabric A Ethernet interface |
 | `fabric_b_interface` | second M12 X-coded port found | Fabric B Ethernet interface (Class D only) |
 | `pub_id` | hostname-derived | Publisher identifier |

@@ -7,7 +7,7 @@ The single source of truth for criticality classes, dual-bus operation, duplicat
 ## 1. Definitions
 
 | Term | Definition |
-|---|---|
+| --- | --- |
 | **Path redundancy** | Two electrically independent Pelorus Core CAN FD media (Bus A, Bus B) carrying the same logical application traffic active-active, with receivers accepting one copy per logical frame. |
 | **Dual-bus domain** | A bounded installation region (functional zone, compartment group, or entire small vessel) where this document requires both Bus A and Bus B to be present and terminated per [`02-physical.md`](./02-physical.md). |
 | **Critical zone map** | A written or machine-readable record, prepared at commissioning or product certification, listing each Pelorus-attached function with its criticality class (§2) and node class (§3). |
@@ -57,7 +57,7 @@ The manufacturer (for a fixed product) or installer/integrator (for a vessel-spe
 ## 3. Node and Port Classes
 
 | Class | Meaning |
-|---|---|
+| --- | --- |
 | **Class S** | Single CAN FD transceiver; attaches to one of Bus A or Bus B only. Permitted for C2 and for C1 when §2.2 off-bus redundancy is documented. |
 | **Class D** | Dual transceivers; attaches to both Bus A and Bus B. Target for new C0/C1 sensors, actuators, and displays in dual-bus domains. |
 | **Class H** | Hub / RedBox; bridges Class S downstream segments onto both backbone buses with correct replication and sequence/bus-ID rules. Detail in [`09-network.md`](./09-network.md). |
@@ -126,7 +126,7 @@ For each received frame from source `S` with PRH sequence `N` received on bus `B
    - Else: **accept**; update entry to `(S, DC_ID, N, B, now)`.
 
 | Parameter | Value | Notes |
-|---|---|---|
+| --- | --- | --- |
 | `DISCARD_WINDOW` | 50 ms | Minimum; per-installation value shall satisfy §6.3.3. |
 | `NODE_FORGET_TIME` | 60 s | Remove entry if no frame from `(S, DC_ID)` on either bus. |
 
@@ -152,7 +152,7 @@ with default `safety_margin = 10 ms`. The 50 ms value above is the absolute floo
 `D_clk` is derived from the most recent `Pelorus.TimeSync` observed on either bus (§8.2):
 
 | `TimeSync` state observed | `D_clk` to use |
-|---|---|
+| --- | --- |
 | `SourceClass ∈ {1,2,3,4}` **and** `AccBucket ≤ 4` | 10 ms — recommended floor `DISCARD_WINDOW = 50 ms` is sufficient. |
 | `SourceClass ∈ {1,2,3,4}` **and** `AccBucket = 5` | 100 ms — apply formula. |
 | `SourceClass ∈ {1,2,3,4}` **and** `AccBucket ∈ {6, 7}` | declared worst-case (record in critical zone map) — apply formula. |
@@ -169,7 +169,7 @@ Until a future revision specifies multi-frame-level deduplication, receivers sha
 A fixed 3-byte preamble used at the start of the CAN FD data field for Pelorus-native broadcast DCs that participate in path redundancy.
 
 | Byte(s) | Field |
-|---|---|
+| --- | --- |
 | 0–1 | **Sequence** — `uint16` little-endian; rolling counter per `(SA, DC_ID)`. |
 | 2 | **BusId_WakeGen** — bit 0: Bus ID (0 = Bus A, 1 = Bus B); bits 4–1: Wake generation (0–15, see §9); bits 7–5: reserved — transmit `0`, ignore on receive. |
 
@@ -185,14 +185,14 @@ A fixed 3-byte preamble used at the start of the CAN FD data field for Pelorus-n
 ### 8.1 `Pelorus.BusHealth`
 
 | Attribute | Value |
-|---|---|
+| --- | --- |
 | DC_ID | `0x00003` |
 | Priority | 6 (NM/diagnostics band) |
 | Length | 12 bytes |
 | Transmission | Every Class D or Class H node in a dual-bus domain shall transmit on each bus independently at 2 s nominal (±500 ms) while Active. Class S may transmit on its attached bus only. In degraded single-bus state, transmission continues on the surviving bus with `Bus state = 3`; transmission on the failed bus stops until that bus returns. |
 
 | Byte(s) | Field |
-|---|---|
+| --- | --- |
 | 0–1 | Sequence — `uint16` LE; rolling counter per `(SA, Pelorus.BusHealth)` for duplicate discard |
 | 2 | BusId_WakeGen — see §7 |
 | 3 | TX error counter (CAN controller; saturates at 255) |
@@ -208,7 +208,7 @@ A fixed 3-byte preamble used at the start of the CAN FD data field for Pelorus-n
 `Pelorus.TimeSync` carries the vessel-wide time reference and the machine-readable trust level of its current source. It bounds inter-node clock drift `D_clk` for §6.3.3 duplicate discard, provides UTC for AIS, voyage data recording, anchor watch, and alarm logs, and lets safety-critical consumers gate their behaviour on the present quality of the clock (locked / authenticated / holdover / spoof-suspected).
 
 | Attribute | Value |
-|---|---|
+| --- | --- |
 | DC_ID | `0x00004` |
 | Priority | 6 |
 | Length | 8 bytes |
@@ -230,7 +230,7 @@ The standard gateway is the default Time Master holder when no GNSS-equipped Cla
 #### 8.2.2 Wire Layout
 
 | Byte(s) | Field |
-|---|---|
+| --- | --- |
 | 0–1 | Sequence — `uint16` LE per `(SA, Pelorus.TimeSync)` |
 | 2 | BusId_WakeGen — see §7 |
 | 3–6 | CoreTime — `uint32` LE; interpretation depends on `TimeStatus.SourceClass` (§8.2.3) |
@@ -251,7 +251,7 @@ The standard gateway is the default Time Master holder when no GNSS-equipped Cla
 ```
 
 | Field | Bits | Definition |
-|---|---|---|
+| --- | --- | --- |
 | `SourceClass` | 0–2 | Trust class of the current time source — enum below. |
 | `AccBucket` | 3–5 | Coarse current UTC offset bound — enum below. |
 | `SpoofSuspect` (S) | 6 | `0` = receiver reports no anomaly; `1` = receiver-level spoofing/jamming indication, peer cross-check disagreement, or Master cannot self-assess. |
@@ -260,7 +260,7 @@ The standard gateway is the default Time Master holder when no GNSS-equipped Cla
 **`SourceClass` (3 bits, 8 slots):**
 
 | Value | Meaning |
-|---:|---|
+|---:| --- |
 | `0` | Free-running — no UTC ever acquired. `CoreTime` is monotonic. |
 | `1` | GNSS-disciplined, currently locked. |
 | `2` | GNSS-disciplined **and** cryptographically authenticated (Galileo OSNMA, GPS M-code, GPS Chimera, or equivalent). |
@@ -273,7 +273,7 @@ The standard gateway is the default Time Master holder when no GNSS-equipped Cla
 **`AccBucket` (3 bits, 8 slots)** — current estimated UTC offset of the Time Master, **not** nameplate accuracy:
 
 | Value | Bound |
-|---:|---|
+|---:| --- |
 | `0` | ≤ 1 μs |
 | `1` | ≤ 10 μs |
 | `2` | ≤ 100 μs |
@@ -297,7 +297,7 @@ The Time Master:
 #### 8.2.5 Consumer Obligations
 
 | Consumer | Rule |
-|---|---|
+| --- | --- |
 | Duplicate Discard (§6.3.3) | Use the recommended `DISCARD_WINDOW = 50 ms` only when the most recent `Pelorus.TimeSync` has `SourceClass ∈ {1, 2, 3, 4}` **and** `AccBucket ≤ 4`. Otherwise apply the formula in §6.3.3. |
 | AIS forwarder, voyage data recorder, alarm log | Shall not stamp records with `CoreTime` when `SourceClass ∈ {0, 5}` or `SpoofSuspect = 1`. Records shall be marked "time not trusted" or stamped from a higher-trust local source. |
 | ECDIS / helm display | Should surface an operator-visible annunciator within 5 s of a transition to `SourceClass = 4`, `SourceClass = 5`, or `SpoofSuspect = 1`. |

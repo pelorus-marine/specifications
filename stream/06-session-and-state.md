@@ -38,7 +38,7 @@ Every stream session moves through this state machine on the publisher side:
 ```
 
 | State | Meaning |
-|---|---|
+| --- | --- |
 | `IDLE` | Pre-announce. Stream object exists locally but is not on the wire. |
 | `ANNOUNCED` | Discoverable; mDNS record live; no payload traffic yet. |
 | `ACTIVE` | Emitting payloads; ≥ 1 subscriber attached. |
@@ -109,7 +109,7 @@ The envelope's `sid` names the target stream; the body does not need to repeat i
 Reject reasons:
 
 | Reason | Meaning |
-|---|---|
+| --- | --- |
 | `subscriber-cap-exhausted` | Publisher's per-stream subscriber limit reached |
 | `caps-incompatible` | No usable intersection of capabilities |
 | `not-active` | Stream is in a state that does not accept subscriptions |

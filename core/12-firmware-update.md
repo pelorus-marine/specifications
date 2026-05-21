@@ -43,7 +43,7 @@ Vendors that want to lock down which *images* run on their hardware may require 
 All firmware-update DCs use priority 7 (bulk).
 
 | DC | DC_ID | Direction | Purpose |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `Pelorus.FirmwareUpdateQuery` | `0x0000A` | initiator → device | Request capabilities |
 | `Pelorus.FirmwareUpdateResponse` | `0x0000B` | device → initiator | Capabilities reply |
 | `Pelorus.FirmwareUpdateBegin` | `0x0000C` | initiator → device | Carries manifest; opens session |
@@ -58,7 +58,7 @@ Detailed payload bit layouts are normative below.
 Payload (8 bytes):
 
 | Bytes | Field |
-|---|---|
+| --- | --- |
 | 0 | Target SA |
 | 1–7 | Reserved — transmit `0x00`, ignore on receive |
 
@@ -69,7 +69,7 @@ A broadcast query (target SA = `0xFF`) prompts every writable-image device to re
 Payload (up to 64 bytes):
 
 | Bytes | Field |
-|---|---|
+| --- | --- |
 | 0 | Initiator SA (the SA from the corresponding Query) |
 | 1 | Slot model: `0` = single + recovery loader, `1` = A/B |
 | 2 | Signing model: `0` = unsigned accepted, `1` = signature required |
@@ -88,7 +88,7 @@ Payload carries the manifest (up to 64 bytes); larger manifests use multi-frame 
 Manifest fields:
 
 | Field | Type | Notes |
-|---|---|---|
+| --- | --- | --- |
 | `device_kind` | 8 bytes | NAME class — Industry Group, Device Class, Function (matches J1939-81 NAME structure) |
 | `version` | 4 bytes | semver as in §4.2 |
 | `min_hardware_revision` | 1 byte | Device shall reject if its hardware revision < this |
@@ -109,7 +109,7 @@ Transmitted by the device under update at minimum 1 Hz during transfer and on ev
 Payload (8 bytes):
 
 | Bytes | Field |
-|---|---|
+| --- | --- |
 | 0–1 | `session_id` |
 | 2 | Status: see §6 |
 | 3 | Sub-state code (status-specific) |
@@ -122,7 +122,7 @@ The total frame count is known from the manifest's `image_size` and the multi-fr
 Payload (8 bytes):
 
 | Bytes | Field |
-|---|---|
+| --- | --- |
 | 0–1 | `session_id` (must match the session whose transfer just completed) |
 | 2 | Target SA |
 | 3 | Activation mode: `0` = immediate, `1` = at next power cycle |
@@ -135,7 +135,7 @@ On immediate activation with A/B slots, the device flips the boot slot and reset
 Payload (8 bytes):
 
 | Bytes | Field |
-|---|---|
+| --- | --- |
 | 0 | Target SA |
 | 1–7 | Reserved |
 
@@ -159,7 +159,7 @@ The signing scheme is **Ed25519 over the entire manifest excluding the `signatur
 `Pelorus.FirmwareUpdateProgress` byte 2 (`Status`):
 
 | Code | Status | Meaning |
-|---|---|---|
+| --- | --- | --- |
 | `0x00` | Idle | No active session |
 | `0x01` | ManifestVerifying | Validating manifest fields and signature |
 | `0x02` | Receiving | Multi-frame transfer in progress |

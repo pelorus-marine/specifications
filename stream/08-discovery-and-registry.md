@@ -7,7 +7,7 @@ mDNS-SD service catalog and the per-node observation registry. Discovery happens
 Each Pelorus Stream service has its own mDNS service type. Service catalog (v1.0):
 
 | Service type | Protocol | Description |
-|---|---|---|
+| --- | --- | --- |
 | `_pelorus-radar-video._quic.local` | QUIC datagram | Raw radar spoke data |
 | `_pelorus-radar-ctrl._quic.local` | QUIC reliable stream | Radar control commands |
 | `_pelorus-chart._quic.local` | QUIC reliable stream (HTTP/3) | S-100 chart file distribution |
@@ -46,7 +46,7 @@ SRV: 0 0 <port> <hostname>.local.
 ```
 
 | Field | Value |
-|---|---|
+| --- | --- |
 | `priority` | 0 |
 | `weight` | 0 |
 | `port` | The publisher's QUIC endpoint port for this service |
@@ -57,7 +57,7 @@ SRV: 0 0 <port> <hostname>.local.
 The TXT record carries the stream's discovery metadata, serialised as classic mDNS TXT key=value strings. Required keys:
 
 | TXT key | Source |
-|---|---|
+| --- | --- |
 | `id=<full-uuid>` | Stream ID |
 | `t=<type>` | Type code from [`02-data-model.md §2`](./02-data-model.md) |
 | `pub=<pub>` | Publisher identifier |
@@ -81,7 +81,7 @@ PTR: <service-type>.local. → <instance>.<service-type>.local.
 ## 7. TTLs
 
 | Record | TTL |
-|---|---|
+| --- | --- |
 | PTR | 4500 (75 min) |
 | SRV / TXT | 120 (2 min) |
 | AAAA | 120 |
@@ -178,7 +178,7 @@ There is no replication of registries in v1.0. Each registry constructs its own 
 The registry exposes a read-only API to local applications via the reference library ([`12-lib.md`](./12-lib.md)):
 
 | Operation | Description |
-|---|---|
+| --- | --- |
 | `list()` | All current entries, sorted by `last_seen_ms` |
 | `get(sid)` | Lookup by Stream ID |
 | `find_by_service(type)` | Filter by service type |

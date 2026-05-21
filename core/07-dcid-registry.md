@@ -11,7 +11,7 @@ DC_ID range `0x00001`–`0x000FF` carries Pelorus-owned protocol traffic.
 ### 1.1 `Pelorus.WakeUp`
 
 | Attribute | Value |
-|---|---|
+| --- | --- |
 | DC_ID | `0x00001` |
 | Priority | 0 (highest) |
 | Type | Single frame |
@@ -20,14 +20,14 @@ DC_ID range `0x00001`–`0x000FF` carries Pelorus-owned protocol traffic.
 | Purpose | Triggers partial-network wake-up per ISO 11898-2:2016 |
 
 | Byte(s) | Field |
-|---|---|
+| --- | --- |
 | 0 | Functional-group bitmask ([`04-power.md §3`](./04-power.md)) |
 | 1–7 | Reserved — transmit `0x00`, ignore on receive |
 
 ### 1.2 `Pelorus.NetworkManagement`
 
 | Attribute | Value |
-|---|---|
+| --- | --- |
 | DC_ID | `0x00002` |
 | Priority | 6 |
 | Type | Single frame (200 ms cadence when active) |
@@ -35,7 +35,7 @@ DC_ID range `0x00001`–`0x000FF` carries Pelorus-owned protocol traffic.
 | Purpose | Coordinated cluster sleep / wake — CanNm-style behaviour |
 
 | Byte | Field |
-|---|---|
+| --- | --- |
 | 0 | NM state ([`04-power.md §6.2`](./04-power.md)) |
 | 1 | Active functional groups — low byte |
 | 2–7 | Reserved — transmit `0x00`, ignore on receive |
@@ -59,7 +59,7 @@ DC_ID range `0x00001`–`0x000FF` carries Pelorus-owned protocol traffic.
 ### 1.7 Firmware Update
 
 | DC | DC_ID | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `Pelorus.FirmwareUpdateQuery` | `0x0000A` | Query device for firmware version and update capabilities |
 | `Pelorus.FirmwareUpdateResponse` | `0x0000B` | Response: version, slot model, signing model, supported manifests |
 | `Pelorus.FirmwareUpdateBegin` | `0x0000C` | Begin update session — carries manifest |
@@ -103,7 +103,7 @@ The bit layout content of bridged messages is preserved verbatim from the J1939 
 ### 2.2 Initial Bridged Contracts (J1939 heritage)
 
 | Pelorus DC | DC_ID | Priority | J1939 PGN bridge | Catalog lane |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `Pelorus.EngineController1` | `0x00100` | 5 | 61444 | `Vessel.Powertrain.Engine[*].Rpm` (and additional engine fields per DA) |
 | `Pelorus.VehicleHeading` | `0x00101` | 2 | 65256 | `Vessel.HeadingTrue` |
 | `Pelorus.EngineTemp1` | `0x00102` | 5 | 65253 | `Vessel.Powertrain.Engine[*].CoolantTemp` |
@@ -126,7 +126,7 @@ The NAME carried in `Pelorus.AddressClaim` payload is defined by SAE J1939-81 (w
 The 18-bit DC_ID space (`0x00000`–`0x3FFFF`) is partitioned as follows:
 
 | Range | Purpose | Slot count |
-|---|---|---|
+| --- | --- | --- |
 | `0x00000` | Reserved — shall not be assigned | 1 |
 | `0x00001`–`0x000FF` | Pelorus protocol (network management, transport, addressing, diagnostics, firmware update) | 255 |
 | `0x00100`–`0x03FFF` | Compatibility — bridged contracts (J1939 / NMEA 2000 / NMEA 0183 origin) | ~16K |

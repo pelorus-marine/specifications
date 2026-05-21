@@ -9,7 +9,7 @@ Stream events, metadata/state/capability updates, and the application-layer and 
 A timestamped, typed notification a publisher (or in some cases a subscriber) emits to inform observers of something noteworthy that happened to a stream. Events are **emitted, never authoritative**: a notification, not a command, not a state, not a fact-of-record.
 
 | An event **is** | An event **isn't** |
-|---|---|
+| --- | --- |
 | A timestamped, typed notification | A request to act |
 | Best-effort delivered (over the QUIC reliable control stream once established) | Persisted by Stream itself |
 | Idempotent at the receiver (de-dup by `seq`) | Repeatable for retry semantics |
@@ -31,7 +31,7 @@ Envelope `kind = 0x0010` per [`05-control-protocol.md §2`](./05-control-protoco
 ### 1.3 Event Name Registry
 
 | Name | Level | Emitted by | When |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `opened` | info | Publisher | Session moves IDLE → ANNOUNCED |
 | `activated` | info | Publisher | First subscriber attached, ANNOUNCED → ACTIVE |
 | `deactivated` | info | Publisher | Last subscriber left, ACTIVE → IDLE-ATTACHED |
@@ -83,7 +83,7 @@ Stream does not persist events. Subscribers, the registry ([`08-discovery-and-re
 There are three update kinds:
 
 | Kind | Carries |
-|---|---|
+| --- | --- |
 | `0x0011` `state-update` | The state object from [`06-session-and-state.md §7`](./06-session-and-state.md) |
 | `0x0012` `metadata-update` | Subset of mutable metadata fields from [`02-data-model.md §4`](./02-data-model.md) |
 | `0x0013` `capability-update` | Capability bit-vector replacement |
@@ -135,7 +135,7 @@ Across kinds (state vs metadata vs capability), there is no cross-kind ordering 
 ### 3.1 Where Errors Surface
 
 | Surface | When |
-|---|---|
+| --- | --- |
 | Local `Result::Err` in the reference library | For the local application that initiated an operation |
 | `error` control message (kind `0x00FE`) | Sent across the wire when the local error is relevant to a remote peer |
 | Event of a specific name (§1.3) | When the error is a per-stream condition observable by all subscribers |
@@ -162,7 +162,7 @@ Severity:
 Codes are short stable strings, kebab-case. Receivers shall ignore unknown codes (log only).
 
 | Code | Level | Meaning | Source |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `protocol-error` | err | Malformed envelope; required field missing | Either |
 | `decode-error` | err | CBOR decode failure or codec decode failure | Receiver |
 | `format-mismatch` | err | Received PU does not match negotiated format | Subscriber |
@@ -188,7 +188,7 @@ The `out-of-scope` error is the wire-level enforcement of the boundary in [`01-o
 ### 3.5 Recovery
 
 | Code | Recovery |
-|---|---|
+| --- | --- |
 | `protocol-error`, `decode-error`, `format-mismatch` | Drop the offending PU. Continue. |
 | `metadata-conflict`, `payload-too-large` | Unsubscribe; re-subscribe if metadata reconverges |
 | `caps-incompatible`, `subscriber-cap-exhausted` | Wait, retry after metadata update |
@@ -212,7 +212,7 @@ Transport errors arise from the wire substrate (QUIC, IPv6, sockets, mDNS) rathe
 ### 4.2 Transport Error Code Registry
 
 | Code | Level | Meaning |
-|---|---|---|
+| --- | --- | --- |
 | `transport-stalled` | warn | No QUIC traffic for the configured stall window |
 | `mtu-exceeded` | err | Outbound datagram exceeds path MTU; fragmentation forbidden |
 | `socket-bind` | fatal | Failed to bind UDP socket to required port |
@@ -248,7 +248,7 @@ Path MTU discovery is not performed by Stream itself in v1.0. Onboard Ethernet h
 ### 4.5 Recovery Patterns
 
 | Error | Reference recovery |
-|---|---|
+| --- | --- |
 | `transport-stalled` | Receiver re-checks subscription; sends fresh `subscribe` |
 | `quic-connection-closed` | Subscriber re-discovers, re-connects (new QUIC connection) |
 | `link-down` | Hold sessions; on link-up surface `interface-bounce`, then re-discover |

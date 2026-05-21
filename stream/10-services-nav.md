@@ -19,7 +19,7 @@ Transmitted on both Fabric A and Fabric B connections simultaneously (active-act
 Following the 16-byte Pelorus Stream Datagram Header:
 
 | Offset | Size | Field |
-|---|---|---|
+| --- | --- | --- |
 | 16 | 2 | Radar instance (matches the Core DC_ID radar instance and the metadata `instance`) |
 | 18 | 2 | Antenna bearing (0.01° resolution, heading-relative, 0–35999) |
 | 20 | 1 | Bearing validity (0x01 = encoder valid, 0x00 = estimated) |
@@ -44,7 +44,7 @@ Each radar antenna is a separate instance (0, 1, 2, …). Instance number is dec
 ### 2.2 Command Set
 
 | Command | Direction | Description |
-|---|---|---|
+| --- | --- | --- |
 | `SET_RANGE` | Display → Radar | Set range scale |
 | `SET_GAIN` | Display → Radar | Set receiver gain |
 | `SET_SEA_CLUTTER` | Display → Radar | Sea clutter reduction level |
@@ -145,7 +145,7 @@ For services with one publisher and many subscribers (radar video to multiple EC
 Following the 16-byte datagram header:
 
 | Offset | Size | Field |
-|---|---|---|
+| --- | --- | --- |
 | 16 | 1 | Node class (S=0, D=1) |
 | 17 | 1 | Fabric A state (DUAL_ACTIVE=0, DEGRADED=1, RECOVERING=2, FAILED=3) |
 | 18 | 1 | Fabric B state (same encoding) |

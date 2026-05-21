@@ -5,7 +5,7 @@ Conformance test plan and manufacturer self-declaration template. Conformance is
 ## 1. Scope
 
 | Class under test | Normative primary documents |
-|---|---|
+| --- | --- |
 | **Class S** node | [`02`](./02-physical.md), [`03`](./03-data-link.md), [`04`](./04-power.md), [`05`](./05-addressing.md), [`06`](./06-signal-catalog.md), [`07`](./07-dcid-registry.md) |
 | **Class D** node | [`02`](./02-physical.md), [`03`](./03-data-link.md), [`04`](./04-power.md), [`05`](./05-addressing.md), [`07`](./07-dcid-registry.md), [`08`](./08-redundancy.md) |
 | **Class H** hub | [`02`](./02-physical.md), [`03`](./03-data-link.md), [`05`](./05-addressing.md), [`07`](./07-dcid-registry.md), [`08`](./08-redundancy.md), [`09`](./09-network.md) |
@@ -29,7 +29,7 @@ Tests marked **(D)** apply only to dual-bus / path-redundancy declarations.
 ### 3.1 Physical Layer
 
 | ID | Procedure | Pass criteria |
-|---|---|---|
+| --- | --- | --- |
 | **P-02-001** | Measure termination resistance, power-off, on a completed segment | ~60 Ω between CAN_H and CAN_L at segment ends |
 | **P-02-002** | Verify M12 A-coded pinout continuity | Matches [`02-physical.md §3`](./02-physical.md) |
 | **P-02-003 (D)** | Class D: two independent bus pairs from device to field | No DC continuity between Bus A pair and Bus B pair |
@@ -37,7 +37,7 @@ Tests marked **(D)** apply only to dual-bus / path-redundancy declarations.
 ### 3.2 Data Link — Duplicate Discard
 
 | ID | Procedure | Pass criteria |
-|---|---|---|
+| --- | --- | --- |
 | **P-03-001 (D)** | Transmit identical `Pelorus.BusHealth` PRH frame on A then B within 10 ms | DUT accepts one application delivery; duplicate counter increments |
 | **P-03-002 (D)** | Same SA+DC_ID+payload compatibility frame on A then B within `DISCARD_WINDOW` | One delivery to application |
 | **P-03-003** | `Pelorus.AddressClaim` on both buses (D) | DUT processes both claims independently per [`08-redundancy.md §6.2`](./08-redundancy.md) |
@@ -49,26 +49,26 @@ Tests marked **(D)** apply only to dual-bus / path-redundancy declarations.
 ### 3.3 Addressing
 
 | ID | Procedure | Pass criteria |
-|---|---|---|
+| --- | --- | --- |
 | **P-05-001** | Contested NAME / SA | Loser selects new SA per [`05-addressing.md §3`](./05-addressing.md) |
 | **P-05-002 (D)** | Class D: claim on A succeeds, forced fail on B | DUT enters degraded single-bus or re-claims per [`08-redundancy.md §5`](./08-redundancy.md) |
 
 ### 3.4 Power Management vs DDT
 
 | ID | Procedure | Pass criteria |
-|---|---|---|
+| --- | --- | --- |
 | **P-04-001 (D)** | Sleep → Active; Bus Health wake generation increments | Peer clears DDT for that SA or accepts first post-wake frame without false duplicate discard |
 
 ### 3.5 Data Contract Registry — Bus Health
 
 | ID | Procedure | Pass criteria |
-|---|---|---|
+| --- | --- | --- |
 | **P-07-001 (D)** | Class D powered Active | `Pelorus.BusHealth` on each bus at ≤ 2.5 s observed cadence; layout matches [`08-redundancy.md §8.1`](./08-redundancy.md) |
 
 ### 3.6 Network and Hub
 
 | ID | Procedure | Pass criteria |
-|---|---|---|
+| --- | --- | --- |
 | **P-09-001** | Repeater between two segments | Valid frame from seg1 appears on seg2 unmodified |
 | **P-09-002 (D)** | Class S node on hub downstream; frame to hub | Identical frame on Bus A and Bus B backbones |
 | **P-09-003 (D)** | Two upstream Class D producers run active-active; one downstream Class S consumer attached to a hub | Class S receives one copy of each logical frame; hub increments duplicate counter on whichever ingress bus arrived second |
@@ -77,7 +77,7 @@ Tests marked **(D)** apply only to dual-bus / path-redundancy declarations.
 ### 3.7 Firmware Update — Open Access
 
 | ID | Procedure | Pass criteria |
-|---|---|---|
+| --- | --- | --- |
 | **P-12-001** | Issue `Pelorus.FirmwareUpdateQuery` from a non-vendor third-party tool to a writable-image device | Device responds with `Pelorus.FirmwareUpdateResponse` carrying version, slot model, and signing requirement |
 | **P-12-002** | Initiate a firmware update from a non-vendor tool using a manifest signed with the published verification key | Device accepts the session and emits `Pelorus.FirmwareUpdateProgress` at ≥ 1 Hz throughout the transfer |
 | **P-12-003** | Initiate a firmware update where the manifest carries a valid signature but the initiator's NAME manufacturer code does not match the device's manufacturer | Device proceeds with the update — no rejection based on initiator identity per [`12-firmware-update.md`](./12-firmware-update.md) |
@@ -86,14 +86,14 @@ Tests marked **(D)** apply only to dual-bus / path-redundancy declarations.
 ### 3.8 Criticality and Declaration Cross-Check
 
 | ID | Procedure | Pass criteria |
-|---|---|---|
+| --- | --- | --- |
 | **P-08-001** | Review submitted critical zone map + declaration | C0/C1 zones show dual-bus where required; no undocumented single-bus C0 paths |
 | **P-08-002 (D)** | Review failover convergence claim against measured P-03-005 / P-03-006 logs | Declared maximum gap is consistent with [`08-redundancy.md §10.1`](./08-redundancy.md) and matches measured worst-case |
 
 ## 4. Requirements Traceability
 
 | Requirement | Test IDs |
-|---|---|
+| --- | --- |
 | `02 §3` connector pinout | P-02-002 |
 | `08 §4` dual transceiver | P-02-003 |
 | `08 §6.3` duplicate discard | P-03-001, P-03-002, P-03-004 |

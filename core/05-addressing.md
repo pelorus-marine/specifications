@@ -27,7 +27,7 @@ Sailors building their own devices to install on their own vessels (using the Ow
 Recommended values for owner-built devices:
 
 | NAME field | Recommended value | Rationale |
-|---|---|---|
+| --- | --- | --- |
 | Arbitrary Address Capable | `1` | Allows the device to accept a `Pelorus.AddressCommand` (§4). |
 | Industry Group | `4` (Marine) | Pelorus is Marine. |
 | Device Class | per J1939-81, as appropriate (e.g. `60` = Navigation, `80` = Sensors) | Lets generic tools categorise the device. |

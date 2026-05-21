@@ -9,7 +9,7 @@ An **entity** is a typed, identified thing State knows about. Each entity has a 
 ### 1.1 Entity Types
 
 | Type | Purpose | Lifetime |
-|---|---|---|
+| --- | --- | --- |
 | `vessel-self` | The own-ship | Static; one per State instance |
 | `sensor` | A measurement device mounted on the vessel | Static; configured at install |
 | `contact` | An external object detected by sensors (other vessels, marks, hazards) | Dynamic; created/retired by tracking |
@@ -19,7 +19,7 @@ An **entity** is a typed, identified thing State knows about. Each entity has a 
 ### 1.2 Sensor Sub-types
 
 | Sub-type | Examples |
-|---|---|
+| --- | --- |
 | `gnss` | GPS, Galileo, GLONASS receivers |
 | `radar` | Marine radar antenna |
 | `ais` | AIS receiver |
@@ -40,7 +40,7 @@ A stable, locally-unique identifier of the form:
 ```
 
 | Field | Form |
-|---|---|
+| --- | --- |
 | `type` | An entity type from §1.1 |
 | `instance` | UUIDv7 for dynamic entities; installer-assigned slug for static entities |
 
@@ -55,7 +55,7 @@ All frames are right-handed.
 ### 2.1 Earth-Fixed Frames
 
 | Frame | Use | Convention |
-|---|---|---|
+| --- | --- | --- |
 | **WGS84 geographic** | Absolute position (vessel, contacts) | EPSG:4326. Latitude, longitude in degrees; altitude in metres above ellipsoid |
 | **ECEF** | Geometry across long distances | Earth-Centered Earth-Fixed cartesian, metres |
 | **NED** (local tangent plane) | Short-range relative geometry | North–East–Down, metres, anchored at a reference point (typically own-ship's current position) |
@@ -73,7 +73,7 @@ Origin: a documented structural reference, fixed for the configuration's lifetim
 Vessel attitude relative to NED:
 
 | Quantity | Convention |
-|---|---|
+| --- | --- |
 | **Heading** | Clockwise from true north, body **x** projected onto local horizontal, range [0°, 360°) |
 | **Roll** | Rotation about body **x**, positive starboard-down |
 | **Pitch** | Rotation about body **y**, positive bow-up |
@@ -86,7 +86,7 @@ Angles are radians on the wire; degrees are permitted only in human-facing UI.
 Each sensor has its own right-handed frame whose pose relative to the body frame is static configuration: a translation `(x, y, z)` in metres and a rotation expressed as a unit quaternion `(w, x, y, z)`.
 
 | Sensor type | Frame convention |
-|---|---|
+| --- | --- |
 | `radar` | x = bore-sight (zero-bearing reference), y = right-hand rule, z = up |
 | `gnss` | Antenna phase centre at origin; orientation immaterial (position-only) |
 | `imu` | Manufacturer-specified; remapped to body convention via the static rotation |
@@ -109,7 +109,7 @@ A measurement in any frame is transformed to any other by composing these three.
 Static configuration that completes the system model:
 
 | Field | Per | Form |
-|---|---|---|
+| --- | --- | --- |
 | Body-frame origin offset | Vessel | `(x, y, z)` metres from a documented hull reference |
 | Sensor mount translation | Sensor | `(x, y, z)` metres in body frame |
 | Sensor mount rotation | Sensor | Unit quaternion `(w, x, y, z)` |

@@ -7,7 +7,7 @@ Non-normative guidance for building Pelorus Core hardware, firmware, and install
 The canonical Rust tree is `pelorus-marine/platform`. Logical components below may later become separate `pelorus-*` crates on crates.io, but they are developed in `platform` first.
 
 | Component | Purpose | Home | Maturity |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `pelorus-dc` | Data Contract encoding/decoding and validation (wire identifier + payload bit layouts) | `platform/pelorus-core/dc` | Evolving |
 | `pelorus-pm` | Power management state machine and selective wake-up | `platform/pelorus-core/dc::wire` (full state machine TBD) | Partial |
 | `pelorus-address` | Address claiming and NAME handling | `platform/pelorus-core/dc::protocol` (claim sequence TBD) | Partial |
@@ -181,7 +181,7 @@ For C0 / C1 zones per [`08-redundancy.md`](./08-redundancy.md):
 ### 4.8 Troubleshooting
 
 | Symptom | Check |
-|---|---|
+| --- | --- |
 | Bus errors or no communication | Termination and stub lengths |
 | High standby current | Isolation and transceiver sleep behaviour |
 | Address conflicts | NAME uniqueness |

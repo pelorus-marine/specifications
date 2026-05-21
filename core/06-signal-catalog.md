@@ -59,7 +59,7 @@ Where a Pelorus DC corresponds to a legacy J1939 / NMEA 2000 message, the DC dec
 ## 6. Three-Layer Roles
 
 | Layer | Representation | Responsibility | Authoritative in |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | **Semantics** | `Vessel.*` path in COVESA VSS | Units, types, valid range, human meaning, relationships | This document |
 | **Data Contract** | `Pelorus.<Name>` with `dc_id`, priority, payload layout, optional `bridges[*]` | Naming, prioritisation, payload bit layout, legacy-protocol bridging | [`07-dcid-registry.md`](./07-dcid-registry.md) |
 | **Wire** | 29-bit identifier `[PRIO 3b \| DC_ID 18b \| SA 8b]` | Bus arbitration, transmission, addressing | [`03-data-link.md §2`](./03-data-link.md) |

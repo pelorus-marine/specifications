@@ -5,7 +5,7 @@ Bit rates, cabling, connectors, topology, transceivers, power, termination, isol
 ## 1. Bit Rate and Frame Format
 
 | Phase | Rate |
-|---|---|
+| --- | --- |
 | Arbitration | 250 kbit/s (identical to LMDE) |
 | Data | 500 kbit/s |
 
@@ -30,7 +30,7 @@ Optional variants for extended power requirements:
 Mid and mini use larger connectors and require adapters at backbone-to-drop transitions.
 
 | Total backbone current | Backbone length | Cable |
-|---|---|---|
+| --- | --- | --- |
 | <3A | <30m | Micro throughout |
 | 3–4A | any | Mid backbone, micro drops |
 | 4–8A or backbone >30m | any | Mini backbone, micro drops |
@@ -40,7 +40,7 @@ Mid and mini use larger connectors and require adapters at backbone-to-drop tran
 M12 A-coded 5-pin per IEC 61076-2-101, IP67/IP68 when mated and torqued, threaded coupling 14 mm pitch. Identical to LMDE micro.
 
 | Pin | Signal | LMDE wire colour |
-|---|---|---|
+| --- | --- | --- |
 | 1 | Shield / Drain | Bare drain |
 | 2 | NET-S (Power +) | Red |
 | 3 | NET-C (Power −) | Black |
@@ -62,7 +62,7 @@ Linear bus with T-connector drops:
 Single-segment limits:
 
 | Parameter | Limit |
-|---|---|
+| --- | --- |
 | Total backbone length | 30 m |
 | Maximum drop length | 6 m |
 | Total stub length | 78 m |
@@ -84,7 +84,7 @@ Each segment terminated at both physical ends with split termination:
 ```
 
 | Component | Value | Tolerance | Type |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Termination resistors (×2) | 60Ω | ±1% | Metal film, 0.25W min |
 | Midpoint capacitor | 4.7nF | ±10% | C0G or NP0 ceramic |
 
@@ -116,7 +116,7 @@ Patent considerations for selective wake-up: see [`04-power.md`](./04-power.md).
 ### 7.1 Voltage Range
 
 | Parameter | Value |
-|---|---|
+| --- | --- |
 | Nominal operating | 9–32 V |
 | Continuous tolerance | up to 36 V |
 | Transient tolerance | up to 40 V (alternator load dump) |
@@ -147,7 +147,7 @@ Pelorus uses LMDE LEN (Load Equivalency Number) for installer compatibility: 1 L
 ### 7.5 Segment Power Budgets
 
 | Cable | Single power injection | Center power injection |
-|---|---|---|
+| --- | --- | --- |
 | Micro | 60 LEN (3 A) | 80 LEN (4 A) |
 | Mid | 80 LEN (4 A) | 100 LEN (5 A) |
 | Mini | 160 LEN (8 A) | 200 LEN (10 A) |
@@ -194,7 +194,7 @@ For devices that:
 ### 8.4 Implementation
 
 | Requirement | Spec |
-|---|---|
+| --- | --- |
 | Isolation rating | 1500 V minimum, 60 V working |
 | Bus-side supply | Isolated DC/DC or transformer-coupled |
 | Signal isolation | Digital isolators (capacitive, magnetic, or optical) for CAN_RX, CAN_TX, STBY |
@@ -205,7 +205,7 @@ For devices that:
 Isolation typically adds 50–200 µA standby vs non-isolated:
 
 | Isolation | Sleep current target |
-|---|---|
+| --- | --- |
 | Non-isolated | ≤100 µA |
 | Isolated | ≤200 µA (best effort) |
 

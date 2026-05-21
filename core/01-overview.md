@@ -8,14 +8,14 @@ The safety-critical CAN FD subsystem of the Pelorus marine data network. CAN FD 
 
 The high-bandwidth Ethernet counterpart is Pelorus Stream ([`stream/01-overview.md`](../stream/01-overview.md)).
 
-**LMDE** = Legacy Marine Data Ecosystem. Project code name for the incumbent J1939-on-Classical-CAN (CAN 2.0) marine instrumentation fieldbus and its physical plant. Pelorus Core uses CAN FD; it is not electrically interoperable with LMDE on the same wire. Pelorus reuses the J1939 physical layer connector standard, address-claim protocol, and 64-bit NAME field, but defines its own Pelorus-native Data Contract ID namespace and multi-frame transport. Compatibility with legacy J1939 / NMEA 2000 messages is provided via gateway-mediated bridges declared in [`07-dcid-registry.md`](./07-dcid-registry.md).
+**LMDE** = Legacy Marine Data Ecosystem. Project code name for the incumbent NMEA2000/J1939 on CAN Classic (CAN 2.0) marine instrumentation fieldbus and its physical plant. Pelorus Core uses CAN FD; it is not electrically interoperable with LMDE on the same wire. Pelorus reuses the J1939 physical layer connector standard, address-claim protocol, and 64-bit NAME field, but defines its own Pelorus-native Data Contract ID namespace and multi-frame transport. Compatibility with legacy J1939 / NMEA 2000 messages is provided via gateway-mediated bridges declared in [`07-dcid-registry.md`](./07-dcid-registry.md).
 
 ## 2. Two-Layer Architecture
 
 Pelorus has two physical layers serving different traffic classes:
 
 | Layer | Transport | Role |
-|---|---|---|
+| --- | --- | --- |
 | **Pelorus Core** | CAN FD | Safety-critical instrumentation, deterministic |
 | **Pelorus Stream** | Ethernet | High-bandwidth data — radar, charts |
 
@@ -51,10 +51,6 @@ Stream is non–hard-real-time-control: it carries safety-relevant but loss-tole
 - **Open all the way down.** Specification, reference implementations, test fixtures. No purchases required.
 - **Static and debuggable for v1.0.** Auto-negotiation and dynamic reconfiguration are deferred. Fixed bit rates and simple state machines.
 - **Honest about tradeoffs.** Patent encumbrances and unresolved questions are documented in each doc's Open Items.
-
-## 7. v1.0 Scope and Compatibility
-
-v1.0 covers Pelorus Core only. Permanent for v1.0: bit rate profile, connector type and pinout, frame format, wire identifier layout, Data Contract namespace structure. Refining before v1.0 ships: power state model, signal catalog.
 
 ## License
 

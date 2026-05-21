@@ -22,7 +22,7 @@ M12 D-coded (4-pin, 100 Mbit/s, no PoE) is rejected — it cannot carry PoE.
 ### 2.1 Switch (PSE) Requirements
 
 | Parameter | Value |
-|---|---|
+| --- | --- |
 | Input voltage (12 V systems) | 10–16 V DC |
 | Input voltage (24 V systems) | 20–32 V DC |
 | Input voltage (48 V systems) | 40–60 V DC |
@@ -57,7 +57,7 @@ Class S (single-fabric) nodes implement a single PoE PD on their one connected p
 Each switch port is assigned a priority class, configured by the installer:
 
 | Class | Examples | Brownout behaviour |
-|---|---|---|
+| --- | --- | --- |
 | **Critical** | ECDIS, radar processor, GPS/GNSS node | Last to shed — maintained until switch input is below minimum |
 | **Standard** | Chart plotter, autopilot display, hub | Shed after Non-essential |
 | **Non-essential** | Cabin displays, crew devices | First to shed |

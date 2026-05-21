@@ -5,7 +5,7 @@ Network architecture, repeaters and hubs, and LMDE gateway behaviour. Single-seg
 ## 1. Single-Segment Limits
 
 | Parameter | Limit |
-|---|---|
+| --- | --- |
 | Backbone length | 30 m |
 | Stub length | 6 m |
 | Nodes per segment | 50 |

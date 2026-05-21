@@ -13,7 +13,7 @@ Stream is **non–hard-real-time-control**. It carries safety-relevant data that
 ## Documents
 
 | # | Filename | Purpose | Status | Trust |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | 00 | [`00-document-index.md`](./00-document-index.md) | This index | Living | Trusted |
 | 01 | [`01-overview.md`](./01-overview.md) | What Stream is, boundary with Core, design principles | Draft | Unverified |
 | 02 | [`02-data-model.md`](./02-data-model.md) | Stream identifier, type, priority, payload, metadata | Draft | Unverified |
@@ -27,10 +27,6 @@ Stream is **non–hard-real-time-control**. It carries safety-relevant data that
 | 10 | [`10-services-nav.md`](./10-services-nav.md) | Radar video, radar control, S-100 charts, high-rate nav, replication, health | Draft | Unverified |
 | 11 | [`11-events-and-errors.md`](./11-events-and-errors.md) | Stream events, updates, application + transport error taxonomies | Draft | Unverified |
 | 12 | [`12-lib.md`](./12-lib.md) | Reference Rust library entry point: public API surface | Draft | Unverified |
-
-## Numbering
-
-Numbers are assigned at document creation and not reused. This index renumbers from a prior 28-doc draft; the absorbed-doc mapping is recorded in version-control history.
 
 ## License
 

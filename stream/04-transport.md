@@ -5,7 +5,7 @@ QUIC over IPv6 link-local on a dual-fabric Ethernet plant. Datagram framing for 
 ## 1. QUIC as Single Transport
 
 | Capability | What Stream uses it for |
-|---|---|
+| --- | --- |
 | TLS 1.3 mandatory | Built-in security; no custom security header |
 | Multiplexed streams | Independent radar, chart, nav streams; head-of-line blocking eliminated |
 | Reliable streams | Chart files, control commands |
@@ -24,7 +24,7 @@ There is no plain-UDP control plane and no multicast in v1.0. Fan-out (one publi
 ## 2. IPv6 Addressing
 
 | Address class | Source |
-|---|---|
+| --- | --- |
 | IPv6 link-local (`fe80::/10`) | RFC 4862 SLAAC; modified EUI-64 from interface MAC |
 | IPv6 ULA (`fd00::/8`) | Optional, vessel-wide static prefix; configured by gateway |
 
@@ -58,7 +58,7 @@ Use a single QUIC connection per `(publisher, subscriber)` pair regardless of ho
 ## 4. Reliable Streams vs Datagrams
 
 | Data type | QUIC mechanism | Rationale |
-|---|---|---|
+| --- | --- | --- |
 | Radar spoke video | QUIC datagram (RFC 9221) | No retransmission — stale spoke is worse than gap |
 | High-rate position/heading | QUIC datagram | Old position data is actively harmful |
 | Telemetry samples | QUIC datagram | Periodic; stale not interesting |
@@ -74,7 +74,7 @@ Use a single QUIC connection per `(publisher, subscriber)` pair regardless of ho
 All Pelorus Stream QUIC datagrams carry a 16-byte header before the service payload.
 
 | Offset | Size | Field |
-|---|---|---|
+| --- | --- | --- |
 | 0 | 2 | Service type (registry in [`08-discovery-and-registry.md`](./08-discovery-and-registry.md)) |
 | 2 | 2 | Instance (e.g. radar antenna 0/1) |
 | 4 | 2 | Sequence number (16-bit rolling counter, per source per service per instance) |

@@ -36,7 +36,7 @@ A wake-up occurs if **at least one bit position** has `1` in both the received f
 Pelorus reserves the lowest six bits of WUF data byte 0 for standard marine functional groups. Bits 6–63 are reserved for future Pelorus assignment and shall not be used by v1.0 implementations.
 
 | Bit | Group | Typical members | Wake trigger |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | 0 | `anchor_watch` | GNSS, depth, anchor alarm | At anchor; periodic or on drift |
 | 1 | `underway` | GNSS, heading, wind, AIS, autopilot, log | Vessel moving |
 | 2 | `engine` | Engine ECU, fuel, alternator, exhaust temp | Ignition on or engine running |
@@ -61,7 +61,7 @@ Vessel-wide mode transitions ("weighing anchor") are coordinated by the gateway:
 ### 4.1 `Pelorus.WakeUp`
 
 | Field | Value |
-|---|---|
+| --- | --- |
 | DC_ID | `0x00001` |
 | Priority | 0 (highest) |
 | Source Address | originator's claimed address |
@@ -71,14 +71,14 @@ DLC = 8. Byte 0 carries the marine functional-group bitmask (§3, lowest six bit
 ### 4.2 `Pelorus.NetworkManagement`
 
 | Field | Value |
-|---|---|
+| --- | --- |
 | DC_ID | `0x00002` |
 | Priority | 6 (below safety-critical) |
 
 DLC = 8. Layout:
 
 | Byte | Field |
-|---|---|
+| --- | --- |
 | 0 | NM state — `0x00` ready-sleep, `0x01` repeat, `0x02` normal-operation, `0x03` prepare-bus-sleep |
 | 1 | Active groups (low byte) — bitmap of groups the sender is keeping awake |
 | 2–7 | Reserved — transmit zero, ignore on receive |
@@ -86,7 +86,7 @@ DLC = 8. Layout:
 ## 5. Power States
 
 | State | MCU | Transceiver | Bus monitoring | Typical current (non-isolated) |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | **Active** | Running | Normal | Yes | Application-specific (declared) |
 | **Standby** | Low-power running | Normal | Yes | Device-specific declared |
 | **Sleep** | Off or retention | Selective wake mode | Yes (via WUF detection) | ≤100 µA |
@@ -97,7 +97,7 @@ Sleep targets for galvanically isolated devices are in [`02-physical.md §8.5`](
 ### 5.1 Transitions
 
 | From | To | Trigger | Notes |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Active | Standby | Idle timeout (application-defined) | Drain pending TX first |
 | Active | Sleep | Coordinated cluster sleep (§6) | Initiated by NM, not unilateral |
 | Standby | Active | Application event (sensor reading, RX traffic) | No bus signaling required |
@@ -111,7 +111,7 @@ Unilateral sleep is forbidden for any node that other nodes depend on. A node ma
 ### 5.2 Wake-Up Latency
 
 | Phase | Typical |
-|---|---|
+| --- | --- |
 | Transceiver INH/MCU wake | 100–500 µs |
 | MCU boot and CAN init | 5–50 ms |
 | Application initialization | 10–500 ms |
@@ -126,7 +126,7 @@ Modelled on AUTOSAR CanNm (R23-11), simplified for marine use. Each node periodi
 ### 6.1 Cadence
 
 | Parameter | Value |
-|---|---|
+| --- | --- |
 | NM message period | 200 ms ± 20 ms |
 | Repeat-message duration | 1.0 s |
 | Wait-bus-sleep duration | 2.0 s |
@@ -137,7 +137,7 @@ Final cadence subject to wake-up latency measurements from prototype hardware.
 ### 6.2 NM States
 
 | State | Behaviour |
-|---|---|
+| --- | --- |
 | **Bus-Sleep** | Transceiver in selective wake mode. No NM transmission. |
 | **Prepare-Bus-Sleep** | No NM transmission. Wait 2.0 s for any node to break silence. If a frame is observed, return to Repeat. Else transition to Bus-Sleep. |
 | **Ready-Sleep** | No NM transmission, but listening. Other nodes' NM keeps cluster alive. After 1.0 s with no NM traffic, enter Prepare-Bus-Sleep. |

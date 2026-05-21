@@ -13,7 +13,7 @@ State is a one-directional pipeline: ingest → snapshot → situation → polic
 ## Documents
 
 | # | Filename | Purpose | Status | Trust |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | 00 | [`00-document-index.md`](./00-document-index.md) | This index | Living | Trusted |
 | 01 | [`01-overview.md`](./01-overview.md) | What State is and is not; boundaries with Core and Stream; pipeline shape | Draft | Unverified |
 | 02 | [`02-system-model.md`](./02-system-model.md) | Entities and coordinate frames; static transforms | Draft | Unverified |
@@ -24,10 +24,6 @@ State is a one-directional pipeline: ingest → snapshot → situation → polic
 | 07 | `07-distribution-and-consistency.md` | Multi-node State: replication, eventual consistency, split-brain | Planned | — |
 | 08 | `08-errors-and-degraded-mode.md` | Faults, stale data, missing publishers; per-stage degradation | Planned | — |
 | 09 | `09-subsystem-interface.md` | Public inputs and outputs; version negotiation with Core and Stream consumers | Planned | — |
-
-## Numbering
-
-Numbers are assigned at document creation and not reused.
 
 ## License
 

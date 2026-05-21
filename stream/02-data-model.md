@@ -27,7 +27,7 @@ UUIDv7 is chosen because it is time-sortable (leading 48 bits are Unix-epoch mil
 ```
 
 | Field | Size | Value |
-|---|---|---|
+| --- | --- | --- |
 | `unix_ts_ms` | 48 bits | Unix-epoch milliseconds at stream creation, big-endian |
 | `ver` | 4 bits | `0x7` |
 | `rand_a` | 12 bits | Cryptographically-random or implementation-monotonic |
@@ -57,7 +57,7 @@ In CBOR ([`05-control-protocol.md`](./05-control-protocol.md)), Stream IDs are e
 Type is an 8-bit unsigned integer that classifies what a stream carries at a coarse level. It tells a subscriber whether it can decode a stream at all; concrete formats are in the per-service documents.
 
 | Code | Name | v1.0 status | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `0x00` | `reserved` | Reserved | Never assigned; receivers shall reject. |
 | `0x01` | `radar-video` | Specified ([`10`](./10-services-nav.md)) | Raw radar spoke datagrams. |
 | `0x02` | `telemetry` | Specified | Periodic numeric or structured telemetry. |
@@ -83,7 +83,7 @@ A stream's type is fixed for the lifetime of the stream. To switch class, close 
 Priority is a 4-bit unsigned integer (0–15) carried in metadata. It is a **hint**, not authority. It does not preempt anything, does not bypass the State subsystem, and has no relationship to Pelorus Core arbitration priority.
 
 | Range | Class | Typical use |
-|---|---|---|
+| --- | --- | --- |
 | 0–3 | Bulk | Chart file transfer, telemetry that can wait |
 | 4–7 | Standard | Default for telemetry, stream health |
 | 8–11 | Interactive | Radar video, high-rate nav |
@@ -96,7 +96,7 @@ Default for an unspecified stream is 7. Publishers wanting anything else publish
 Implementations may set DSCP code points on outbound QUIC datagrams per RFC 4594:
 
 | Stream priority | DSCP class | DSCP value |
-|---|---|---|
+| --- | --- | --- |
 | 0–3 | CS1 / Lower-effort | `001000` (8) |
 | 4–7 | Default Forwarding | `000000` (0) |
 | 8–11 | EF — Expedited Forwarding | `101110` (46) |
@@ -117,7 +117,7 @@ Cross-stream coordination is a State decision, not a Stream priority decision. S
 Metadata is a CBOR map ([`05-control-protocol.md`](./05-control-protocol.md)) describing a stream. It is published in mDNS TXT records and updated via stream-update messages ([`11-events-and-errors.md`](./11-events-and-errors.md)).
 
 | Key | CBOR major | Type | Required | Notes |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `id` | byte string | UUIDv7 | Yes | Stream ID. §1. |
 | `type` | uint | u8 | Yes | Type code. §2. |
 | `prio` | uint | u8 (0–15) | No | Default 7 if absent. §3. |
@@ -146,7 +146,7 @@ For nodes that also participate in Core, `node-name` should derive from the Core
 ### 4.2 Static vs Mutable Fields
 
 | Class | Examples | Update mechanism |
-|---|---|---|
+| --- | --- | --- |
 | **Static** | `id`, `type`, `pub`, `since`, `format`, `instance`, `class` | Never change. Republished only on session open. |
 | **Mutable** | `name`, `prio`, `tags`, `extra`, `caps` | May change. Republished via stream-update ([`11`](./11-events-and-errors.md)). |
 

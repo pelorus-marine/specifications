@@ -7,7 +7,7 @@ CAN FD frame usage, 29-bit identifier layout, multi-frame transport, error handl
 CAN FD per ISO 11898-1:2015 with the following field constraints:
 
 | Field | Pelorus value |
-|---|---|
+| --- | --- |
 | Identifier length | 29 bits (extended) only |
 | BRS | Set (recessive) on all data frames |
 | ESI | Per ISO 11898-1:2015 |
@@ -22,7 +22,7 @@ Data is push-only or request-via-`Pelorus.Request`; receivers needing data eithe
 DLC-to-size mapping:
 
 | DLC | Bytes |
-|---|---|
+| --- | --- |
 | 0–8 | 0–8 |
 | 9 | 12 |
 | 10 | 16 |
@@ -45,7 +45,7 @@ Padding bytes in oversized frames shall be `0xFF` and shall be ignored on receiv
 ```
 
 | Bits | Field | Description |
-|---|---|---|
+| --- | --- | --- |
 | 28–26 | PRIO | 0 (highest) to 7 (lowest) |
 | 25–8 | DC_ID | 18-bit Pelorus Data Contract ID. Allocated in [`07-dcid-registry.md`](./07-dcid-registry.md). Written as 5 hex digits (range `0x00000`–`0x3FFFF`) |
 | 7–0 | SA | Source Address per [`05-addressing.md`](./05-addressing.md) |
@@ -55,7 +55,7 @@ There is no PDU1/PDU2 distinction, no R bit, no DP bit. A Data Contract that nee
 ### 2.1 Identifier Examples
 
 | 29-bit identifier | PRIO | DC_ID | SA | Pelorus DC |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `0b000_000000000000000001_00000011` | 0 | `0x00001` | `0x03` | `Pelorus.WakeUp` |
 | `0b110_000000000000000101_00000010` | 6 | `0x00005` | `0x02` | `Pelorus.AddressClaim` |
 | `0b100_000000000100010000_00000111` | 4 | `0x00110` | `0x07` | `Pelorus.AISClassAPosition` |
@@ -63,7 +63,7 @@ There is no PDU1/PDU2 distinction, no R bit, no DP bit. A Data Contract that nee
 ### 2.2 Priority Allocation
 
 | Priority | Class | Examples |
-|---|---|---|
+| --- | --- | --- |
 | 0 | Wake-up frames | `Pelorus.WakeUp` |
 | 1 | Safety-critical real-time | Steering, autopilot commands, alarm assertions |
 | 2 | Critical real-time | Heading, attitude, propulsion control |
@@ -101,7 +101,7 @@ The transport supports both targeted (windowed-ack) and broadcast (unacked) sess
 Byte 0 is an opcode. Remaining bytes carry opcode-specific fields:
 
 | Opcode | Direction | Fields |
-|---|---|---|
+| --- | --- | --- |
 | `Open` | sender → receiver | `session_id` (2 B), `dst_SA` (1 B), `content_DC_ID` (3 B), `total_size` (4 B), `total_frames` (4 B), `window_size_requested` (2 B), `content_crc32` (4 B) |
 | `OpenAck` | receiver → sender | `session_id` (2 B), `window_size_granted` (2 B), `next_expected_seq` (4 B) |
 | `OpenNak` | receiver → sender | `session_id` (2 B), `reason_code` (1 B) |
@@ -117,7 +117,7 @@ Reason codes and status codes are enumerated in [`12-firmware-update.md`](./12-f
 ### 4.3 `Pelorus.MultiFrameData` Frame
 
 | Bytes | Field |
-|---|---|
+| --- | --- |
 | 0–1 | `session_id` |
 | 2–5 | `sequence_number` (first data frame in a session is `0`) |
 | 6–63 | `data` (up to 58 bytes; final frame may be shorter — actual byte count derived from `total_size`) |
@@ -147,7 +147,7 @@ Broadcast sessions are appropriate for catalog snapshots, logs, and bulk data wh
 General multi-frame transport codes:
 
 | Code | Meaning |
-|---|---|
+| --- | --- |
 | `0x00` | Complete / no error |
 | `0x01` | CRCMismatch — reassembled content CRC32 does not match `content_crc32` |
 | `0x02` | SessionExists — `session_id` already in use |

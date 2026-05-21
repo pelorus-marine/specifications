@@ -127,7 +127,7 @@ This section is **non-normative**. It illustrates how the pieces in §3 fit toge
 The LMDE backbone is a single classical CAN bus carrying three instrument drops. None of these talkers are Pelorus-native; they originate as NMEA 2000 PGNs and only enter Pelorus Data Contracts via the **Pelorus Gateway**.
 
 | Drop | What it does |
-|---|---|
+| --- | --- |
 | **Wind** | Apparent / true wind angle and speed from a masthead anemometer. Typical N2K cadence ~1–4 Hz. |
 | **Depth** | Depth below transducer (and optionally water temperature) from a hull-mounted sounder. ~1 Hz. |
 | **AIS** | AIS receiver / transponder publishing target reports onto the bus. AIS belongs on Pelorus Core in a Pelorus-native install ([`core/07`](./core/07-dcid-registry.md)); here it sits on LMDE because the installed transponder is N2K-only and is bridged. |
@@ -141,7 +141,7 @@ The backbone follows whatever cable plant the installed vendor prescribes (micro
 Pelorus Core runs as **dual independent CAN FD** buses (**Bus A** and **Bus B**) with active-active replication and receiver duplicate discard ([`core/08 §6`](./core/08-redundancy.md#6-active-active-transmission-and-duplicate-discard)). Every device on this side is **Class D** (dual transceiver) and drops onto **both** buses.
 
 | Drop | Class | Criticality | What it does |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | **ECDIS 1** | **D** | **C0** | Primary electronic chart and route display. Active chartplotter under normal conditions. |
 | **ECDIS 2** | **D** | **C0** | Hot-standby chartplotter; consumes the same DC_IDs from Bus A and Bus B and is one helm action away from becoming primary. |
 | **Position (GNSS)** | **D** | **C0** | Primary nav source; broadcasts position, COG/SOG, and heading active-active on Bus A and Bus B with **PRH** on Pelorus-native broadcast DC_IDs ([`core/08 §6`](./core/08-redundancy.md#6-active-active-transmission-and-duplicate-discard)). |

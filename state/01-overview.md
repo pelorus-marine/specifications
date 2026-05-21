@@ -19,7 +19,7 @@ Concretely, State provides:
 The word "state" is overloaded across Pelorus. They are not the same:
 
 | Term | What it is | Where defined |
-|---|---|---|
+| --- | --- | --- |
 | **Pelorus State subsystem** | This subsystem — the vessel-wide fused world model | `state/` (this directory) |
 | **Stream session state** | The lifecycle of one Stream session (`ANNOUNCED → ACTIVE → CLOSED`) | [`stream/06-session-and-state.md §1`](../stream/06-session-and-state.md) |
 | **Stream per-stream state object** | The CBOR map `{id, state, since, subscribers, …}` emitted by a publisher in `state-update` messages | [`stream/06-session-and-state.md §7`](../stream/06-session-and-state.md) |

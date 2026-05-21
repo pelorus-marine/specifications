@@ -5,7 +5,7 @@ Dual-fabric state machine, datagram deduplication, Class S vs Class D nodes, and
 ## 1. Failure Modes Addressed
 
 | Failure | Detection |
-|---|---|
+| --- | --- |
 | Cable break | QUIC connection loss on affected fabric |
 | Switch failure | All QUIC connections via that fabric drop simultaneously |
 | Switch port failure | Single node loses one fabric connection |
@@ -20,7 +20,7 @@ All failure modes manifest as QUIC-observable events. The redundancy mechanism r
 ## 2. Node Classes
 
 | Class | Connectivity |
-|---|---|
+| --- | --- |
 | **Class D** | Dual transceivers; attaches to both Fabric A and Fabric B. Standard for safety-relevant services. |
 | **Class S** | Single transceiver; attaches to one fabric only. Permitted for non-safety auxiliary services. |
 
@@ -91,7 +91,7 @@ struct StreamDDTEntry {
 The datagram header fields (service type, instance, sequence, fabric ID) are defined in [`04-transport.md §5`](./04-transport.md).
 
 | Parameter | Value |
-|---|---|
+| --- | --- |
 | **Discard window** | **10 ms** — wider than necessary (Ethernet switch latency between two ports on a vessel is microseconds; 10 ms is ample margin without risking suppression of legitimate new datagrams) |
 | **Forget timeout** | **60 s** — DDT entry removed if no datagrams received from `(source, service, instance)` for this duration |
 

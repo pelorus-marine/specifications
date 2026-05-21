@@ -5,7 +5,7 @@ The control plane that runs over QUIC reliable streams: message taxonomy, envelo
 ## 1. Two Encoding Planes
 
 | Plane | What it carries | Encoding |
-|---|---|---|
+| --- | --- | --- |
 | **Control plane** | Subscribe / unsubscribe, events, updates, soft control commands | Deterministic CBOR (this document) over QUIC reliable streams |
 | **Payload plane** | Service datagrams (radar spokes, nav, health, telemetry) | Service-specific binary payload behind the datagram header in [`04-transport.md §5`](./04-transport.md) |
 
@@ -14,7 +14,7 @@ Reliable file/asset transfers (S-100 charts, firmware) use HTTP/3 over QUIC and 
 ## 2. Message Taxonomy
 
 | Message | Direction | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `subscribe` | Subscriber → Publisher | Open or renew a subscription |
 | `unsubscribe` | Subscriber → Publisher | Voluntary teardown |
 | `subscribe-ack` | Publisher → Subscriber | Accept or reject a subscribe |
@@ -31,7 +31,7 @@ Messages not listed are reserved and shall be ignored. Implementations shall not
 ### 2.1 Kind Codes
 
 | Code | Kind |
-|---|---|
+| --- | --- |
 | `0x0001` | `subscribe` |
 | `0x0002` | `unsubscribe` |
 | `0x0003` | `subscribe-ack` |
@@ -70,7 +70,7 @@ A control message on a QUIC reliable stream is a single CBOR value: a 2-element 
 ### 3.1 Envelope Field Map
 
 | Key | Field | Type | Required | Notes |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | 1 | `v` | u8 | Yes | Protocol minor version (§5) |
 | 2 | `kind` | u16 | Yes | Kind code (§2.1) |
 | 3 | `sid` | byte string (16 B) | Yes | Stream ID (UUIDv7) |
@@ -84,7 +84,7 @@ Unknown integer keys shall be ignored by receivers (forward compatibility).
 ### 3.2 Flags
 
 | Bit | Name | Meaning |
-|---|---|---|
+| --- | --- | --- |
 | 0 | `discontinuity` | Receiver should reset jitter buffer; this PU is not contiguous with prior |
 | 1 | `keyframe` | Self-contained start-of-stream anchor (video and similar) |
 | 2 | `final` | Last message of the session (paired with `closing`) |
@@ -98,7 +98,7 @@ Unknown integer keys shall be ignored by receivers (forward compatibility).
 `event` and `state-update` are **monotonic** — receivers de-duplicate by `seq`.
 
 | Message | Ack |
-|---|---|
+| --- | --- |
 | `subscribe` | Yes — `subscribe-ack` within 1 s |
 | `unsubscribe` | No |
 | `radar-control` | Yes — QUIC reliable stream guarantees delivery; explicit `state-update` echo expected |
@@ -110,7 +110,7 @@ Unknown integer keys shall be ignored by receivers (forward compatibility).
 Protocol version is semantic at the major-minor level: `vMAJOR.MINOR`.
 
 | Component | Bumped when |
-|---|---|
+| --- | --- |
 | **MAJOR** | Incompatible change (envelope reshape, encoding change, transport change). Different majors do not interoperate. |
 | **MINOR** | Backward-compatible feature added (new kind, new metadata field, new capability bit). |
 
@@ -141,7 +141,7 @@ This works because CBOR map keys are explicit and skippable, kind codes are spar
 Capabilities are advertised in the mDNS TXT record (`caps=<hex>`), the `subscribe` body, and the `subscribe-ack` echo. Encoded as a CBOR byte string of bit-vector form, big-endian, MSB of byte 0 = bit 0. Receivers shall treat absent bytes as zero.
 
 | Bit | Name | Semantics |
-|---|---|---|
+| --- | --- | --- |
 | 0 | `payload-cbor` | Sender supports CBOR control plane (always 1 in v1.0) |
 | 1 | `quic-datagrams` | Sender supports QUIC datagrams (RFC 9221) — always 1 in v1.0 |
 | 2 | `quic-reliable` | Sender supports QUIC reliable streams — always 1 in v1.0 |
@@ -171,7 +171,7 @@ Vendor caps at bit 64+ are meaningful only when paired with the `vendor` metadat
 A strict subset of RFC 8949 with deterministic encoding requirements per RFC 8949 §4.2.1.
 
 | Rule | Pelorus-CBOR-1 |
-|---|---|
+| --- | --- |
 | Definite-length encoding only | Required |
 | Smallest integer encoding | Required |
 | Map keys in canonical order (length-then-byte) | Required |
@@ -185,7 +185,7 @@ A strict subset of RFC 8949 with deterministic encoding requirements per RFC 894
 ### 6.1 Permitted Tags
 
 | Tag | Meaning | Notes |
-|---|---|---|
+| --- | --- | --- |
 | 0 | Standard date/time string (RFC 3339) | Permitted in metadata |
 | 1 | Epoch-based date/time (numeric) | Permitted; seconds (integer) or seconds-with-fraction (float) |
 | 32 | URI | Permitted (e.g. `extra.schema-uri`) |
