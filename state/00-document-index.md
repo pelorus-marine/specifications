@@ -1,9 +1,5 @@
 # Pelorus State — Specification Document Index
 
-**Version:** Living
-**Last Updated:** May 10, 2026
-**Trust:** Trusted (index only; individual docs carry their own trust levels)
-
 Authoritative list of Pelorus State specification documents. Pelorus State is the vessel's fused world-state subsystem layered above Pelorus Core and Pelorus Stream.
 
 State is a one-directional pipeline: ingest → snapshot → situation → policy. See [`01-overview.md`](./01-overview.md) for what State is and is not.

@@ -1,9 +1,5 @@
 # Pelorus Stream — Session and State
 
-**Version:** 0.2 Draft
-**Last Updated:** May 10, 2026
-**Trust:** Unverified
-
 Session lifecycle, observable per-stream state, and subscription protocol. Control-message envelopes for the messages defined here are in [`05-control-protocol.md`](./05-control-protocol.md).
 
 ## 1. Session States

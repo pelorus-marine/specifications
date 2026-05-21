@@ -1,9 +1,5 @@
 # Pelorus Core — Power Management
 
-**Version:** 0.4 Draft
-**Last Updated:** May 10, 2026
-**Trust:** Trusted (§1–6 ISO-validated; §7+ proposals subject to validation)
-
 Selective wake-up, partial networking, functional groups, power states, network management. Wake-generation interaction with dual-bus duplicate discard lives in [`08-redundancy.md`](./08-redundancy.md).
 
 ## 1. Patent Notice
@@ -62,7 +58,7 @@ Vessel-wide mode transitions ("weighing anchor") are coordinated by the gateway:
 
 ## 4. Reserved Identifiers and Data Conventions
 
-### 4.1 `PelorusDC.WakeUp`
+### 4.1 `Pelorus.WakeUp`
 
 | Field | Value |
 |---|---|
@@ -72,7 +68,7 @@ Vessel-wide mode transitions ("weighing anchor") are coordinated by the gateway:
 
 DLC = 8. Byte 0 carries the marine functional-group bitmask (§3, lowest six bits; bits 6–7 of byte 0 reserved, transmit zero). Bytes 1–7 reserved — transmit `0x00`, ignore on receive.
 
-### 4.2 `PelorusDC.NetworkManagement`
+### 4.2 `Pelorus.NetworkManagement`
 
 | Field | Value |
 |---|---|

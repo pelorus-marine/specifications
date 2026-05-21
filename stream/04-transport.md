@@ -1,9 +1,5 @@
 # Pelorus Stream — Transport
 
-**Version:** 0.2 Draft
-**Last Updated:** May 10, 2026
-**Trust:** Unverified
-
 QUIC over IPv6 link-local on a dual-fabric Ethernet plant. Datagram framing for unreliable streams; reliable QUIC streams for everything else. Dual-fabric state machine, deduplication, and recovery are in [`07-redundancy.md`](./07-redundancy.md). Service-level use of these primitives is in [`10-services-nav.md`](./10-services-nav.md).
 
 ## 1. QUIC as Single Transport

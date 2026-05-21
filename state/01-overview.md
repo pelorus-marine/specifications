@@ -1,9 +1,5 @@
 # Pelorus State — Overview
 
-**Version:** 0.1 Draft
-**Last Updated:** May 10, 2026
-**Trust:** Unverified
-
 Entry point to the Pelorus State specification. Normative requirements live in [`02-system-model.md`](./02-system-model.md) onward.
 
 ## 1. What Pelorus State Is

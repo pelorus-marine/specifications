@@ -1,9 +1,5 @@
 # Pelorus Core — Conformance and Self-Declaration
 
-**Version:** 0.3 Draft
-**Last Updated:** May 19, 2026
-**Trust:** Unverified
-
 Conformance test plan and manufacturer self-declaration template. Conformance is established by self-testing against reference implementations; no third-party certification body is required for v1.0.
 
 ## 1. Scope
@@ -42,13 +38,13 @@ Tests marked **(D)** apply only to dual-bus / path-redundancy declarations.
 
 | ID | Procedure | Pass criteria |
 |---|---|---|
-| **P-03-001 (D)** | Transmit identical `PelorusDC.BusHealth` PRH frame on A then B within 10 ms | DUT accepts one application delivery; duplicate counter increments |
+| **P-03-001 (D)** | Transmit identical `Pelorus.BusHealth` PRH frame on A then B within 10 ms | DUT accepts one application delivery; duplicate counter increments |
 | **P-03-002 (D)** | Same SA+DC_ID+payload compatibility frame on A then B within `DISCARD_WINDOW` | One delivery to application |
-| **P-03-003** | `PelorusDC.AddressClaim` on both buses (D) | DUT processes both claims independently per [`08-redundancy.md §6.2`](./08-redundancy.md) |
-| **P-03-004 (D)** | Increment `PelorusDC.BusHealth` sequence; resend same sequence on second bus within `DISCARD_WINDOW` | Second copy discarded |
+| **P-03-003** | `Pelorus.AddressClaim` on both buses (D) | DUT processes both claims independently per [`08-redundancy.md §6.2`](./08-redundancy.md) |
+| **P-03-004 (D)** | Increment `Pelorus.BusHealth` sequence; resend same sequence on second bus within `DISCARD_WINDOW` | Second copy discarded |
 | **P-03-005 (D)** | Failover under steady traffic: 10 Hz Class D producer, kill Bus A mid-stream | Receiver application sees no message gap larger than `DISCARD_WINDOW + 100 ms` |
 | **P-03-006 (D)** | Bus return without false duplicates: restore Bus A after 10 s outage while Bus B continues | Receiver does not re-deliver any message already accepted from Bus B; DDT entries remain valid |
-| **P-03-007 (D)** | PRH 16-bit sequence wrap on `PelorusDC.BusHealth` (drive past 65535) | Receiver continues correct duplicate discard across wrap; no spurious suppression |
+| **P-03-007 (D)** | PRH 16-bit sequence wrap on `Pelorus.BusHealth` (drive past 65535) | Receiver continues correct duplicate discard across wrap; no spurious suppression |
 
 ### 3.3 Addressing
 
@@ -67,7 +63,7 @@ Tests marked **(D)** apply only to dual-bus / path-redundancy declarations.
 
 | ID | Procedure | Pass criteria |
 |---|---|---|
-| **P-07-001 (D)** | Class D powered Active | `PelorusDC.BusHealth` on each bus at ≤ 2.5 s observed cadence; layout matches [`08-redundancy.md §8.1`](./08-redundancy.md) |
+| **P-07-001 (D)** | Class D powered Active | `Pelorus.BusHealth` on each bus at ≤ 2.5 s observed cadence; layout matches [`08-redundancy.md §8.1`](./08-redundancy.md) |
 
 ### 3.6 Network and Hub
 
@@ -76,14 +72,14 @@ Tests marked **(D)** apply only to dual-bus / path-redundancy declarations.
 | **P-09-001** | Repeater between two segments | Valid frame from seg1 appears on seg2 unmodified |
 | **P-09-002 (D)** | Class S node on hub downstream; frame to hub | Identical frame on Bus A and Bus B backbones |
 | **P-09-003 (D)** | Two upstream Class D producers run active-active; one downstream Class S consumer attached to a hub | Class S receives one copy of each logical frame; hub increments duplicate counter on whichever ingress bus arrived second |
-| **P-09-004 (D)** | Force one hub backbone port into bus-off while traffic continues | Hub continues forwarding between surviving backbone and downstream segments; `PelorusDC.BusHealth` reports `Bus state = 3`; missed-frame counter for failed bus increments |
+| **P-09-004 (D)** | Force one hub backbone port into bus-off while traffic continues | Hub continues forwarding between surviving backbone and downstream segments; `Pelorus.BusHealth` reports `Bus state = 3`; missed-frame counter for failed bus increments |
 
 ### 3.7 Firmware Update — Open Access
 
 | ID | Procedure | Pass criteria |
 |---|---|---|
-| **P-12-001** | Issue `PelorusDC.FirmwareUpdateQuery` from a non-vendor third-party tool to a writable-image device | Device responds with `PelorusDC.FirmwareUpdateResponse` carrying version, slot model, and signing requirement |
-| **P-12-002** | Initiate a firmware update from a non-vendor tool using a manifest signed with the published verification key | Device accepts the session and emits `PelorusDC.FirmwareUpdateProgress` at ≥ 1 Hz throughout the transfer |
+| **P-12-001** | Issue `Pelorus.FirmwareUpdateQuery` from a non-vendor third-party tool to a writable-image device | Device responds with `Pelorus.FirmwareUpdateResponse` carrying version, slot model, and signing requirement |
+| **P-12-002** | Initiate a firmware update from a non-vendor tool using a manifest signed with the published verification key | Device accepts the session and emits `Pelorus.FirmwareUpdateProgress` at ≥ 1 Hz throughout the transfer |
 | **P-12-003** | Initiate a firmware update where the manifest carries a valid signature but the initiator's NAME manufacturer code does not match the device's manufacturer | Device proceeds with the update — no rejection based on initiator identity per [`12-firmware-update.md`](./12-firmware-update.md) |
 | **P-12-004** | Interrupt an in-progress update by cycling power; resume with the same `session_id` within the receiver's timeout | Update resumes from `next_expected_seq` without re-transmitting received frames |
 

@@ -1,9 +1,5 @@
 # Pelorus Core — Specification Document Index
 
-**Version:** Living
-**Last Updated:** May 19, 2026
-**Trust:** Trusted (index only; individual docs carry their own trust levels)
-
 Authoritative list of Pelorus Core specification documents. Pelorus Core is the safety-critical CAN FD subsystem of the Pelorus marine data network.
 
 ## Trust Levels
@@ -33,23 +29,6 @@ Authoritative list of Pelorus Core specification documents. Pelorus Core is the 
 ## Numbering
 
 Numbers are assigned at document creation and not reused. This index renumbers from the prior 18-doc draft (00–17); the absorbed-doc mapping is in the change note below.
-
-## What Changed From the Prior Draft
-
-| Old | New | Note |
-|---|---|---|
-| 00 (document-index) | 00 | unchanged |
-| 01 (overview) | 01 | unchanged |
-| 02 (physical-layer) | 02 | renamed `physical`; dual-bus content moved to 08 |
-| 03 (data-link-layer) | 03 | renamed `data-link`; dual-bus content moved to 08 |
-| 04 (power-management) | 04 | renamed `power`; strip §1–3 rationale + §4 free references |
-| 05 (addressing) | 05 | unchanged |
-| 06 (signal-catalog) | 06 | unchanged |
-| 07 (pgn-registry) | 07 | renamed `dcid-registry`; dual-bus content moved to 08 |
-| 08 + 09 + 10 | 09 | network architecture + LMDE gateway + repeater merged |
-| 11 + 12 + 13 + 14 | 10 | reference impls + HW + FW + install (all non-normative) merged |
-| 15 + 16 | 11 | conformance tests + self-declaration merged |
-| 17 + dual-bus parts of 02/03/07 | 08 | dual-bus story unified in one doc |
 
 ## License
 

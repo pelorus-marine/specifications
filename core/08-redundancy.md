@@ -1,9 +1,5 @@
 # Pelorus Core — Criticality, Path Redundancy, and Dual-Bus Domains
 
-**Version:** 0.3 Draft
-**Last Updated:** May 19, 2026
-**Trust:** Unverified
-
 The single source of truth for criticality classes, dual-bus operation, duplicate discard, and the Data Contracts (DCs) that support them. Single-bus segment limits and connector rules are in [`02-physical.md`](./02-physical.md). Identifier layout and frame format are in [`03-data-link.md`](./03-data-link.md). Address claiming is in [`05-addressing.md`](./05-addressing.md). Wake-up and NM behaviour are in [`04-power.md`](./04-power.md).
 
 **Principle ordering.** Reliability and durability take precedence over ease of installation when the two conflict. Installers and manufacturers shall not omit path redundancy, separate routing, or declared degraded-mode behaviour for C0 or C1 solely to reduce install time or cable count, unless this document explicitly allows a single-bus exception.
@@ -95,7 +91,7 @@ Active-active dual-CAN-FD redundancy and SYNC-based active/backup CAN-FD redunda
 For Class D and Class H nodes:
 
 1. **Simultaneous claim.** On power-up, reset, or join, a Class D node shall run the [`05-addressing.md §3`](./05-addressing.md) procedure on both buses in parallel (same preferred SA and same NAME on A and B).
-2. **Data transmission gate.** The node shall not transmit application DCs (other than address-management traffic and `PelorusDC.BusHealth` / `PelorusDC.TimeSync` per §8) on either bus until it has successfully claimed the same SA on both buses, unless it enters degraded single-bus mode per §9 (operator-visible fault; continues on the surviving bus only).
+2. **Data transmission gate.** The node shall not transmit application DCs (other than address-management traffic and `Pelorus.BusHealth` / `Pelorus.TimeSync` per §8) on either bus until it has successfully claimed the same SA on both buses, unless it enters degraded single-bus mode per §9 (operator-visible fault; continues on the surviving bus only).
 3. **Conflict asymmetry.** If claiming succeeds on Bus A but fails on Bus B, the node shall either (a) select a new SA and re-claim on both buses from step 1, or (b) declare degraded single-bus on A and shall not transmit on B until B succeeds.
 4. **Class H hubs** shall claim a unique SA on each bus segment they terminate; downstream Class S devices use normal claiming on their single attached segment — the hub performs replication onto both backbones.
 
@@ -112,9 +108,9 @@ Address-claim and Commanded Address frames shall not be subject to duplicate dis
 
 The following shall not pass through duplicate discard (each bus is processed independently for network-management correctness):
 
-- `PelorusDC.AddressClaim` and all address-management traffic (including `PelorusDC.AddressCommand` and any future address-management DCs).
-- Multi-frame transport frames (`PelorusDC.MultiFrameControl`, `PelorusDC.MultiFrameData`) — reassembly per [`03-data-link.md §4`](./03-data-link.md) on each bus independently until a future revision defines multi-frame-level deduplication.
-- `PelorusDC.WakeUp` and `PelorusDC.NetworkManagement` frames — processed independently on each bus.
+- `Pelorus.AddressClaim` and all address-management traffic (including `Pelorus.AddressCommand` and any future address-management DCs).
+- Multi-frame transport frames (`Pelorus.MultiFrameControl`, `Pelorus.MultiFrameData`) — reassembly per [`03-data-link.md §4`](./03-data-link.md) on each bus independently until a future revision defines multi-frame-level deduplication.
+- `Pelorus.WakeUp` and `Pelorus.NetworkManagement` frames — processed independently on each bus.
 
 ### 6.3 Duplicate Discard Algorithm
 
@@ -153,7 +149,7 @@ DISCARD_WINDOW >= 2 * H * L_hop  +  2 * D_clk  +  safety_margin
 
 with default `safety_margin = 10 ms`. The 50 ms value above is the absolute floor; deeper or higher-drift installations shall use a larger value and document it in the critical zone map.
 
-`D_clk` defaults to 10 ms when `PelorusDC.TimeSync` (§8.2) is implemented in the dual-bus domain; otherwise the installation shall declare a measured or worst-case `D_clk` and use the formula.
+`D_clk` defaults to 10 ms when `Pelorus.TimeSync` (§8.2) is implemented in the dual-bus domain; otherwise the installation shall declare a measured or worst-case `D_clk` and use the formula.
 
 ### 6.4 Multi-Frame Transport and Duplicate Discard
 
@@ -170,14 +166,14 @@ A fixed 3-byte preamble used at the start of the CAN FD data field for Pelorus-n
 
 **Scope:**
 
-- `PelorusDC.BusHealth` and `PelorusDC.TimeSync` shall use this PRH.
+- `Pelorus.BusHealth` and `Pelorus.TimeSync` shall use this PRH.
 - Any future Pelorus-native broadcast DC with payload ≥ 4 bytes shall include this PRH at bytes 0–2 before its application fields. Pelorus-native DCs with payload < 4 bytes may omit the PRH (such DCs use §6.3.2 payload-and-ID dedup).
 - Compatibility DCs (J1939 / NMEA-2000 heritage) shall not carry a PRH; they are deduplicated via §6.3.2.
-- Protocol DCs `PelorusDC.WakeUp`, `PelorusDC.NetworkManagement`, `PelorusDC.AddressClaim`, `PelorusDC.AddressCommand`, `PelorusDC.Request`, `PelorusDC.MultiFrameControl`, `PelorusDC.MultiFrameData` shall not carry a PRH; they are exempt from duplicate discard (§6.2).
+- Protocol DCs `Pelorus.WakeUp`, `Pelorus.NetworkManagement`, `Pelorus.AddressClaim`, `Pelorus.AddressCommand`, `Pelorus.Request`, `Pelorus.MultiFrameControl`, `Pelorus.MultiFrameData` shall not carry a PRH; they are exempt from duplicate discard (§6.2).
 
 ## 8. Dual-Bus Data Contracts
 
-### 8.1 `PelorusDC.BusHealth`
+### 8.1 `Pelorus.BusHealth`
 
 | Attribute | Value |
 |---|---|
@@ -188,7 +184,7 @@ A fixed 3-byte preamble used at the start of the CAN FD data field for Pelorus-n
 
 | Byte(s) | Field |
 |---|---|
-| 0–1 | Sequence — `uint16` LE; rolling counter per `(SA, PelorusDC.BusHealth)` for duplicate discard |
+| 0–1 | Sequence — `uint16` LE; rolling counter per `(SA, Pelorus.BusHealth)` for duplicate discard |
 | 2 | BusId_WakeGen — see §7 |
 | 3 | TX error counter (CAN controller; saturates at 255) |
 | 4 | RX error counter (saturates at 255) |
@@ -198,7 +194,7 @@ A fixed 3-byte preamble used at the start of the CAN FD data field for Pelorus-n
 | 10 | Node class: 0 = Class S, 1 = Class D, 2 = Class H |
 | 11 | Bus state: 0 = Active/Error-active; 1 = Error-passive; 2 = Bus-off; 3 = Degraded single-bus |
 
-### 8.2 `PelorusDC.TimeSync` (optional)
+### 8.2 `Pelorus.TimeSync` (optional)
 
 | Attribute | Value |
 |---|---|
@@ -211,7 +207,7 @@ A fixed 3-byte preamble used at the start of the CAN FD data field for Pelorus-n
 
 | Byte(s) | Field |
 |---|---|
-| 0–1 | Sequence — `uint16` LE per `(SA, PelorusDC.TimeSync)` |
+| 0–1 | Sequence — `uint16` LE per `(SA, Pelorus.TimeSync)` |
 | 2 | BusId_WakeGen — see §7 |
 | 3–6 | CoreTime — `uint32` LE: milliseconds since UTC midnight, or monotonic millisecond counter if UTC unavailable (implementation-defined; documented in product literature) |
 | 7 | Reserved — transmit `0x00`, ignore on receive |
@@ -224,7 +220,7 @@ Each node that participates in path redundancy (Class D or Class H) shall mainta
 
 ### 9.2 DDT Invalidation on Wake
 
-Receivers shall treat a change in wake generation for source `S` (observed via Bus Health, or on first post-wake application frame if Bus Health not yet received) as a signal to delete all DDT entries for `S`. Until Bus Health is transmitted, Class D nodes shall still increment wake generation on wake so that the first `PelorusDC.BusHealth` frame reflects the new value.
+Receivers shall treat a change in wake generation for source `S` (observed via Bus Health, or on first post-wake application frame if Bus Health not yet received) as a signal to delete all DDT entries for `S`. Until Bus Health is transmitted, Class D nodes shall still increment wake generation on wake so that the first `Pelorus.BusHealth` frame reflects the new value.
 
 ### 9.3 Sleep and Duplicate Discard
 

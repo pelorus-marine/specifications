@@ -1,9 +1,5 @@
 # Pelorus Stream — Overview
 
-**Version:** 0.2 Draft
-**Last Updated:** May 10, 2026
-**Trust:** Unverified
-
 Entry point to the Pelorus Stream specification. Normative requirements live in [`02-data-model.md`](./02-data-model.md) onward.
 
 ## 1. What Pelorus Stream Is

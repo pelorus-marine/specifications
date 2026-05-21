@@ -1,6 +1,5 @@
 # Pelorus — architecture record
 
-**Last Updated:** May 11, 2026  
 **Status:** Living (non-normative)
 
 ## 1. Project
@@ -49,7 +48,7 @@ Weaknesses of [**Legacy Marine Data Ecosystem**](#lmde) that Pelorus addresses:
 - **Specification gate**: Proprietary message catalogs; costly certification; NDAs—hard for sailors and small builders to inspect, extend, or verify independently.
 - **Lab-first qualification**: Conformance is proven on the bench, not under years of salt spray, vibration, wet connectors, and RF-rich passages.
 - **Always-on drain**: Without selective sleep as the norm, the suite draws continuous aggregate current even when voyage context makes much of it useless for days.
-- **Classical CAN ceiling**: Install base is stuck at ~250 kbit/s Classical CAN and **8-byte** frames; Pelorus Core uses **CAN FD** with **up to 64-byte** frames. Typical navigation/engine DCIDs still don’t need “more Mbps” as much as openness, power discipline, and behavior.
+- **Classical CAN ceiling**: Install base is stuck at ~250 kbit/s Classical CAN and **8-byte** frames; Pelorus Core uses **CAN FD** with **up to 64-byte** frames. Typical navigation/engine DC_IDs still don’t need “more Mbps” as much as openness, power discipline, and behavior.
 - **Backbone fault domain**: A linear segment is one electrical island—opens, shorts, or bad terminators can blind **everything** on that backbone.
 - **Opaque diagnostics**: Little vendor-neutral tooling to capture and decode live traffic as **your** ship’s contract.
 - **Vendor islands**: Optional-field gaps and proprietary extensions → cross-brand surprises and **gateway-heavy** rigs despite compatible cabling.
@@ -57,14 +56,13 @@ Weaknesses of [**Legacy Marine Data Ecosystem**](#lmde) that Pelorus addresses:
 - **Cadence drag**: Cert-gated evolution is slow next to automotive or IT stack velocity—features queue behind programs and committee cycles.
 - **Tooling capture**: Firmware updates and deep diagnostics often depend on OEM apps, dongles, or dealer chains—not something you fully own at anchor.
 
-
 ---
 
 ## 3. Subsystems
 
 ### [Core](./core/01-overview.md)
 
-**CAN FD fieldbus** for safety-critical instrumentation and controls. Application traffic is defined by Pelorus [**Data Contracts (DCIDs)**](./core/07-dcid-registry.md) — Pelorus-owned, named definitions with their own numeric DC_ID, payload bit layout, priority, and optional bridges to legacy J1939 / NMEA 2000 identifiers. Selective wake groups and **M12 A-coded 5-pin** (per IEC 61076-2-101, identical to LMDE micro) physical plant.
+**CAN FD fieldbus** for safety-critical instrumentation and controls. Application traffic is defined by Pelorus [**Data Contracts (DC_IDs)**](./core/07-dcid-registry.md) — Pelorus-owned, named definitions with their own numeric DC_ID, payload bit layout, priority, and optional bridges to legacy J1939 / NMEA 2000 identifiers. Selective wake groups and **M12 A-coded 5-pin** (per IEC 61076-2-101, identical to LMDE micro) physical plant.
 
 **Path redundancy:** Where **[criticality class](./core/08-redundancy.md)** **C0** or **C1** requires it, Pelorus Core uses **dual** independent CAN FD buses (**Bus A** / **Bus B**) with active-active replication and receiver duplicate discard (**[08 §6](./core/08-redundancy.md#6-active-active-transmission-and-duplicate-discard)**). That is **orthogonal** to **repeater segmentation** (length and fault containment). **Reliability and durability** are ordered ahead of install convenience when they conflict (**[01 §6](./core/01-overview.md#6-design-principles)**).
 
@@ -91,7 +89,7 @@ AIS targets are low-rate instrument data and live on Pelorus Core, not Stream (s
 
 **Core stays authoritative** for safety-critical semantics.
 
-**Core → Stream:** Telemetry and identity/metadata aligned with DCIDs are bridged onto Stream through the **standard gateway**.
+**Core → Stream:** Telemetry and identity/metadata aligned with DC_IDs are bridged onto Stream through the **standard gateway**.
 
 **Stream → Core:** Reverse injection onto the Core fieldbus—anything originating on the Ethernet side toward CAN—is permitted **only** through a **capable bidirectional gateway**. Arbitrary Stream publishers **must not** originate traffic as Core talkers.
 
@@ -145,15 +143,15 @@ Pelorus Core runs as **dual independent CAN FD** buses (**Bus A** and **Bus B**)
 | Drop | Class | Criticality | What it does |
 |---|---|---|---|
 | **ECDIS 1** | **D** | **C0** | Primary electronic chart and route display. Active chartplotter under normal conditions. |
-| **ECDIS 2** | **D** | **C0** | Hot-standby chartplotter; consumes the same DCIDs from Bus A and Bus B and is one helm action away from becoming primary. |
-| **Position (GNSS)** | **D** | **C0** | Primary nav source; broadcasts position, COG/SOG, and heading active-active on Bus A and Bus B with **PRH** on Pelorus-native broadcast DCIDs ([`core/08 §6`](./core/08-redundancy.md#6-active-active-transmission-and-duplicate-discard)). |
+| **ECDIS 2** | **D** | **C0** | Hot-standby chartplotter; consumes the same DC_IDs from Bus A and Bus B and is one helm action away from becoming primary. |
+| **Position (GNSS)** | **D** | **C0** | Primary nav source; broadcasts position, COG/SOG, and heading active-active on Bus A and Bus B with **PRH** on Pelorus-native broadcast DC_IDs ([`core/08 §6`](./core/08-redundancy.md#6-active-active-transmission-and-duplicate-discard)). |
 | **Pelorus Gateway** | **D** | spans C0 + LMDE | Bridges the LMDE NMEA 2000 backbone into Pelorus Core; drops onto Bus A and Bus B so it remains reachable through a single-bus failure ([`core/01 §4`](./core/01-overview.md#4-coexistence-with-lmde)). |
 
-**Selected DCIDs in play** ([`core/07`](./core/07-dcid-registry.md)):
+**Selected DC_IDs in play** ([`core/07`](./core/07-dcid-registry.md)):
 
 - **0x00003** — Bus Health, transmitted by every Class D node on each bus at 2 s ± 500 ms.
 - **0x00004** — Time Sync (optional). Recommended here because the whole Pelorus Core fabric is C0; the gateway acts as Time Master so `D_clk ≤ 10 ms` and the receiver `DISCARD_WINDOW = 50 ms` is sufficient ([`core/08 §6.3.3`](./core/08-redundancy.md#633-discard_window-lower-bound)).
-- **Bridged DCIDs** for wind, depth, AIS, and heading — the gateway maps incoming NMEA 2000 PGNs to Pelorus-native or compatibility DCIDs and rebroadcasts them active-active on Bus A and Bus B ([`core/07 §2`](./core/07-dcid-registry.md)). The autopilot is **not** bridged onto Pelorus Core — it is a closed loop on the LMDE side.
+- **Bridged DC_IDs** for wind, depth, AIS, and heading — the gateway maps incoming NMEA 2000 PGNs to Pelorus-native or compatibility DC_IDs and rebroadcasts them active-active on Bus A and Bus B ([`core/07 §2`](./core/07-dcid-registry.md)). The autopilot is **not** bridged onto Pelorus Core — it is a closed loop on the LMDE side.
 
 ### 4.5 What happens during a single-bus failure on Pelorus Core
 

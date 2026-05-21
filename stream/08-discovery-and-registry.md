@@ -1,9 +1,5 @@
 # Pelorus Stream — Discovery and Registry
 
-**Version:** 0.2 Draft
-**Last Updated:** May 10, 2026
-**Trust:** Unverified
-
 mDNS-SD service catalog and the per-node observation registry. Discovery happens on each fabric independently; subscribers establish dual QUIC connections to publishers per [`04-transport.md §3`](./04-transport.md).
 
 ## 1. Service Catalog

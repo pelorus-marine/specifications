@@ -1,9 +1,5 @@
 # Pelorus Stream — Data Model
 
-**Version:** 0.2 Draft
-**Last Updated:** May 10, 2026
-**Trust:** Unverified
-
 The wire data model: the identifier that names a stream, the metadata that describes it, the type and priority hints that classify it, and the payload-unit framing that carries its data. Wire transport is in [`04-transport.md`](./04-transport.md). Per-service payload formats are in [`10-services-nav.md`](./10-services-nav.md).
 
 ## 1. Stream Identifier

@@ -1,9 +1,5 @@
 # Pelorus Stream — Physical Layer
 
-**Version:** 0.2 Draft
-**Last Updated:** May 10, 2026
-**Trust:** Unverified
-
 Connector, cabling, PoE, and dual-fabric installation. Dual-fabric runtime behaviour (state machine, RedBox, deduplication) is in [`07-redundancy.md`](./07-redundancy.md).
 
 ## 1. Connector

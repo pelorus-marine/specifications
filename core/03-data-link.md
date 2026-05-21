@@ -1,9 +1,5 @@
 # Pelorus Core — Data Link Layer
 
-**Version:** 0.3 Draft
-**Last Updated:** May 19, 2026
-**Trust:** Trusted
-
 CAN FD frame usage, 29-bit identifier layout, multi-frame transport, error handling. Dual-bus duplicate discard lives in [`08-redundancy.md`](./08-redundancy.md).
 
 ## 1. Frame Format
@@ -21,7 +17,7 @@ CAN FD per ISO 11898-1:2015 with the following field constraints:
 
 Pelorus Core nodes shall not transmit Classical CAN data frames except where ISO 11898-2:2016 requires Classical CAN encoding for Wake-Up Frames (see [`04-power.md`](./04-power.md)).
 
-Data is push-only or request-via-`PelorusDC.Request`; receivers needing data either subscribe by listening for the relevant broadcast DC or send a request message (`PelorusDC.Request`, see [§4.8](#48-request-mechanism)). Pelorus does not use Remote Transmission Request frames.
+Data is push-only or request-via-`Pelorus.Request`; receivers needing data either subscribe by listening for the relevant broadcast DC or send a request message (`Pelorus.Request`, see [§4.8](#48-request-mechanism)). Pelorus does not use Remote Transmission Request frames.
 
 DLC-to-size mapping:
 
@@ -60,21 +56,21 @@ There is no PDU1/PDU2 distinction, no R bit, no DP bit. A Data Contract that nee
 
 | 29-bit identifier | PRIO | DC_ID | SA | Pelorus DC |
 |---|---|---|---|---|
-| `0b000_000000000000000001_00000011` | 0 | `0x00001` | `0x03` | `PelorusDC.WakeUp` |
-| `0b110_000000000000000101_00000010` | 6 | `0x00005` | `0x02` | `PelorusDC.AddressClaim` |
-| `0b100_000000000100010000_00000111` | 4 | `0x00110` | `0x07` | `PelorusDC.AISClassAPosition` |
+| `0b000_000000000000000001_00000011` | 0 | `0x00001` | `0x03` | `Pelorus.WakeUp` |
+| `0b110_000000000000000101_00000010` | 6 | `0x00005` | `0x02` | `Pelorus.AddressClaim` |
+| `0b100_000000000100010000_00000111` | 4 | `0x00110` | `0x07` | `Pelorus.AISClassAPosition` |
 
 ### 2.2 Priority Allocation
 
 | Priority | Class | Examples |
 |---|---|---|
-| 0 | Wake-up frames | `PelorusDC.WakeUp` |
+| 0 | Wake-up frames | `Pelorus.WakeUp` |
 | 1 | Safety-critical real-time | Steering, autopilot commands, alarm assertions |
 | 2 | Critical real-time | Heading, attitude, propulsion control |
 | 3 | Real-time navigation | GNSS position, depth, speed, wind |
 | 4 | Standard navigation | AIS targets, route data |
 | 5 | Engine and machinery | Engine RPM, fuel, alternator |
-| 6 | Network management, diagnostics | `PelorusDC.NetworkManagement`, `PelorusDC.AddressClaim`, `PelorusDC.BusHealth` |
+| 6 | Network management, diagnostics | `Pelorus.NetworkManagement`, `Pelorus.AddressClaim`, `Pelorus.BusHealth` |
 | 7 | Bulk and non-critical | Multi-frame transport, firmware update, logs, configuration |
 
 Specific DC priority assignments are recorded in [`07-dcid-registry.md`](./07-dcid-registry.md).
@@ -89,8 +85,8 @@ Pelorus does not carve out any range from a third-party identifier space; the en
 
 Messages exceeding 64 bytes use Pelorus-native multi-frame transport. Two Data Contracts carry the mechanism:
 
-- `PelorusDC.MultiFrameControl` (`DC_ID = 0x00008`, priority 7) — session control
-- `PelorusDC.MultiFrameData` (`DC_ID = 0x00009`, priority 7) — payload data frames
+- `Pelorus.MultiFrameControl` (`DC_ID = 0x00008`, priority 7) — session control
+- `Pelorus.MultiFrameData` (`DC_ID = 0x00009`, priority 7) — payload data frames
 
 The transport supports both targeted (windowed-ack) and broadcast (unacked) sessions. The primary motivating use case is the open firmware update protocol in [`12-firmware-update.md`](./12-firmware-update.md).
 
@@ -100,7 +96,7 @@ The transport supports both targeted (windowed-ack) and broadcast (unacked) sess
 - A node shall not have more than one open ingress and one open egress multi-frame session at any time in v1.0. Concurrent sessions are deferred to v2.
 - Session content is bounded by `total_size` (32-bit). At 58 payload bytes per `MultiFrameData` frame, sessions support up to ~4 GB of content; firmware updates of any practical size fit within one session.
 
-### 4.2 `PelorusDC.MultiFrameControl` Frame
+### 4.2 `Pelorus.MultiFrameControl` Frame
 
 Byte 0 is an opcode. Remaining bytes carry opcode-specific fields:
 
@@ -114,11 +110,11 @@ Byte 0 is an opcode. Remaining bytes carry opcode-specific fields:
 | `Close` | sender → receiver | `session_id` (2 B), `status` (1 B) |
 | `Abort` | either | `session_id` (2 B), `reason_code` (1 B) |
 
-`content_DC_ID` names the Data Contract that the multi-frame session is delivering — for firmware update sessions, this is the DC_ID of the image content channel referenced by `PelorusDC.FirmwareUpdateBegin`.
+`content_DC_ID` names the Data Contract that the multi-frame session is delivering — for firmware update sessions, this is the DC_ID of the image content channel referenced by `Pelorus.FirmwareUpdateBegin`.
 
 Reason codes and status codes are enumerated in [`12-firmware-update.md`](./12-firmware-update.md) for firmware update; general transport-level codes are listed in [§4.6](#46-reason-and-status-codes).
 
-### 4.3 `PelorusDC.MultiFrameData` Frame
+### 4.3 `Pelorus.MultiFrameData` Frame
 
 | Bytes | Field |
 |---|---|
@@ -133,7 +129,7 @@ Reason codes and status codes are enumerated in [`12-firmware-update.md`](./12-f
 3. Sender streams up to `window_size_granted` `MultiFrameData` frames, then waits for a `Window` acknowledgement.
 4. Receiver sends `Window` carrying `next_expected_seq`, the highest sequence received, and a list of missing sequence numbers (NAK list).
 5. Sender retransmits any missing frames, then continues from `next_expected_seq + window_size`.
-6. After the final frame, sender transmits `Close{status=Complete}`. Receiver verifies CRC32 over reassembled content and responds with an out-of-band status (via the content DC's own response channel, e.g. `PelorusDC.FirmwareUpdateProgress`).
+6. After the final frame, sender transmits `Close{status=Complete}`. Receiver verifies CRC32 over reassembled content and responds with an out-of-band status (via the content DC's own response channel, e.g. `Pelorus.FirmwareUpdateProgress`).
 
 If CRC verification fails at the receiver, it transmits `Abort{reason=CRCMismatch}` and discards the session content.
 
@@ -169,11 +165,7 @@ A receiver shall retain partial-session state through `Abort` and may accept a s
 
 ### 4.8 Request Mechanism
 
-A receiver requesting a specific DC sends `PelorusDC.Request` (`DC_ID = 0x00007`, priority 6) with the requested `DC_ID` in the first 3 bytes of payload (little-endian). The target node replies with the requested DC if it is the producer. If multiple producers exist, the requester disambiguates via `PelorusDC.AddressClaim` records.
-
-### 4.9 No Fast Packet
-
-Pelorus Core does not implement LMDE Fast Packet. Gateways translating from LMDE reassemble Fast Packet payloads into single CAN FD frames where they fit (≤ 64 bytes), or open a Pelorus multi-frame session for larger payloads.
+A receiver requesting a specific DC sends `Pelorus.Request` (`DC_ID = 0x00007`, priority 6) with the requested `DC_ID` in the first 3 bytes of payload (little-endian). The target node replies with the requested DC if it is the producer. If multiple producers exist, the requester disambiguates via `Pelorus.AddressClaim` records.
 
 ## 5. Error Handling
 
@@ -197,7 +189,7 @@ Use the CAN controller's automatic retransmission. Manual retry suppression is p
 
 ### 5.5 Error Diagnostics
 
-Each node exposes TX error count, RX error count, bus-off event count, and last bus-off timestamp via `PelorusDC.BusHealth` when in a dual-bus domain ([`08-redundancy.md`](./08-redundancy.md)). Additional diagnostic DCs may be registered in [`07-dcid-registry.md`](./07-dcid-registry.md).
+Each node exposes TX error count, RX error count, bus-off event count, and last bus-off timestamp via `Pelorus.BusHealth` when in a dual-bus domain ([`08-redundancy.md`](./08-redundancy.md)). Additional diagnostic DCs may be registered in [`07-dcid-registry.md`](./07-dcid-registry.md).
 
 ## 6. Arbitration
 

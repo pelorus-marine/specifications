@@ -1,9 +1,5 @@
 # Pelorus Stream — Events and Errors
 
-**Version:** 0.2 Draft
-**Last Updated:** May 10, 2026
-**Trust:** Unverified
-
 Stream events, metadata/state/capability updates, and the application-layer and transport-layer error taxonomies. Control-message envelopes and CBOR rules are in [`05-control-protocol.md`](./05-control-protocol.md).
 
 ## 1. Events

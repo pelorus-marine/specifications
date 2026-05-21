@@ -1,9 +1,5 @@
 # Pelorus Core — Implementation Guide
 
-**Version:** 0.3 Draft
-**Last Updated:** May 19, 2026
-**Trust:** Unverified
-
 Non-normative guidance for building Pelorus Core hardware, firmware, and installations, plus the inventory of official reference implementations. Normative requirements live in [`02-physical.md`](./02-physical.md), [`03-data-link.md`](./03-data-link.md), [`04-power.md`](./04-power.md), [`05-addressing.md`](./05-addressing.md), [`06-signal-catalog.md`](./06-signal-catalog.md), [`07-dcid-registry.md`](./07-dcid-registry.md), [`08-redundancy.md`](./08-redundancy.md), [`09-network.md`](./09-network.md), and [`12-firmware-update.md`](./12-firmware-update.md). Where this guide says "shall," it restates a normative rule from one of those.
 
 ## 1. Reference Implementations
@@ -98,11 +94,11 @@ A device or software component is conformant only if it passes the applicable te
 
 ### 3.2 Required State Machines
 
-- **Power management** ([`04-power.md`](./04-power.md)): Active / Standby / Sleep / Deep Sleep; selective wake-up via `PelorusDC.WakeUp`; PNC mask processing; `PelorusDC.NetworkManagement` transmission
+- **Power management** ([`04-power.md`](./04-power.md)): Active / Standby / Sleep / Deep Sleep; selective wake-up via `Pelorus.WakeUp`; PNC mask processing; `Pelorus.NetworkManagement` transmission
 - **Address claiming** ([`05-addressing.md`](./05-addressing.md)): Listen → Claim → Defend → Cannot Claim
 - **Binding table cache** ([`06-signal-catalog.md`](./06-signal-catalog.md)): receive, validate, cache the latest table; fallback to raw DC_ID + instance mode when cache invalid or absent
 - **Repeater forwarding** ([`09-network.md`](./09-network.md)): transparent CAN FD frame forwarding with fault isolation
-- **Dual-bus receive** ([`08-redundancy.md`](./08-redundancy.md)) for Class D / Class H products: Duplicate Discard Table; single RX pipeline into application layer; `PelorusDC.BusHealth` transmission and local error-counter sampling; degraded single-bus annunciation when peer bus silent
+- **Dual-bus receive** ([`08-redundancy.md`](./08-redundancy.md)) for Class D / Class H products: Duplicate Discard Table; single RX pipeline into application layer; `Pelorus.BusHealth` transmission and local error-counter sampling; degraded single-bus annunciation when peer bus silent
 
 ### 3.3 Dual-Bus RX Implementation Patterns
 
@@ -179,8 +175,8 @@ For C0 / C1 zones per [`08-redundancy.md`](./08-redundancy.md):
 - Run two independent backbone pairs (Bus A, Bus B) per [`08-redundancy.md §4`](./08-redundancy.md). Do not route both through a single unprotected bundle through a single hazard zone without documenting residual risk on the critical zone map.
 - Use separated cable trays / penetrations where feasible; crossing is acceptable only with mechanical protection documented in the map.
 - Use independent fused feeds to Bus A and Bus B power injection points when vessel DC distribution supports it.
-- Commission `PelorusDC.BusHealth` on a test display before declaring the dual-bus domain complete.
-- **`DISCARD_WINDOW` sizing:** verify against the formula in [`08-redundancy.md §6.3.3`](./08-redundancy.md). Floor is 50 ms. If the domain has more than two hops on either bus, or no Time Master (`PelorusDC.TimeSync`), use a larger value and record it in the critical zone map.
+- Commission `Pelorus.BusHealth` on a test display before declaring the dual-bus domain complete.
+- **`DISCARD_WINDOW` sizing:** verify against the formula in [`08-redundancy.md §6.3.3`](./08-redundancy.md). Floor is 50 ms. If the domain has more than two hops on either bus, or no Time Master (`Pelorus.TimeSync`), use a larger value and record it in the critical zone map.
 
 ### 4.8 Troubleshooting
 

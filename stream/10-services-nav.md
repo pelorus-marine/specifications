@@ -1,14 +1,10 @@
 # Pelorus Stream — Navigation Services
 
-**Version:** 0.2 Draft
-**Last Updated:** May 10, 2026
-**Trust:** Unverified
-
 Concrete service definitions for navigation-relevant traffic: radar video, radar control, S-100 chart distribution, high-rate navigation data, stream health, and the replication node that fans out one-to-many traffic.
 
 These services run over QUIC per [`04-transport.md`](./04-transport.md), use the datagram header in [`04-transport.md §5`](./04-transport.md), and participate in dual-fabric redundancy per [`07-redundancy.md`](./07-redundancy.md). Discovery is via the service catalog in [`08-discovery-and-registry.md §1`](./08-discovery-and-registry.md).
 
-AIS is **not** a Stream service. AIS targets are low-bandwidth instrument data carried on Pelorus Core via the standard NMEA 2000 PGNs registered in [`core/07-dcid-registry.md §2.1`](../core/07-dcid-registry.md). Where a Stream-side ECDIS needs AIS targets, the Core→Stream gateway bridges the relevant DCIDs.
+AIS is **not** a Stream service. AIS targets are low-bandwidth instrument data carried on Pelorus Core via the standard NMEA 2000 PGNs registered in [`core/07-dcid-registry.md §2.1`](../core/07-dcid-registry.md). Where a Stream-side ECDIS needs AIS targets, the Core→Stream gateway bridges the relevant DC_IDs.
 
 ## 1. Radar Video
 
@@ -24,7 +20,7 @@ Following the 16-byte Pelorus Stream Datagram Header:
 
 | Offset | Size | Field |
 |---|---|---|
-| 16 | 2 | Radar instance (matches the Core DCID radar instance and the metadata `instance`) |
+| 16 | 2 | Radar instance (matches the Core DC_ID radar instance and the metadata `instance`) |
 | 18 | 2 | Antenna bearing (0.01° resolution, heading-relative, 0–35999) |
 | 20 | 1 | Bearing validity (0x01 = encoder valid, 0x00 = estimated) |
 | 21 | 1 | Range scale index (index into per-radar-model range scale table) |

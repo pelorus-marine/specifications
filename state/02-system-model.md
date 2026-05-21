@@ -1,9 +1,5 @@
 # Pelorus State — System Model
 
-**Version:** 0.1 Draft
-**Last Updated:** May 10, 2026
-**Trust:** Unverified
-
 The static structure State operates on: entities, coordinate frames, and the static transforms between them. **No live values** — these live in [`04-world-snapshot.md`](./04-world-snapshot.md). **No semantic identity** — that lives in [`05-situation-model.md`](./05-situation-model.md).
 
 ## 1. Entities

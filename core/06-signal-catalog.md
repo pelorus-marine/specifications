@@ -1,9 +1,5 @@
 # Pelorus Core — Signal Catalog
 
-**Version:** 0.3 Draft
-**Last Updated:** May 19, 2026
-**Trust:** Unverified
-
 The canonical semantic data model for Pelorus Core signals, expressed in COVESA VSS under a `Vessel.*` root. Protocol-agnostic: meaning, type, units, and instance binding live here; Pelorus Data Contracts (DCs) and CAN FD wire contracts live in [`07-dcid-registry.md`](./07-dcid-registry.md).
 
 ## 1. Catalog Structure
@@ -28,7 +24,7 @@ Standard VSS `.vspec` (YAML) format:
 
 - **Branches** (structural nodes)
 - **Leaves** (signals) with mandatory attributes: `type`, `unit`, `description`, `min`/`max`/`enum`
-- **Pelorus overlay attributes** via vss-tools: `data_contract` (references a `PelorusDC.<Name>`), `instance-field`, `pelorus-priority`
+- **Pelorus overlay attributes** via vss-tools: `data_contract` (references a `Pelorus.<Name>`), `instance-field`, `pelorus-priority`
 
 ## 3. Instance Handling and Binding
 
@@ -42,7 +38,7 @@ Named branches (Port/Starboard) are not used in the canonical catalog because th
 
 **Binding table.** The mapping `(Source Address + 64-bit NAME + DC_ID + DC-internal instance field) → VSS array index [n]` is stored in a binding table. Sailor-assigned friendly labels ("Port Main", "Starboard", "Wing Engine #3", "Generator") live as metadata on each entry.
 
-**v1.0 distribution.** Binding-table contents are not defined for on-bus publication over Pelorus Core CAN in v1.0. Distribution is out of band: gateway/local configuration export, diagnostic session, Pelorus Stream, companion app, or NV backup restored by the operator. A future revision may assign a dedicated DC or `PelorusDC.NetworkManagement` / `PelorusDC.WakeUp` payload fields for binding sync.
+**v1.0 distribution.** Binding-table contents are not defined for on-bus publication over Pelorus Core CAN in v1.0. Distribution is out of band: gateway/local configuration export, diagnostic session, Pelorus Stream, companion app, or NV backup restored by the operator. A future revision may assign a dedicated DC or `Pelorus.NetworkManagement` / `Pelorus.WakeUp` payload fields for binding sync.
 
 ## 4. Fault Tolerance
 
@@ -65,7 +61,7 @@ Where a Pelorus DC corresponds to a legacy J1939 / NMEA 2000 message, the DC dec
 | Layer | Representation | Responsibility | Authoritative in |
 |---|---|---|---|
 | **Semantics** | `Vessel.*` path in COVESA VSS | Units, types, valid range, human meaning, relationships | This document |
-| **Data Contract** | `PelorusDC.<Name>` with `dc_id`, priority, payload layout, optional `bridges[*]` | Naming, prioritisation, payload bit layout, legacy-protocol bridging | [`07-dcid-registry.md`](./07-dcid-registry.md) |
+| **Data Contract** | `Pelorus.<Name>` with `dc_id`, priority, payload layout, optional `bridges[*]` | Naming, prioritisation, payload bit layout, legacy-protocol bridging | [`07-dcid-registry.md`](./07-dcid-registry.md) |
 | **Wire** | 29-bit identifier `[PRIO 3b \| DC_ID 18b \| SA 8b]` | Bus arbitration, transmission, addressing | [`03-data-link.md §2`](./03-data-link.md) |
 | **Instance binding** | `(SA + NAME + DC_ID + DC-internal instance field) → VSS index` | Which physical device / bus instance maps to `Vessel.*[n]` | Binding table — out-of-band distribution for v1.0; see §3–4 |
 | **Pelorus Stream** | UUIDv7 stream ID, not a CAN frame | High-bandwidth or media sessions | [`stream/`](../stream/) — metadata may reference `Vessel.*` paths |
@@ -107,7 +103,7 @@ Vessel:
         type: float
         unit: m/s
         description: Engine crankshaft rotational speed
-        data_contract: PelorusDC.EngineController1
+        data_contract: Pelorus.EngineController1
         instance-field: engine-instance
 ```
 

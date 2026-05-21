@@ -1,9 +1,5 @@
 # Pelorus Core — Overview
 
-**Version:** 0.3 Draft
-**Last Updated:** May 19, 2026
-**Trust:** Trusted
-
 Entry point to the Pelorus Core specification. Normative requirements live in [`02`](./02-physical.md) onward.
 
 ## 1. What Pelorus Core Is
@@ -21,7 +17,7 @@ Pelorus has two physical layers serving different traffic classes:
 | Layer | Transport | Role |
 |---|---|---|
 | **Pelorus Core** | CAN FD | Safety-critical instrumentation, deterministic |
-| **Pelorus Stream** | Ethernet | High-bandwidth data — radar, charts, AIS, audio |
+| **Pelorus Stream** | Ethernet | High-bandwidth data — radar, charts |
 
 They are independent buses, bridged by gateway nodes where required. A failed Stream subsystem must leave Core fully functional.
 
@@ -29,7 +25,7 @@ They are independent buses, bridged by gateway nodes where required. A failed St
 
 - CAN FD per ISO 11898-1:2015
 - 250 kbit/s arbitration, 500 kbit/s data phase
-- 64-byte payloads; no Fast Packet
+- 64-byte payloads
 - M12 A-coded 5-pin connectors, LMDE micro cable
 - Linear bus per segment; repeaters for vessels exceeding 30 m
 - ISO 11898-2:2016 partial networking with selective wake-up
@@ -44,7 +40,7 @@ A vessel typically runs both networks during transition, bridged by a gateway th
 
 ## 5. Boundary with Pelorus Stream
 
-Stream is non–hard-real-time-control: it carries safety-relevant but loss-tolerant data (radar video, charts, AIS, nav). Hard-real-time control authority — helm, autopilot, throttle, thruster — stays on Core. Ordinary Stream endpoints shall not transmit on Core; Stream→Core injection is permitted only through a capable bidirectional gateway.
+Stream is non–hard-real-time-control: it carries safety-relevant but loss-tolerant data (radar video, charts). Hard-real-time control authority — depth, autopilot, AIS, wind — stays on Core. Ordinary Stream endpoints shall not transmit on Core; Stream→Core injection is permitted only through a capable bidirectional gateway.
 
 ## 6. Design Principles
 

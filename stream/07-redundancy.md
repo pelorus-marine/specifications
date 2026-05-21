@@ -1,9 +1,5 @@
 # Pelorus Stream — Dual-Fabric Redundancy
 
-**Version:** 0.2 Draft
-**Last Updated:** May 10, 2026
-**Trust:** Unverified
-
 Dual-fabric state machine, datagram deduplication, Class S vs Class D nodes, and the Stream RedBox. Physical installation rules for the dual fabric live in [`03-physical.md §4`](./03-physical.md). The transport-layer connection model is in [`04-transport.md §3`](./04-transport.md).
 
 ## 1. Failure Modes Addressed

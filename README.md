@@ -2,7 +2,7 @@
 
 **Open marine data network — CAN FD safety-critical core, high-bandwidth Ethernet stream, Rust-first references — built for reliability offshore.**
 
-🚧 **Pre-specification.** Rapid change is normal; early participation matters.
+🚧 **Pre-specification.** Everything here is draft until v1.0 — rapid change is normal; early participation matters.
 
 ---
 
@@ -37,7 +37,7 @@ Normative drafts live under **[`core/`](./core/)**, **[`stream/`](./stream/)**, 
 - **Split planes** — safety-critical **Pelorus Core** (CAN FD) vs bandwidth **Pelorus Stream** (Ethernet); Stream does not carry actuator authority  
 - **Gateways, not same-wire myths** — classical [**LMDE**](./ARCHITECTURE.md#lmde) and Pelorus meet through gateways; shared-segment bit compatibility is not assumed  
 - **Rust-first** — reference implementations aim to match the spec (`no_std`, `forbid(unsafe_code)` where applicable)  
-- **Specified contracts** — Data Contracts (DCIDs) in a Pelorus-native namespace, addressing, and power behavior written for independent implementations  
+- **Specified contracts** — Data Contracts (DC_IDs) in a Pelorus-native namespace, addressing, and power behavior written for independent implementations  
 - **Open firmware update** — vendor-neutral protocol so any compliant tool can update any compliant device  
 
 **Site:** https://sevenseas.io/pelorus  

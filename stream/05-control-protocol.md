@@ -1,9 +1,5 @@
 # Pelorus Stream — Control Protocol
 
-**Version:** 0.2 Draft
-**Last Updated:** May 10, 2026
-**Trust:** Unverified
-
 The control plane that runs over QUIC reliable streams: message taxonomy, envelope, deterministic CBOR encoding, and versioning. Datagram services (radar, nav, telemetry, health) use the datagram header in [`04-transport.md §5`](./04-transport.md) directly and do not carry this envelope.
 
 ## 1. Two Encoding Planes

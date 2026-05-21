@@ -2,8 +2,6 @@
 
 **Pelorus Core Specification and Reference Implementations**
 
-**Version:** 0.1 Draft  
-**Last Updated:** April 26, 2026  
 **Status:** Living document
 
 ---

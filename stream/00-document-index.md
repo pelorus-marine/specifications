@@ -1,9 +1,5 @@
 # Pelorus Stream — Specification Document Index
 
-**Version:** Living
-**Last Updated:** May 10, 2026
-**Trust:** Trusted (index only; individual docs carry their own trust levels)
-
 Authoritative list of Pelorus Stream specification documents. Pelorus Stream is the IPv6/Ethernet high-bandwidth subsystem of the Pelorus marine data network.
 
 Stream is **non–hard-real-time-control**. It carries safety-relevant data that tolerates loss or brief delay (radar video, S-100 charts, high-rate nav). It shall not carry hard-real-time control authority — helm, autopilot, throttle, thruster. Those remain on Pelorus Core ([`core/01-overview.md`](../core/01-overview.md)).

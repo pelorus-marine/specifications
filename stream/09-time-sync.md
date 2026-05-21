@@ -1,9 +1,5 @@
 # Pelorus Stream — Time Synchronisation
 
-**Version:** 0.2 Draft
-**Last Updated:** May 10, 2026
-**Trust:** Unverified
-
 IEEE 802.1AS (gPTP) on the Stream Ethernet plant. The datagram header timestamp ([`04-transport.md §5`](./04-transport.md)) uses the gPTP epoch.
 
 ## 1. Requirement

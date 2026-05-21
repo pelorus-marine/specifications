@@ -1,9 +1,5 @@
 # Pelorus Core — Physical Layer
 
-**Version:** 0.2 Draft
-**Last Updated:** May 10, 2026
-**Trust:** Trusted
-
 Bit rates, cabling, connectors, topology, transceivers, power, termination, isolation. Dual-bus physical requirements live in [`08-redundancy.md`](./08-redundancy.md).
 
 ## 1. Bit Rate and Frame Format
@@ -20,7 +16,7 @@ Frames per ISO 11898-1:2015:
 - BRS bit set
 - ESI bit set per CAN FD spec
 
-No Fast Packet. Multi-frame messages exceeding 64 bytes use J1939 Transport Protocol or are restructured into single-frame messages. v1.0 specifies 250k/500k as the single mandatory profile; higher data-phase rates are reserved for future named profiles.
+Multi-frame messages exceeding 64 bytes use J1939 Transport Protocol or are restructured into single-frame messages. v1.0 specifies 250k/500k as the single mandatory profile; higher data-phase rates are reserved for future named profiles.
 
 ## 2. Cable
 
