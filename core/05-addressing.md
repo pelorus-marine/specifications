@@ -20,6 +20,27 @@ NAME structure follows SAE J1939-81 exactly (8 bytes): Arbitrary Address Capable
 
 Pelorus does not specify alternate NAME encodings in v1.0.
 
+### 2.1 NAME for Owner-Built Devices
+
+Sailors building their own devices to install on their own vessels (using the Owner Private DC range per [`07-dcid-registry.md §3`](./07-dcid-registry.md)) shall transmit a valid `Pelorus.AddressClaim` — the address-claim mechanism does not exempt owner-built devices. The NAME field is not used to disambiguate Owner Private DCs (per [`07-dcid-registry.md §3`](./07-dcid-registry.md)), so any valid NAME is acceptable.
+
+Recommended values for owner-built devices:
+
+| NAME field | Recommended value | Rationale |
+|---|---|---|
+| Arbitrary Address Capable | `1` | Allows the device to accept a `Pelorus.AddressCommand` (§4). |
+| Industry Group | `4` (Marine) | Pelorus is Marine. |
+| Device Class | per J1939-81, as appropriate (e.g. `60` = Navigation, `80` = Sensors) | Lets generic tools categorise the device. |
+| Function | per J1939-81, or `255` if no listed function fits | Function code is informational; Pelorus does not route by it. |
+| Function Instance | `0` for a single instance; sequential for multiples | |
+| Device Class Instance | `0` for a single instance; sequential for multiples | |
+| Manufacturer Code | `0` (J1939-conventional "unassigned") | Recommended convention for owner-built devices so tools and gateways can recognise them as such. Any value the owner chooses is acceptable. |
+| Identity Number | any 21-bit value | Uniqueness is only required within the vessel; pick a stable per-device value (e.g. from MAC address, MCU serial). |
+
+Owner-built devices using Manufacturer Code `0` shall not transmit on Vendor Proprietary DCs (`0x3F100–0x3FFFF`), which require a Manufacturer Code that receiving devices are configured to accept. They may freely transmit on Owner Private DCs (`0x3F000–0x3F0FF`) and on public general, compatibility, and Pelorus protocol DCs.
+
+Small builders or open-source hardware projects that distribute the same device to multiple vessels — and therefore cannot use Owner Private DCs — may request a **free Pelorus-allocated Manufacturer Code** in the range `1900`–`2047` per [`../manufacturer-codes.md`](../manufacturer-codes.md). Allocation is by pull request; no fees, no membership, no commercial-status check. Vendors with an existing NMEA 2000 or SAE J1939 Manufacturer Code use that value directly without further registration — the same 11-bit code identifies a vendor across NMEA 2000, OneNet, and Pelorus Core.
+
 ## 3. Address Claim Procedure
 
 The address-claim protocol follows SAE J1939-81 — only the wire identifier carrying the message is Pelorus-native (`Pelorus.AddressClaim`, `DC_ID = 0x00005`, priority 6). On power-up, reset, or when joining the network a node shall:

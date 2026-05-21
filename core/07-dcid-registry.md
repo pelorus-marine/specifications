@@ -42,7 +42,7 @@ DC_ID range `0x00001`–`0x000FF` carries Pelorus-owned protocol traffic.
 
 ### 1.3 Dual-Bus Data Contracts
 
-`Pelorus.BusHealth` (`DC_ID = 0x00003`) and `Pelorus.TimeSync` (`DC_ID = 0x00004`, optional) are defined in [`08-redundancy.md`](./08-redundancy.md). Wire layouts and transmission rules live with the dual-bus mechanism that consumes them.
+`Pelorus.BusHealth` (`DC_ID = 0x00003`) and `Pelorus.TimeSync` (`DC_ID = 0x00004`) are defined in [`08-redundancy.md`](./08-redundancy.md). `Pelorus.TimeSync` is **mandatory** in any dual-bus domain and optional in single-bus C2-only domains. Wire layouts, the `TimeStatus` byte encoding, Time Master election, and consumer obligations live with the dual-bus mechanism that consumes them.
 
 ### 1.4 Addressing Data Contracts
 
@@ -132,13 +132,31 @@ The 18-bit DC_ID space (`0x00000`–`0x3FFFF`) is partitioned as follows:
 | `0x00100`–`0x03FFF` | Compatibility — bridged contracts (J1939 / NMEA 2000 / NMEA 0183 origin) | ~16K |
 | `0x04000`–`0x2FFFF` | General Pelorus contracts (sensors, controls, services) | ~180K |
 | `0x30000`–`0x3EFFF` | Reserved for v2+ Pelorus expansion | ~61K |
-| `0x3F000`–`0x3FFFF` | Vendor proprietary | 4096 |
+| `0x3F000`–`0x3F0FF` | Owner Private — per-vessel, no registration | 256 |
+| `0x3F100`–`0x3FFFF` | Vendor Proprietary — NAME Manufacturer Code disambiguation | 3840 |
 
 The DC_ID namespace is Pelorus-owned in its entirety; Pelorus does not carve from any third-party identifier space.
 
 **Assignment authority.** Pelorus DCs are allocated in this registry. Additions require a pull request updating this document, the corresponding entries in [`06-signal-catalog.md`](./06-signal-catalog.md), and any machine-readable contract artifact (per [`CONTRIBUTING.md`](../CONTRIBUTING.md)).
 
-**Vendor proprietary range.** Values `0x3F000`–`0x3FFFF` are available for vendor-specific contracts that do not need a registry entry. Vendors are responsible for avoiding collisions within their own product lines; Pelorus does not register vendor proprietary DCs.
+**Owner Private range (`0x3F000–0x3F0FF`).** Reserved for sailor-built or owner-built devices installed on a specific vessel. No external registration is required — not with Pelorus, SAE, NMEA, or any vendor. Slot assignments within this range are recorded in the vessel's critical zone map ([`08-redundancy.md §12`](./08-redundancy.md)) and have no defined meaning outside that vessel.
+
+Frames on DCs in this range:
+
+- Shall not be used in firmware shipped to multiple vessels. Products distributed to more than one vessel shall use the general Pelorus contract range (PR-allocated) or Vendor Proprietary (registered Manufacturer Code).
+- Are not disambiguated by NAME Manufacturer Code — receivers gate on per-vessel configuration recorded in the critical zone map.
+- Shall not declare `bridges[*]` to legacy NMEA / J1939 / NMEA-0183 identifiers, and shall not be translated by gateways. The range is Pelorus-Core-only by construction.
+- May use any NAME value (see [`05-addressing.md §2.1`](./05-addressing.md) for recommended NAME values for owner-built devices).
+
+**Vendor Proprietary range (`0x3F100–0x3FFFF`).** Reserved for vendor-specific contracts in commercial products. Pelorus does not register Vendor Proprietary DCs.
+
+Frames on DCs in this range:
+
+- Are identified by the tuple `(NAME Manufacturer Code, DC_ID)`, where the Manufacturer Code is resolved from the source SA via the address-claim cache populated by [`05-addressing.md`](./05-addressing.md). The same `DC_ID` slot used by two different Manufacturer Codes denotes two distinct contracts. Code-space partitioning and the free Pelorus-allocated range (`1900`–`2047`) for small builders without an NMEA / SAE code are defined in [`../manufacturer-codes.md`](../manufacturer-codes.md).
+- Shall be ignored by receivers from sources whose Manufacturer Code the receiver is not configured to process, and from sources whose address claim has not yet succeeded.
+- Shall not declare `bridges[*]` to legacy proprietary PGNs in v1.0. The Pelorus and NMEA / J1939 disambiguation mechanisms differ (NAME-based vs payload-prefix), and v1.0 does not specify a translation rule.
+
+Vendors using this range are responsible for avoiding collisions within their own product lines (the same Manufacturer Code is shared across all of a vendor's products). Cross-vendor collisions are precluded by the NAME-based disambiguation rule above.
 
 ## 4. Relationship to Signal Catalog and Binding
 

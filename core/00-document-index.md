@@ -26,6 +26,8 @@ Authoritative list of Pelorus Core specification documents. Pelorus Core is the 
 | 11 | [`11-conformance.md`](./11-conformance.md) | Conformance test plan + self-declaration template | Draft | Unverified |
 | 12 | [`12-firmware-update.md`](./12-firmware-update.md) | Open, vendor-neutral firmware update protocol | Draft | Unverified |
 
+The project-wide **Manufacturer Code Registry** ([`../manufacturer-codes.md`](../manufacturer-codes.md)) lives at the repository root because the 11-bit Manufacturer Code crosses Core, Stream, NMEA 2000, and NMEA OneNet — it is not a Core-only registry.
+
 ## Numbering
 
 Numbers are assigned at document creation and not reused. This index renumbers from the prior 18-doc draft (00–17); the absorbed-doc mapping is in the change note below.

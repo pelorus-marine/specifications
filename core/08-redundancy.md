@@ -149,7 +149,16 @@ DISCARD_WINDOW >= 2 * H * L_hop  +  2 * D_clk  +  safety_margin
 
 with default `safety_margin = 10 ms`. The 50 ms value above is the absolute floor; deeper or higher-drift installations shall use a larger value and document it in the critical zone map.
 
-`D_clk` defaults to 10 ms when `Pelorus.TimeSync` (§8.2) is implemented in the dual-bus domain; otherwise the installation shall declare a measured or worst-case `D_clk` and use the formula.
+`D_clk` is derived from the most recent `Pelorus.TimeSync` observed on either bus (§8.2):
+
+| `TimeSync` state observed | `D_clk` to use |
+|---|---|
+| `SourceClass ∈ {1,2,3,4}` **and** `AccBucket ≤ 4` | 10 ms — recommended floor `DISCARD_WINDOW = 50 ms` is sufficient. |
+| `SourceClass ∈ {1,2,3,4}` **and** `AccBucket = 5` | 100 ms — apply formula. |
+| `SourceClass ∈ {1,2,3,4}` **and** `AccBucket ∈ {6, 7}` | declared worst-case (record in critical zone map) — apply formula. |
+| `SourceClass ∈ {0, 5, 6}`, or no `Pelorus.TimeSync` observed within the last 5 s | declared worst-case — apply formula. |
+
+The 50 ms value above remains the absolute floor for `DISCARD_WINDOW`; installations shall not go below it even when `AccBucket = 0`.
 
 ### 6.4 Multi-Frame Transport and Duplicate Discard
 
@@ -194,23 +203,115 @@ A fixed 3-byte preamble used at the start of the CAN FD data field for Pelorus-n
 | 10 | Node class: 0 = Class S, 1 = Class D, 2 = Class H |
 | 11 | Bus state: 0 = Active/Error-active; 1 = Error-passive; 2 = Bus-off; 3 = Degraded single-bus |
 
-### 8.2 `Pelorus.TimeSync` (optional)
+### 8.2 `Pelorus.TimeSync`
+
+`Pelorus.TimeSync` carries the vessel-wide time reference and the machine-readable trust level of its current source. It bounds inter-node clock drift `D_clk` for §6.3.3 duplicate discard, provides UTC for AIS, voyage data recording, anchor watch, and alarm logs, and lets safety-critical consumers gate their behaviour on the present quality of the clock (locked / authenticated / holdover / spoof-suspected).
 
 | Attribute | Value |
 |---|---|
 | DC_ID | `0x00004` |
 | Priority | 6 |
 | Length | 8 bytes |
-| Transmission | If implemented, a designated Time Master node (gateway, hub, or GNSS-equipped device) shall transmit at 1 s nominal while Active. Receivers may use this to tighten `DISCARD_WINDOW` uncertainty (§6.3.3). Stream-layer time sync remains IEEE 802.1AS where Ethernet is present — this DC is Core-only. |
+| Transmission | The Time Master shall transmit on each bus at 1 s nominal (±100 ms) while Active. |
+| Scope | **Mandatory** in any dual-bus domain. **Optional** in single-bus C2-only domains. |
 
-**C0 recommendation:** dual-bus domains carrying C0 traffic should include at least one Time Master so steady-state inter-node clock drift `D_clk` can be bounded at ≤ 10 ms, allowing the recommended 50 ms `DISCARD_WINDOW`. Without a Time Master, the install shall widen `DISCARD_WINDOW` per §6.3.3 and document the chosen value in the critical zone map.
+Stream-layer time sync remains IEEE 802.1AS where Ethernet is present — `Pelorus.TimeSync` is Core-only. A Stream/Core gateway disciplining the Core side from an 802.1AS grandmaster shall reflect that origin in `TimeStatus.SourceClass = 6` (bridged).
+
+#### 8.2.1 Time Master Election
+
+Exactly one node in a dual-bus domain shall act as Time Master at any time. Candidates are Class D or Class H nodes whose application includes a clock source (GNSS receiver, terrestrial timing receiver, Stream/802.1AS slave port, or operator entry).
+
+Each candidate computes the tuple `(SourceClass, AccBucket, SA)` from its current state (§8.2.3). The candidate with the lexicographically lowest tuple wins; ties are broken by lowest SA.
+
+A candidate becomes Time Master after observing no better candidate transmitting `Pelorus.TimeSync` for 3 s, and shall yield within 1 s of observing a better candidate transmitting on either bus. Candidates with no usable clock source (`SourceClass = 0` after their 3 s power-up grace per §8.2.4) shall not transmit `Pelorus.TimeSync`.
+
+The standard gateway is the default Time Master holder when no GNSS-equipped Class D node is present; it sources its clock from the LMDE side, an external NTP/PTP feed on Stream, an internal disciplined oscillator, or operator entry, and declares the resulting `SourceClass` honestly.
+
+#### 8.2.2 Wire Layout
 
 | Byte(s) | Field |
 |---|---|
 | 0–1 | Sequence — `uint16` LE per `(SA, Pelorus.TimeSync)` |
 | 2 | BusId_WakeGen — see §7 |
-| 3–6 | CoreTime — `uint32` LE: milliseconds since UTC midnight, or monotonic millisecond counter if UTC unavailable (implementation-defined; documented in product literature) |
-| 7 | Reserved — transmit `0x00`, ignore on receive |
+| 3–6 | CoreTime — `uint32` LE; interpretation depends on `TimeStatus.SourceClass` (§8.2.3) |
+| 7 | TimeStatus — see §8.2.3 |
+
+#### 8.2.3 `CoreTime` and `TimeStatus` Encoding
+
+`CoreTime` is interpreted according to `TimeStatus.SourceClass`:
+
+- `SourceClass ∈ {1, 2, 3, 4, 6}` — milliseconds since UTC midnight. Range `0`–`86_399_999`, extended to `86_400_999` when `LeapPending = 1` and a positive leap second is in progress at 23:59:60 UTC.
+- `SourceClass ∈ {0, 5}` — monotonic millisecond counter (epoch implementation-defined). Consumers shall not interpret as wall-clock UTC.
+
+`TimeStatus` (byte 7) packs four fields. Bit 0 is the LSB:
+
+```
+ bit │  7  │  6  │  5    4    3  │  2    1    0
+     │  L  │  S  │   AccBucket   │   SourceClass
+```
+
+| Field | Bits | Definition |
+|---|---|---|
+| `SourceClass` | 0–2 | Trust class of the current time source — enum below. |
+| `AccBucket` | 3–5 | Coarse current UTC offset bound — enum below. |
+| `SpoofSuspect` (S) | 6 | `0` = receiver reports no anomaly; `1` = receiver-level spoofing/jamming indication, peer cross-check disagreement, or Master cannot self-assess. |
+| `LeapPending` (L) | 7 | `0` = no leap second announced for the current UTC day; `1` = leap second announced. |
+
+**`SourceClass` (3 bits, 8 slots):**
+
+| Value | Meaning |
+|---:|---|
+| `0` | Free-running — no UTC ever acquired. `CoreTime` is monotonic. |
+| `1` | GNSS-disciplined, currently locked. |
+| `2` | GNSS-disciplined **and** cryptographically authenticated (Galileo OSNMA, GPS M-code, GPS Chimera, or equivalent). |
+| `3` | Terrestrial-disciplined (eLoran, R-Mode, terrestrial DGNSS time reference). |
+| `4` | Holdover — previously disciplined, currently flywheeling on local oscillator. |
+| `5` | Operator-set — manually entered, or set from a non-disciplined source. |
+| `6` | Bridged — clock acquired via a gateway from another Pelorus domain (Stream/802.1AS, peer Core domain). Trust is inherited from the upstream domain. |
+| `7` | Reserved. |
+
+**`AccBucket` (3 bits, 8 slots)** — current estimated UTC offset of the Time Master, **not** nameplate accuracy:
+
+| Value | Bound |
+|---:|---|
+| `0` | ≤ 1 μs |
+| `1` | ≤ 10 μs |
+| `2` | ≤ 100 μs |
+| `3` | ≤ 1 ms |
+| `4` | ≤ 10 ms — **threshold for the recommended `DISCARD_WINDOW = 50 ms`** (§6.3.3). |
+| `5` | ≤ 100 ms |
+| `6` | > 100 ms, or unbounded |
+| `7` | Unknown / not asserted |
+
+#### 8.2.4 Producer Obligations
+
+The Time Master:
+
+1. Shall set `SourceClass` to its **current** state, not its nameplate capability. A node disciplined by a GNSS receiver that has lost lock shall transition `1 → 4` (holdover) on lock loss, not continue to claim `1`.
+2. Shall set `AccBucket` to its current estimated offset, widening the bucket as holdover elapses per the oscillator class declared in product literature.
+3. Shall set `SpoofSuspect = 0` only if its receiver supports signal-integrity monitoring **and** reports no current anomaly. A Time Master whose receiver lacks anomaly reporting shall set `SpoofSuspect = 1` and shall not advertise `SourceClass = 2`.
+4. May assert `SpoofSuspect = 1` based on peer cross-check — comparing its own `CoreTime` against another GNSS-equipped Class D node's `Pelorus.TimeSync` on the bus and detecting divergence beyond the declared `AccBucket`.
+5. Shall set `LeapPending = 1` for the entire UTC day during which a positive or negative leap second occurs at 23:59:60 UTC, when the leap announcement is known to the Master through its upstream source.
+6. During its first 3 s after power-up, before acquiring discipline, shall transmit `SourceClass = 0`, `AccBucket = 7` so receivers immediately recognise an unready Master.
+
+#### 8.2.5 Consumer Obligations
+
+| Consumer | Rule |
+|---|---|
+| Duplicate Discard (§6.3.3) | Use the recommended `DISCARD_WINDOW = 50 ms` only when the most recent `Pelorus.TimeSync` has `SourceClass ∈ {1, 2, 3, 4}` **and** `AccBucket ≤ 4`. Otherwise apply the formula in §6.3.3. |
+| AIS forwarder, voyage data recorder, alarm log | Shall not stamp records with `CoreTime` when `SourceClass ∈ {0, 5}` or `SpoofSuspect = 1`. Records shall be marked "time not trusted" or stamped from a higher-trust local source. |
+| ECDIS / helm display | Should surface an operator-visible annunciator within 5 s of a transition to `SourceClass = 4`, `SourceClass = 5`, or `SpoofSuspect = 1`. |
+| Any consumer reading `CoreTime` as UTC | Shall check `SourceClass` **before** interpreting `CoreTime` (§8.2.3 — `CoreTime` is monotonic, not UTC, when `SourceClass ∈ {0, 5}`). |
+
+#### 8.2.6 Forward Compatibility
+
+Receivers shall treat any `SourceClass` value or `AccBucket` value not defined above as the worst-case interpretation:
+
+- Unknown `SourceClass` shall be treated as `SourceClass = 0` for the purposes of §8.2.5, and the frame shall not be used to tighten `DISCARD_WINDOW`.
+- Unknown `AccBucket` shall be treated as `AccBucket = 7` (unknown).
+- Receivers shall not raise errors or refuse subsequent frames on encountering unknown values.
+
+This allows future revisions to assign currently-reserved slots without breaking deployed receivers.
 
 ## 9. Wake Generation and DDT Invalidation
 
@@ -263,7 +364,15 @@ Identical firmware on both transmit paths can produce identical incorrect data o
 
 For any product or installation declared conformant with path-redundant Pelorus Core per [`11-conformance.md`](./11-conformance.md), a critical zone map shall be published (paper, PDF, or structured file) listing: zone name, C0/C1/C2 assignment per function, Bus A/B topology sketch, node classes (S/D/H), and reference to executed conformance tests.
 
+The critical zone map shall additionally record, where applicable to the installation:
+
+- **Time Master assignment** for each dual-bus domain (§8.2.1) — which node is the elected Time Master under normal conditions, and its declared `AccBucket` widening schedule when in holdover.
+- **Declared `D_clk`** (§6.3.3) when no Time Master is present, when the Time Master's expected `AccBucket` exceeds 4, or when the installation chooses a `DISCARD_WINDOW` larger than the 50 ms floor.
+- **Owner Private DC slot assignments.** Every DC slot in the `0x3F000–0x3F0FF` Owner Private range ([`07-dcid-registry.md §3`](./07-dcid-registry.md)) that the vessel uses, with its semantic meaning (e.g. "`0x3F005` = bilge pressure aft, `uint16` mbar, 1 Hz"), the source device, and the consumers configured to process it. Owner Private slots have no meaning outside the vessel; the critical zone map is the only place they are documented.
+
 Vessels or products using only C2 single-bus Core may omit the dual-bus domain; the declaration shall state "Pelorus Core, single-bus (C2-only)" or equivalent so purchasers know the reliability tier.
+
+A vessel using only Owner Private DCs and no path-redundancy claim is not required to publish a critical zone map. Owners are encouraged to maintain one regardless, as it is the only place Owner Private slot assignments are recorded and the only protection against later collisions with newly-installed commercial gear.
 
 ## 13. Relationship to Segmentation
 
