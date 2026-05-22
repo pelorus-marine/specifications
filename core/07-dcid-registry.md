@@ -2,7 +2,7 @@
 
 A **Data Contract (DC)** is a Pelorus-owned, named definition of a message on Pelorus Core: priority, payload bit layout, instance model, and semantics. Each DC has a numeric **Data Contract ID (DC_ID)** allocated in this registry. The 18-bit DC_ID is carried in the Pelorus-native 29-bit identifier per [`03-data-link.md §2`](./03-data-link.md). A DC may additionally specify **bridges** to legacy identifiers (J1939 PGN, NMEA 2000, NMEA 0183) used by Core ↔ LMDE gateways.
 
-The semantic counterpart of the registry is [`06-signal-catalog.md`](./06-signal-catalog.md). Dual-bus DCs (`Pelorus.BusHealth`, `Pelorus.TimeSync`) are defined in [`08-redundancy.md`](./08-redundancy.md). Wake-up and network-management payload layouts are normative in [`04-power.md`](./04-power.md). Multi-frame transport is normative in [`03-data-link.md §4`](./03-data-link.md). Firmware update is normative in [`12-firmware-update.md`](./12-firmware-update.md).
+The semantic counterpart of the registry is the `Vessel.*` catalog in [`../catalog/`](../catalog/); the bus-level identifier-to-catalog-index resolution lives in [`06-instance-binding.md`](./06-instance-binding.md). Dual-bus DCs (`Pelorus.BusHealth`, `Pelorus.TimeSync`) are defined in [`08-redundancy.md`](./08-redundancy.md). Wake-up and network-management payload layouts are normative in [`04-power.md`](./04-power.md). Multi-frame transport is normative in [`03-data-link.md §4`](./03-data-link.md). Firmware update is normative in [`12-firmware-update.md`](./12-firmware-update.md).
 
 ## 1. Pelorus Protocol Data Contracts
 
@@ -71,7 +71,7 @@ All firmware-update DCs use priority 7. Wire layouts and protocol state machine 
 
 ### 1.8 Reserved
 
-DC_ID `0x00010`–`0x000FF` is reserved for future Pelorus protocol use. Allocation requires a pull request updating this document and the corresponding entry in [`06-signal-catalog.md`](./06-signal-catalog.md) where applicable.
+DC_ID `0x00010`–`0x000FF` is reserved for future Pelorus protocol use. Allocation requires a pull request updating this document and the corresponding entry in [`../catalog/`](../catalog/) where applicable.
 
 ## 2. Compatibility Data Contracts
 
@@ -137,7 +137,7 @@ The 18-bit DC_ID space (`0x00000`–`0x3FFFF`) is partitioned as follows:
 
 The DC_ID namespace is Pelorus-owned in its entirety; Pelorus does not carve from any third-party identifier space.
 
-**Assignment authority.** Pelorus DCs are allocated in this registry. Additions require a pull request updating this document, the corresponding entries in [`06-signal-catalog.md`](./06-signal-catalog.md), and any machine-readable contract artifact (per [`CONTRIBUTING.md`](../CONTRIBUTING.md)).
+**Assignment authority.** Pelorus DCs are allocated in this registry. Additions require a pull request updating this document, the corresponding entries in [`../catalog/`](../catalog/), and any machine-readable contract artifact (per [`CONTRIBUTING.md`](../CONTRIBUTING.md)).
 
 **Owner Private range (`0x3F000–0x3F0FF`).** Reserved for sailor-built or owner-built devices installed on a specific vessel. No external registration is required — not with Pelorus, SAE, NMEA, or any vendor. Slot assignments within this range are recorded in the vessel's critical zone map ([`08-redundancy.md §12`](./08-redundancy.md)) and have no defined meaning outside that vessel.
 
@@ -160,7 +160,7 @@ Vendors using this range are responsible for avoiding collisions within their ow
 
 ## 4. Relationship to Signal Catalog and Binding
 
-- Every DC field carrying an instance value is resolved to a `Vessel.*` path via the binding table ([`06-signal-catalog.md §3–4`](./06-signal-catalog.md)).
+- Every DC field carrying an instance value is resolved to a `Vessel.*` path (defined in [`../catalog/`](../catalog/)) via the binding table in [`06-instance-binding.md`](./06-instance-binding.md).
 - v1.0: binding-table contents are not carried on `Pelorus.NetworkManagement` payload bytes. Distribution is out of band (gateway configuration, diagnostic session, Pelorus Stream).
 - Low-power sensors only transmit raw DCs; semantic mapping is handled by binding-aware nodes.
 

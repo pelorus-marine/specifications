@@ -98,7 +98,7 @@ endpoint=https://chart-server.local./s100/
 
 ### 4.2 Datagram
 
-Following the 16-byte datagram header, a CBOR map keyed by signal name. Recommended signal names map to `Vessel.*` paths from [`core/06-signal-catalog.md`](../core/06-signal-catalog.md):
+Following the 16-byte datagram header, a CBOR map keyed by signal name. Recommended signal names map to `Vessel.*` paths from the Pelorus catalog ([`../catalog/`](../catalog/)):
 
 ```cbor
 {

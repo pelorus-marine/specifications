@@ -66,7 +66,23 @@ Support is required. `Pelorus.AddressCommand` (`DC_ID = 0x00006`, priority 6) ca
 
 ## 6. Relationship to Signal Catalog Instance Binding
 
-Source Address alone does not carry semantic meaning. The mapping from SA + DC_ID + instance fields to semantic paths in the `Vessel.*` catalog is handled in [`06-signal-catalog.md`](./06-signal-catalog.md) (instance binding). Address claiming itself remains purely about uniqueness on the bus.
+Source Address alone does not carry semantic meaning. The mapping from SA + DC_ID + instance fields to semantic paths in the `Vessel.*` catalog (defined in [`../catalog/`](../catalog/)) is handled by the binding table in [`06-instance-binding.md`](./06-instance-binding.md). Address claiming itself remains purely about uniqueness on the bus.
+
+## 7. Open Items
+
+### 7.1 No authentication of NAME or Source Address
+
+The address-claim mechanism inherited from SAE J1939-81 has no cryptographic authentication: any node can transmit a `Pelorus.AddressClaim` declaring any NAME and, if its NAME is numerically lower than the current holder's, win arbitration. A malicious or buggy node can therefore impersonate any device on the bus — including safety-critical talkers such as autopilots, GNSS, and alarm sources — and either silence the legitimate device (which loses arbitration) or inject spoofed payloads under its identity.
+
+This is acceptable for v1.0 because:
+
+- CAN-bus physical access is required to attack — there is no remote vector through the wire itself.
+- The same exposure exists in NMEA 2000 / J1939 and the marine market has tolerated it for thirty years.
+- Cryptographic message-level authentication on a 250 kbit/s arbitration / 500 kbit/s data-phase fieldbus has non-trivial frame-rate and latency costs.
+
+It should not remain acceptable indefinitely because Pelorus Core explicitly carries safety-critical traffic (autopilot commands, MOB alarms, alarm assertions) where impersonation is a credible threat — for example, a compromised Pelorus Stream gateway with a Core-side transceiver, or a malicious USB-CAN diagnostic dongle plugged into a chandlery service port.
+
+Action for a future profile: define an optional authenticated address-claim and per-DC message authentication scheme (candidate: CAN-Sec / SecOC-style truncated MAC with per-segment shared keys, or AUTOSAR Secure Onboard Communication adapted for CAN FD's 64-byte frame). Scope should cover (a) address-claim authentication so impersonation requires key compromise, and (b) per-DC freshness counters and MAC for the safety-critical priority bands (PRIO 0–2). Lower-priority bands may remain unauthenticated to preserve bus capacity.
 
 ## License
 

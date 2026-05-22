@@ -72,7 +72,8 @@ These standards apply to Rust reference implementations that live in their own r
 Any change that **alters Data Contract assignment, DC_ID allocation, bridge mappings, or the semantic meaning of the `data_contract` overlay attribute** must be submitted as **one coherent Pull Request** that updates together:
 
 - [`core/07-dcid-registry.md`](./core/07-dcid-registry.md)
-- [`core/06-signal-catalog.md`](./core/06-signal-catalog.md) §6 (and any affected `catalog/vessel.vspec` or `catalog/contracts/*.yaml` entries)
+- [`catalog/04-overlays.md`](./catalog/04-overlays.md) (and any affected `catalog/vessel.vspec` or `catalog/contracts/*.yaml` entries)
+- [`core/06-instance-binding.md`](./core/06-instance-binding.md) if the change affects instance-field naming or binding-table semantics
 - [`stream/01-overview.md`](./stream/01-overview.md) §3.3 if Stream–Core identifier narrative is affected
 - Any machine-readable **Data Contract** artifact that ships in-repo (schema, registry snapshot, generated bundle for compilers or gateways) — **update or re-version it in this same PR** when DC assignment, payload layout, or bridges change. There is no separate generator committed yet; when one lands, this rule still applies.
 

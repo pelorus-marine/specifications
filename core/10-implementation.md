@@ -1,6 +1,6 @@
 # Pelorus Core — Implementation Guide
 
-Non-normative guidance for building Pelorus Core hardware, firmware, and installations, plus the inventory of official reference implementations. Normative requirements live in [`02-physical.md`](./02-physical.md), [`03-data-link.md`](./03-data-link.md), [`04-power.md`](./04-power.md), [`05-addressing.md`](./05-addressing.md), [`06-signal-catalog.md`](./06-signal-catalog.md), [`07-dcid-registry.md`](./07-dcid-registry.md), [`08-redundancy.md`](./08-redundancy.md), [`09-network.md`](./09-network.md), and [`12-firmware-update.md`](./12-firmware-update.md). Where this guide says "shall," it restates a normative rule from one of those.
+Non-normative guidance for building Pelorus Core hardware, firmware, and installations, plus the inventory of official reference implementations. Normative requirements live in [`02-physical.md`](./02-physical.md), [`03-data-link.md`](./03-data-link.md), [`04-power.md`](./04-power.md), [`05-addressing.md`](./05-addressing.md), [`06-instance-binding.md`](./06-instance-binding.md), [`07-dcid-registry.md`](./07-dcid-registry.md), [`08-redundancy.md`](./08-redundancy.md), [`09-network.md`](./09-network.md), and [`12-firmware-update.md`](./12-firmware-update.md), plus the protocol-agnostic semantic catalog in [`../catalog/`](../catalog/). Where this guide says "shall," it restates a normative rule from one of those.
 
 ## 1. Reference Implementations
 
@@ -96,7 +96,7 @@ A device or software component is conformant only if it passes the applicable te
 
 - **Power management** ([`04-power.md`](./04-power.md)): Active / Standby / Sleep / Deep Sleep; selective wake-up via `Pelorus.WakeUp`; PNC mask processing; `Pelorus.NetworkManagement` transmission
 - **Address claiming** ([`05-addressing.md`](./05-addressing.md)): Listen → Claim → Defend → Cannot Claim
-- **Binding table cache** ([`06-signal-catalog.md`](./06-signal-catalog.md)): receive, validate, cache the latest table; fallback to raw DC_ID + instance mode when cache invalid or absent
+- **Binding table cache** ([`06-instance-binding.md`](./06-instance-binding.md)): receive, validate, cache the latest table; fallback to raw DC_ID + instance mode when cache invalid or absent
 - **Repeater forwarding** ([`09-network.md`](./09-network.md)): transparent CAN FD frame forwarding with fault isolation
 - **Dual-bus receive** ([`08-redundancy.md`](./08-redundancy.md)) for Class D / Class H products: Duplicate Discard Table; single RX pipeline into application layer; `Pelorus.BusHealth` transmission and local error-counter sampling; degraded single-bus annunciation when peer bus silent
 

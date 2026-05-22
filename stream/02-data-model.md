@@ -131,7 +131,7 @@ Metadata is a CBOR map ([`05-control-protocol.md`](./05-control-protocol.md)) de
 | `caps` | byte string | bit vector | No | Capability bits. See [`05-control-protocol.md`](./05-control-protocol.md) §4. |
 | `vendor` | text | string ≤ 32 | If type ≥ 0x80 | Reverse-DNS vendor identifier. |
 | `tags` | array | text strings | No | Free-form tags for sailor-side filtering. |
-| `vss` | text | string ≤ 256 | No | Canonical `Vessel.*` path for telemetry mirroring Core semantics. |
+| `vss` | text | string ≤ 256 | No | Canonical `Vessel.*` path from the Pelorus catalog ([`../catalog/`](../catalog/)) for telemetry mirroring catalog semantics. |
 | `since` | uint | u64 | No | Unix-epoch milliseconds at session open. |
 | `extra` | map | tstr→any | No | Type-specific extension fields. |
 

@@ -56,6 +56,12 @@ Weaknesses of [**Legacy Marine Data Ecosystem**](#lmde) that Pelorus addresses:
 - **Cadence drag**: Cert-gated evolution is slow next to automotive or IT stack velocity—features queue behind programs and committee cycles.
 - **Tooling capture**: Firmware updates and deep diagnostics often depend on OEM apps, dongles, or dealer chains—not something you fully own at anchor.
 
+### Root cause and durable answer
+
+The bullets above are not independent technical failures; they are downstream effects of a single root cause. Each fix — CAN FD frames, managed sleep, split termination with EMC capacitor, free manufacturer codes, open conformance — has been industry practice in adjacent fields (automotive, industrial) for a decade or more. None have landed in marine networking because the governance model requires consensus among the large manufacturers who already shipped product against the older specification and have no commercial incentive to obsolete their own installed base.
+
+Pelorus' technical decisions catch up to current practice. The **governance model** — CC BY 4.0 specification, free hobbyist manufacturer codes, no certification gate, public reference implementations and test fixtures — is what keeps the stack from falling behind again the next time the underlying technology moves. Closed governance is the upstream defect; the technical symptoms above are what it costs.
+
 ---
 
 ## 3. Subsystems
@@ -98,6 +104,10 @@ AIS targets are low-rate instrument data and live on Pelorus Core, not Stream (s
 **Pelorus State** (when specified) coordinates priorities among publishers. Stream transports payloads; it does **not** replace Core as nautical truth.
 
 Logical **ingest → snapshot → situation → policy/intent** pipeline **above** Core and Stream, with **no** fieldbus or Ethernet I/O of its own.
+
+### [Catalog](./catalog/01-overview.md)
+
+**Pelorus Catalog** is shared, protocol-agnostic vocabulary — the `Vessel.*` COVESA-VSS tree consumed by Core, Stream, and State. Not a subsystem in the transport sense; **infrastructure used by all three**. Core's Data Contracts project to catalog leaves via the `data_contract` overlay; Stream telemetry keys CBOR maps by `Vessel.*` paths; State imports the same paths as its semantic input. The catalog defines **meaning** (names, types, units, instance handling); it does **not** define wire encoding, transport, or arbitration.
 
 For a worked example of how Core and Stream sit together on a real vessel, see [§4 Sample combined network](#4-sample-combined-network--40-ft-sailing-yacht).
 

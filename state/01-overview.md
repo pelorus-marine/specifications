@@ -32,7 +32,7 @@ State **imports** Core and Stream APIs. Core and Stream do not import State.
 
 - A failed State subsystem shall leave Core and Stream fully functional. Each device retains local autonomy when State is unreachable.
 - State does not actuate hardware. It emits intents; **executors** translate intents into concrete Core or Stream operations.
-- State does not redefine signal semantics. It consumes `Vessel.*` paths from Core's signal catalog ([`core/06-signal-catalog.md`](../core/06-signal-catalog.md)) and Stream events as-is.
+- State does not redefine signal semantics. It consumes `Vessel.*` paths from the shared Pelorus catalog ([`../catalog/`](../catalog/)) and Stream events as-is.
 - The pipeline is one-directional. Earlier stages do not reach into later ones; later stages do not re-run fusion already performed.
 
 ## 4. Pipeline

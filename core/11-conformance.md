@@ -6,7 +6,7 @@ Conformance test plan and manufacturer self-declaration template. Conformance is
 
 | Class under test | Normative primary documents |
 | --- | --- |
-| **Class S** node | [`02`](./02-physical.md), [`03`](./03-data-link.md), [`04`](./04-power.md), [`05`](./05-addressing.md), [`06`](./06-signal-catalog.md), [`07`](./07-dcid-registry.md) |
+| **Class S** node | [`02`](./02-physical.md), [`03`](./03-data-link.md), [`04`](./04-power.md), [`05`](./05-addressing.md), [`06`](./06-instance-binding.md), [`07`](./07-dcid-registry.md), [`../catalog/`](../catalog/) |
 | **Class D** node | [`02`](./02-physical.md), [`03`](./03-data-link.md), [`04`](./04-power.md), [`05`](./05-addressing.md), [`07`](./07-dcid-registry.md), [`08`](./08-redundancy.md) |
 | **Class H** hub | [`02`](./02-physical.md), [`03`](./03-data-link.md), [`05`](./05-addressing.md), [`07`](./07-dcid-registry.md), [`08`](./08-redundancy.md), [`09`](./09-network.md) |
 | **Gateway** | [`09`](./09-network.md), plus applicable node class for each Core port |
@@ -145,7 +145,7 @@ A device passes Pelorus Core conformance for a declared configuration when:
 > We, the undersigned, declare that the above-identified product meets the requirements of the Pelorus Core specification version 0.3 and is therefore **Pelorus Core conformant**.
 >
 > Specifically, the product has been verified to comply with the Pelorus Core documents in `specifications/core/`:
-> [`02-physical.md`](./02-physical.md), [`03-data-link.md`](./03-data-link.md), [`04-power.md`](./04-power.md), [`05-addressing.md`](./05-addressing.md), [`06-signal-catalog.md`](./06-signal-catalog.md), [`07-dcid-registry.md`](./07-dcid-registry.md), [`08-redundancy.md`](./08-redundancy.md) (when dual-bus or C0/C1 is claimed), [`09-network.md`](./09-network.md), [`10-implementation.md`](./10-implementation.md), [`11-conformance.md`](./11-conformance.md), and [`12-firmware-update.md`](./12-firmware-update.md) (when a writable image is exposed).
+> [`02-physical.md`](./02-physical.md), [`03-data-link.md`](./03-data-link.md), [`04-power.md`](./04-power.md), [`05-addressing.md`](./05-addressing.md), [`06-instance-binding.md`](./06-instance-binding.md), [`07-dcid-registry.md`](./07-dcid-registry.md), [`08-redundancy.md`](./08-redundancy.md) (when dual-bus or C0/C1 is claimed), [`09-network.md`](./09-network.md), [`10-implementation.md`](./10-implementation.md), [`11-conformance.md`](./11-conformance.md), and [`12-firmware-update.md`](./12-firmware-update.md) (when a writable image is exposed); plus the protocol-agnostic semantic catalog in [`../catalog/`](../catalog/).
 >
 > All mandatory tests in §3 above were executed and passed. Test logs and results are available upon request.
 

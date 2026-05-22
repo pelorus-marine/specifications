@@ -10,6 +10,8 @@
 
 Marine electronics labeled "marine grade" are too often unreliable, expensive, and locked into closed proprietary ecosystems. The Legacy Marine Data Ecosystem — the dominant standard — is technically sound at its core but trapped by 20+ years of backward compatibility, closed specifications, and vendor incentives that prioritize differentiation over interoperability.
 
+The technologies needed to fix this — CAN FD frames, partial networking with selective wake-up, split termination, free hobbyist device IDs — have been industry practice elsewhere for a decade or more. They have not landed in marine networking because the governance model requires consensus among large manufacturers with no commercial incentive to obsolete their own installed base. The bill comes due as 8-byte frames, no managed sleep, certification fees that exclude hobbyists, and a members-only message catalog. Pelorus' technical decisions catch up to current practice; the open governance — CC BY 4.0 spec, free manufacturer codes, no certification gate — is what keeps it from falling behind again.
+
 Sailors deserve better. **Pelorus** exists to provide it.
 
 ---
@@ -24,7 +26,7 @@ Incumbent marine networking ([**LMDE**](./ARCHITECTURE.md#lmde) — *Legacy Mari
 
 **→ [`ARCHITECTURE.md`](./ARCHITECTURE.md)** — non-normative project record: why Pelorus exists, **LMDE** context and examples, Core / Stream / State roles, trademark and editorial rules.
 
-Normative drafts live under **[`core/`](./core/)**, **[`stream/`](./stream/)**, and **[`state/`](./state/)** (each has a **`00-document-index.md`**; State is the least mature). Cold start: [Core overview](./core/01-overview.md) · [Stream overview](./stream/01-overview.md) · [State overview](./state/01-overview.md). Track backlog and design threads on [**GitHub Issues**](https://github.com/pelorus-marine/specifications/issues).
+Normative drafts live under **[`core/`](./core/)**, **[`stream/`](./stream/)**, and **[`state/`](./state/)** (each has a **`00-document-index.md`**; State is the least mature). The shared `Vessel.*` semantic vocabulary consumed by all three lives in **[`catalog/`](./catalog/)**. Cold start: [Catalog overview](./catalog/01-overview.md) · [Core overview](./core/01-overview.md) · [Stream overview](./stream/01-overview.md) · [State overview](./state/01-overview.md). Track backlog and design threads on [**GitHub Issues**](https://github.com/pelorus-marine/specifications/issues).
 
 ---
 

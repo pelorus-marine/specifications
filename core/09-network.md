@@ -10,9 +10,8 @@ Network architecture, repeaters and hubs, and LMDE gateway behaviour. Single-seg
 | Stub length | 6 m |
 | Nodes per segment | 50 |
 | Termination | Split termination at both ends per [`02-physical.md §5`](./02-physical.md) |
-| Power | 9–32 V DC, reverse polarity protected |
 
-These limits ensure signal integrity at 250 kbit/s arbitration / 500 kbit/s data phase without special transceivers.
+These limits ensure signal integrity at 250 kbit/s arbitration / 500 kbit/s data phase without special transceivers. Device-level supply voltage range and reverse polarity protection are normative in [`02-physical.md §7.1–7.2`](./02-physical.md#71-voltage-range) and not duplicated here.
 
 ## 2. Multi-Segment Networks and Repeaters
 
@@ -117,12 +116,12 @@ A vessel may have zero, one, or multiple gateways. Multiple gateways are support
 The gateway shall:
 
 - Maintain the authoritative copy of the binding table in non-volatile memory.
-- Distribute binding-table updates **out of band** for v1.0 (configuration export/import, diagnostic session, Pelorus Stream, local UI/API).
+- Distribute binding-table updates **out of band** per [`06-instance-binding.md §2`](./06-instance-binding.md).
 - Provide a web-based provisioning UI for sailors to assign friendly labels and map devices.
 - Detect and report instance drift or conflicts.
 - Allow secondary gateways or diagnostic tools to take over as binding authority if the primary is absent.
 
-Full fault-tolerant binding model: [`06-signal-catalog.md §3–4`](./06-signal-catalog.md).
+Full fault-tolerant binding model: [`06-instance-binding.md §3`](./06-instance-binding.md).
 
 ### 5.4 Power Management Role
 
@@ -142,8 +141,8 @@ The gateway is not required for power management to function — nodes fall back
 ### 5.6 Fault Tolerance
 
 - The network continues to operate fully if the gateway is powered off, failed, or disconnected.
-- Nodes that need semantics cache the latest binding table and power profile.
-- Secondary gateways coordinate binding authority per [`06-signal-catalog.md`](./06-signal-catalog.md).
+- Nodes fall back to cached binding tables per [`06-instance-binding.md §3`](./06-instance-binding.md) and cached power profiles per [`04-power.md`](./04-power.md).
+- Secondary gateways coordinate binding authority per [`06-instance-binding.md`](./06-instance-binding.md).
 - No hard dependency on any single physical node.
 
 ## 6. Core ↔ Stream Coupling
