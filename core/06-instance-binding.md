@@ -48,7 +48,7 @@ A node declaring semantic awareness shall:
 
 ## 5. Catalog and DC Registry Cross-Refs
 
-Layer roles and the relationship to catalog semantics and DC wire layout are normative in [`../catalog/01-overview.md §3`](../catalog/01-overview.md). Worked example: the engine reporting `Pelorus.EngineController1` with `engine-instance = 2` from SA `0x14` (NAME `0x80…`) resolves to the catalog's `Vessel.Propulsion.Engines[1]`.
+Layer roles and the relationship to catalog semantics and DC wire layout are normative in [`../catalog/01-overview.md §3`](../catalog/01-overview.md). Worked example: an engine controller transmitting `Pelorus.EngineSpeed` from SA `0x14` (NAME `0x80…`) resolves to the catalog's `Vessel.Propulsion.Engines[1].Speed` via the binding table — the engine index comes from the SA + NAME tuple, not a payload field, because `Pelorus.EngineSpeed` bridges from J1939 PGN 61444 (one ECU per engine, NAME-instanced).
 
 The binding is intentionally per-vessel — the same physical engine controller carries different friendly labels and may project to different array indices on different boats. The catalog is universal; the binding is local.
 

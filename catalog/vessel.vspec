@@ -1,0 +1,123 @@
+# Pelorus Marine Signal Catalog — Vessel.* root
+#
+# Protocol-agnostic semantic data model for Pelorus, expressed in COVESA VSS.
+# Authoritative spec: catalog/02-structure.md and 03-instances.md.
+# Pelorus overlay attributes (data_contract, dc-field, instance-field,
+# pelorus-priority) are defined in catalog/04-overlays.md and projected to
+# wire-level Data Contracts via core/07-dcid-registry.md.
+#
+# Licensed under Creative Commons Attribution 4.0 International (CC BY 4.0).
+# See LICENSE.md.
+
+Vessel:
+  type: branch
+  description: Root of the Pelorus marine signal catalog.
+
+  Navigation:
+    type: branch
+    description: Navigation signals (heading, position, depth, AIS).
+
+    HeadingTrue:
+      type: sensor
+      datatype: float
+      unit: deg
+      min: 0
+      max: 360
+      description: |
+        True heading of the vessel in degrees clockwise from true north,
+        measured at the vessel reference point. 0 = north, 90 = east.
+      data_contract: Pelorus.HeadingTrue
+
+    Position:
+      type: branch
+      description: |
+        Vessel position from the primary fix source. Latitude, longitude,
+        and FixQuality are projected from one Data Contract so consumers
+        see them as a single atomic snapshot.
+
+      Latitude:
+        type: sensor
+        datatype: double
+        unit: deg
+        min: -90
+        max: 90
+        description: WGS-84 geodetic latitude, positive north.
+        data_contract: Pelorus.Position
+        dc-field: Latitude
+
+      Longitude:
+        type: sensor
+        datatype: double
+        unit: deg
+        min: -180
+        max: 180
+        description: WGS-84 geodetic longitude, positive east.
+        data_contract: Pelorus.Position
+        dc-field: Longitude
+
+      FixQuality:
+        type: sensor
+        datatype: uint8
+        min: 0
+        max: 8
+        description: |
+          GNSS fix quality enum (see core/07-dcid-registry.md §2.2):
+          0=no fix, 1=GNSS, 2=DGNSS, 3=precision GNSS, 4=RTK fixed,
+          5=RTK float, 6=estimated, 7=manual, 8=simulator.
+        data_contract: Pelorus.Position
+        dc-field: FixQuality
+
+    Depth:
+      type: branch
+      description: |
+        Depth measurements from the depth sounder. BelowTransducer is the
+        raw distance from the transducer face to the bottom; TransducerOffset
+        is the install-time offset from the keel, so consumers can compute
+        below-keel or below-waterline depths as needed.
+
+      BelowTransducer:
+        type: sensor
+        datatype: float
+        unit: m
+        min: 0
+        description: Distance from the depth transducer face to the bottom.
+        data_contract: Pelorus.DepthBelowTransducer
+
+      TransducerOffset:
+        type: attribute
+        datatype: float
+        unit: m
+        description: |
+          Signed distance from the keel to the transducer face. Positive when
+          the transducer is mounted above the keel; negative when below.
+          Below-keel depth = BelowTransducer − TransducerOffset.
+        data_contract: Pelorus.DepthTransducerOffset
+
+  Propulsion:
+    type: branch
+    description: Propulsion systems (engines, thrusters, sail drives).
+
+    Engines:
+      type: branch
+      instances: [0, 15]
+      description: |
+        Indexed array of propulsion engines. Index resolution per
+        core/06-instance-binding.md; sailor-friendly labels live as
+        binding-table metadata and are not part of catalog identity.
+
+      Speed:
+        type: sensor
+        datatype: float
+        unit: rpm
+        min: 0
+        description: Engine crankshaft rotational speed.
+        data_contract: Pelorus.EngineSpeed
+
+      CoolantTemp:
+        type: sensor
+        datatype: float
+        unit: celsius
+        min: -40
+        max: 215
+        description: Engine coolant temperature.
+        data_contract: Pelorus.EngineCoolantTemp
