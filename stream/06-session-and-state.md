@@ -6,7 +6,7 @@ Session lifecycle, observable per-stream state, and subscription protocol. Contr
 
 Every stream session moves through this state machine on the publisher side:
 
-```
+```text
    ┌──────────┐    open      ┌──────────┐
    │   IDLE   │──────────────▶ ANNOUNCED │
    └──────────┘              └────┬─────┘

@@ -194,4 +194,3 @@ The commercial networks named as examples under [**Legacy Marine Data Ecosystem 
 3. **No** implied endorsement or wire-level compatibility unless a normative doc proves it. Use **“OneNet-style”** / **“N2K-class”** only for general categories of behavior.
 4. **NMEA 2000®** and **NMEA OneNet®** are **NMEA** marks—spell correctly; **®** on first prominent use where counsel advises. Other names above are **third-party marks**—treat likewise.
 5. **Pelorus** is **not** an **NMEA** product name and is **not** “NMEA-compatible” unless a conformance document establishes that with tests.
-

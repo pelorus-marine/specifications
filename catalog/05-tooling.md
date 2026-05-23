@@ -16,7 +16,7 @@ Source files are CC BY 4.0 alongside the specification.
 
 ## 3. Code Generation
 
-Reference crates listed in [`../core/10-implementation.md`](../core/10-implementation.md) generate:
+Reference crates in the Pelorus Platform repository (see [`../implementation/04-software.md`](../implementation/04-software.md)) generate:
 
 - Rust structs and validation functions for catalog leaves
 - TypeScript type definitions for tooling and inspectors

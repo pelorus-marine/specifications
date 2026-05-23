@@ -21,7 +21,7 @@ A Manufacturer Code allocated by NMEA or SAE is usable across **all five** rows 
 The 11-bit Manufacturer Code field (`0`–`2047`) is partitioned as follows for Pelorus use:
 
 | Range | Administration | Notes |
-|---:| --- | --- |
+| ---: | --- | --- |
 | `0` | Conventional "unassigned" | Recommended for owner-built devices per [`core/05-addressing.md §2.1`](./core/05-addressing.md). Has no defined semantic in J1939-81. |
 | `1`–`1899` | NMEA / SAE | Pelorus does not allocate in this range. Vendors with NMEA-administered or SAE-administered Manufacturer Codes use their existing value directly. The [canboat](https://github.com/canboat/canboat) project maintains a community-reverse-engineered list of NMEA allocations (Apache 2.0); the highest allocation observed in that list at the time of v1.0 is in the 1400s. |
 | `1900`–`2047` | **Pelorus** | PR-allocated via this registry. Free; no fees, no membership, no commercial-status check. |
@@ -63,7 +63,7 @@ Pelorus tooling shall treat each frame's source identity according to the networ
 ### Pelorus-allocated (`1900`–`2047`)
 
 | Code | Name | Contact | URL | Allocated |
-|---:| --- | --- | --- | --- |
+| ---: | --- | --- | --- | --- |
 | — | _(no allocations yet)_ | — | — | — |
 
 ## 7. Requesting a Code

@@ -5,7 +5,7 @@ Copyright (c) 2026 Pelorus Marine Contributors
 
 This work is licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0).
 
-To view a copy of this license, visit: https://creativecommons.org/licenses/by/4.0/
+To view a copy of this license, visit: <https://creativecommons.org/licenses/by/4.0/>
 
 ---
 
@@ -38,7 +38,7 @@ No warranties are given. The license may not give you all of the permissions nec
 
 The complete legal text of the Creative Commons Attribution 4.0 International Public License is available at:
 
-https://creativecommons.org/licenses/by/4.0/legalcode
+<https://creativecommons.org/licenses/by/4.0/legalcode>
 
 ---
 
@@ -47,7 +47,7 @@ https://creativecommons.org/licenses/by/4.0/legalcode
 When reusing or adapting this work, please include attribution similar to:
 
 > Based on Pelorus Marine documentation, licensed under CC BY 4.0.
-> Source: https://github.com/pelorus-marine
+> Source: <https://github.com/pelorus-marine>
 
 ---
 

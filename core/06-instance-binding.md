@@ -46,8 +46,6 @@ A node declaring semantic awareness shall:
 - Fall back to raw `DC_ID` + instance display when the cache is invalid or absent — and not block raw data delivery on cache availability
 - Re-apply binding to incoming frames at receive time, not at storage time (so a binding edit applies to subsequent frames immediately without rewriting historical data)
 
-Implementation guidance, including the state machine for cache validation and the conformance hooks, lives in [`10-implementation.md §3.2`](./10-implementation.md).
-
 ## 5. Catalog and DC Registry Cross-Refs
 
 Layer roles and the relationship to catalog semantics and DC wire layout are normative in [`../catalog/01-overview.md §3`](../catalog/01-overview.md). Worked example: the engine reporting `Pelorus.EngineController1` with `engine-instance = 2` from SA `0x14` (NAME `0x80…`) resolves to the catalog's `Vessel.Propulsion.Engines[1]`.

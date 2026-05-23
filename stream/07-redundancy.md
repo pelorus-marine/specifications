@@ -30,7 +30,7 @@ Class S nodes shall not be the sole source of safety-relevant data (radar video,
 
 Each pair of QUIC connections (A+B) to a given peer operates as a three-state machine:
 
-```
+```text
               ┌─────────────────┐
               │   DUAL_ACTIVE   │◄──────────────────────┐
               │ TX on both      │                        │

@@ -26,7 +26,7 @@ Each service is advertised on **both fabrics independently**. A consumer browsin
 
 Each stream gets one mDNS service instance per its Stream ID:
 
-```
+```text
 <stream-id-short>.<pub>.<service-type>.local.
 ```
 
@@ -35,13 +35,13 @@ Each stream gets one mDNS service instance per its Stream ID:
 
 Example:
 
-```
+```text
 018f3c2b.bow-radar._pelorus-radar-video._quic.local.
 ```
 
 ## 4. SRV Record
 
-```
+```text
 SRV: 0 0 <port> <hostname>.local.
 ```
 
@@ -74,7 +74,7 @@ Each TXT string is at most 255 bytes per RFC 6763 §6. Cumulative TXT data per R
 
 Per RFC 6763 §4.1:
 
-```
+```text
 PTR: <service-type>.local. → <instance>.<service-type>.local.
 ```
 
@@ -94,7 +94,7 @@ When a stream closes, the publisher emits **goodbye packets** (TTL=0 unsolicited
 
 A typical subscriber browses one or more service types:
 
-```
+```text
 _pelorus-radar-video._quic.local.   -> PTR list
    for each instance:
      resolve SRV  -> hostname + port

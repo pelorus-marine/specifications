@@ -51,7 +51,7 @@ M12 A-coded 5-pin per IEC 61076-2-101, IP67/IP68 when mated and torqued, threade
 
 Linear bus with T-connector drops:
 
-```
+```text
 [Term] ─── Backbone ─── [T] ─── Backbone ─── [T] ─── Backbone ─── [Term]
                         │                     │
                        Drop                  Drop
@@ -75,7 +75,7 @@ Vessels exceeding these limits use repeater nodes per [`09-network.md`](./09-net
 
 Each segment terminated at both physical ends with split termination:
 
-```
+```text
         CAN_H ───┬──── 60Ω ──┬──── 60Ω ──┬─── CAN_L
                               │
                             4.7nF (C0G/NP0)

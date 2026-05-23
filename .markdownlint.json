@@ -1,0 +1,5 @@
+{
+  "default": true,
+  "MD013": false,
+  "MD033": { "allowed_elements": ["h2", "h3", "h4", "a", "br"] }
+}

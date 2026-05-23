@@ -1,6 +1,6 @@
-# CODE_OF_CONDUCT.md
+# Code of Conduct
 
-**Pelorus Core Specification and Reference Implementations**
+Applies to the Pelorus Core specification and reference implementations.
 
 **Status:** Living document
 
@@ -40,6 +40,7 @@ Pelorus exists to create a reliable, open marine data network. We value technica
 Project maintainers are responsible for clarifying and enforcing these standards.
 
 Instances of unacceptable behavior will result in:
+
 1. A private warning
 2. Temporary ban from the repository (if repeated)
 3. Permanent ban from all Pelorus repositories and communication channels (in extreme cases)

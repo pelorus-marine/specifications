@@ -1,6 +1,6 @@
 # Pelorus State — System Model
 
-The static structure State operates on: entities, coordinate frames, and the static transforms between them. **No live values** — these live in [`04-world-snapshot.md`](./04-world-snapshot.md). **No semantic identity** — that lives in [`05-situation-model.md`](./05-situation-model.md).
+The static structure State operates on: entities, coordinate frames, and the static transforms between them. **No live values** — these will live in `04-world-snapshot.md` (planned). **No semantic identity** — that will live in `05-situation-model.md` (planned).
 
 ## 1. Entities
 
@@ -35,7 +35,7 @@ Contact sub-types (vessel, buoy, sea-mark, etc.) are assigned by the situation m
 
 A stable, locally-unique identifier of the form:
 
-```
+```text
 <type>:<instance>
 ```
 
@@ -96,7 +96,7 @@ Each sensor has its own right-handed frame whose pose relative to the body frame
 
 Three transforms are sufficient:
 
-```
+```text
 T_sensor → body  : static (per sensor, from §4 calibration)
 T_body   → NED   : live   (from attitude in the snapshot)
 T_NED    → WGS84 : live   (from own-ship position in the snapshot)

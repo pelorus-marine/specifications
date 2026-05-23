@@ -1,6 +1,6 @@
 # Pelorus Stream — Reference Library
 
-The reference Rust library that implements Pelorus Stream and the public API surface other code links against. The Pelorus Core companion is [`core/10-implementation.md`](../core/10-implementation.md).
+The reference Rust library that implements Pelorus Stream and the public API surface other code links against. Cross-subsystem implementation guidance, including the Pelorus Platform repository pointer, is in [`../implementation/`](../implementation/).
 
 ## 1. Crate Inventory
 

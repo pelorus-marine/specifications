@@ -20,7 +20,7 @@ Tests marked **(D)** apply only to dual-bus / path-redundancy declarations.
 ## 2. Test Equipment and Setup
 
 - **Reference bus.** Two CAN FD channels (for (D) tests) or one channel at 250 kbit/s arbitration / 500 kbit/s data, ISO 11898-1:2015 compliant, with logging.
-- **Reference companion.** Reference implementation node(s) from [`10-implementation.md §1`](./10-implementation.md) (when published) or golden-trace replay fixture.
+- **Reference companion.** Reference implementation node(s) from the Pelorus Platform repository (see [`../implementation/04-software.md`](../implementation/04-software.md), when published) or golden-trace replay fixture.
 - **Fault injection (D).** Programmable open / disconnect on Bus A or Bus B backbone; optional stuck-recessive / dominant injector behind isolation.
 - **Power.** 9–32 V supply with current measurement for sleep-state tests.
 
@@ -145,7 +145,7 @@ A device passes Pelorus Core conformance for a declared configuration when:
 > We, the undersigned, declare that the above-identified product meets the requirements of the Pelorus Core specification version 0.3 and is therefore **Pelorus Core conformant**.
 >
 > Specifically, the product has been verified to comply with the Pelorus Core documents in `specifications/core/`:
-> [`02-physical.md`](./02-physical.md), [`03-data-link.md`](./03-data-link.md), [`04-power.md`](./04-power.md), [`05-addressing.md`](./05-addressing.md), [`06-instance-binding.md`](./06-instance-binding.md), [`07-dcid-registry.md`](./07-dcid-registry.md), [`08-redundancy.md`](./08-redundancy.md) (when dual-bus or C0/C1 is claimed), [`09-network.md`](./09-network.md), [`10-implementation.md`](./10-implementation.md), [`11-conformance.md`](./11-conformance.md), and [`12-firmware-update.md`](./12-firmware-update.md) (when a writable image is exposed); plus the protocol-agnostic semantic catalog in [`../catalog/`](../catalog/).
+> [`02-physical.md`](./02-physical.md), [`03-data-link.md`](./03-data-link.md), [`04-power.md`](./04-power.md), [`05-addressing.md`](./05-addressing.md), [`06-instance-binding.md`](./06-instance-binding.md), [`07-dcid-registry.md`](./07-dcid-registry.md), [`08-redundancy.md`](./08-redundancy.md) (when dual-bus or C0/C1 is claimed), [`09-network.md`](./09-network.md), [`11-conformance.md`](./11-conformance.md), and [`12-firmware-update.md`](./12-firmware-update.md) (when a writable image is exposed); plus the protocol-agnostic semantic catalog in [`../catalog/`](../catalog/).
 >
 > All mandatory tests in §3 above were executed and passed. Test logs and results are available upon request.
 

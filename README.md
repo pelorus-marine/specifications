@@ -26,7 +26,7 @@ Incumbent marine networking ([**LMDE**](./ARCHITECTURE.md#lmde) — *Legacy Mari
 
 **→ [`ARCHITECTURE.md`](./ARCHITECTURE.md)** — non-normative project record: why Pelorus exists, **LMDE** context and examples, Core / Stream / State roles, trademark and editorial rules.
 
-Normative drafts live under **[`core/`](./core/)**, **[`stream/`](./stream/)**, and **[`state/`](./state/)** (each has a **`00-document-index.md`**; State is the least mature). The shared `Vessel.*` semantic vocabulary consumed by all three lives in **[`catalog/`](./catalog/)**. Cold start: [Catalog overview](./catalog/01-overview.md) · [Core overview](./core/01-overview.md) · [Stream overview](./stream/01-overview.md) · [State overview](./state/01-overview.md). Track backlog and design threads on [**GitHub Issues**](https://github.com/pelorus-marine/specifications/issues).
+Normative drafts live under **[`core/`](./core/)**, **[`stream/`](./stream/)**, and **[`state/`](./state/)** (each has a **`00-document-index.md`**; State is the least mature). The shared `Vessel.*` semantic vocabulary consumed by all three lives in **[`catalog/`](./catalog/)**. Non-normative hardware, installation, and reference-software guidance lives in **[`implementation/`](./implementation/)**. Cold start: [Catalog overview](./catalog/01-overview.md) · [Core overview](./core/01-overview.md) · [Stream overview](./stream/01-overview.md) · [State overview](./state/01-overview.md) · [Implementation overview](./implementation/01-overview.md). Track backlog and design threads on [**GitHub Issues**](https://github.com/pelorus-marine/specifications/issues).
 
 ---
 
@@ -42,8 +42,8 @@ Normative drafts live under **[`core/`](./core/)**, **[`stream/`](./stream/)**, 
 - **Specified contracts** — Data Contracts (DC_IDs) in a Pelorus-native namespace, addressing, and power behavior written for independent implementations  
 - **Open firmware update** — vendor-neutral protocol so any compliant tool can update any compliant device  
 
-**Site:** https://sevenseas.io/pelorus  
-**Org:** https://github.com/pelorus-marine
+**Site:** <https://sevenseas.io/pelorus>  
+**Org:** <https://github.com/pelorus-marine>
 
 ---
 

@@ -86,7 +86,7 @@ HTTP/3 range requests allow interrupted transfers to resume from the last receiv
 
 ECDIS discovers chart distribution via `_pelorus-chart._quic.local` on both fabrics. The TXT record advertises the HTTP/3 endpoint base URL:
 
-```
+```text
 endpoint=https://chart-server.local./s100/
 ```
 
@@ -119,7 +119,7 @@ Signals not relevant to a sample may be omitted; receivers shall accept partial 
 
 For services with one publisher and many subscribers (radar video to multiple ECDIS displays; nav to multiple plotters), a Replication Node decouples the source from knowledge of how many displays exist:
 
-```
+```text
 [Radar Processor] ──QUIC──▶ [Replication Node] ──QUIC──▶ [ECDIS 1]
                                               ──QUIC──▶ [ECDIS 2]
                                               ──QUIC──▶ [ECDIS 3]

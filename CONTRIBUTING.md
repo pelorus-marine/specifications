@@ -1,6 +1,6 @@
-# CONTRIBUTING.md
+# Contributing
 
-**Pelorus Core Specification and Reference Implementations**
+Applies to the Pelorus Core specification and reference implementations.
 
 **Status:** Living document
 
@@ -38,14 +38,15 @@ We welcome contributions in these areas, in rough order of priority:
 5. Submit a Pull Request with a clear description
 
 All pull requests must include:
+
 - A clear reason for the change
 - No `unsafe` code unless explicitly approved (applies to any reference implementation that lands here later)
 
 ---
 
-## Markdown link checks
+## Markdown link checks (planned)
 
-Changes touching Markdown files trigger [`.github/workflows/markdown-links.yml`](.github/workflows/markdown-links.yml) — external URL checks with [`.markdown-link-check.json`](.markdown-link-check.json). Extend **`ignorePatterns`** there for benign flaps (redirect quirks, authenticated endpoints).
+When CI lands, changes touching Markdown files will trigger `.github/workflows/markdown-links.yml` — external URL checks with `.markdown-link-check.json`. Extend **`ignorePatterns`** there for benign flaps (redirect quirks, authenticated endpoints).
 
 ---
 
@@ -84,6 +85,7 @@ Rationale: prevents gateways, compilers, and docs from drifting out of sync. Exp
 ## Issue Reporting
 
 Please open an issue for:
+
 - Bugs in the specification
 - Ambiguities or missing details
 - Conformance failures

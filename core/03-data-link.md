@@ -38,7 +38,7 @@ Padding bytes in oversized frames shall be `0xFF` and shall be ignored on receiv
 
 29-bit identifier, Pelorus-native layout:
 
-```
+```text
  28 27 26 | 25 ............................... 8 | 7 ...... 0
    PRIO   |              DC_ID                   |    SA
    (3 b)  |              (18 b)                  |   (8 b)

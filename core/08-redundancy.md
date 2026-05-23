@@ -143,7 +143,7 @@ If an application requires identical back-to-back payloads faster than `DISCARD_
 
 For an installation with maximum `H` repeater/hub hops between any producer and any consumer on either bus, declared per-hop maximum forwarding latency `L_hop`, and bounded inter-node clock drift `D_clk`:
 
-```
+```text
 DISCARD_WINDOW >= 2 * H * L_hop  +  2 * D_clk  +  safety_margin
 ```
 
@@ -245,7 +245,7 @@ The standard gateway is the default Time Master holder when no GNSS-equipped Cla
 
 `TimeStatus` (byte 7) packs four fields. Bit 0 is the LSB:
 
-```
+```text
  bit │  7  │  6  │  5    4    3  │  2    1    0
      │  L  │  S  │   AccBucket   │   SourceClass
 ```
@@ -260,7 +260,7 @@ The standard gateway is the default Time Master holder when no GNSS-equipped Cla
 **`SourceClass` (3 bits, 8 slots):**
 
 | Value | Meaning |
-|---:| --- |
+| ---: | --- |
 | `0` | Free-running — no UTC ever acquired. `CoreTime` is monotonic. |
 | `1` | GNSS-disciplined, currently locked. |
 | `2` | GNSS-disciplined **and** cryptographically authenticated (Galileo OSNMA, GPS M-code, GPS Chimera, or equivalent). |
@@ -273,7 +273,7 @@ The standard gateway is the default Time Master holder when no GNSS-equipped Cla
 **`AccBucket` (3 bits, 8 slots)** — current estimated UTC offset of the Time Master, **not** nameplate accuracy:
 
 | Value | Bound |
-|---:| --- |
+| ---: | --- |
 | `0` | ≤ 1 μs |
 | `1` | ≤ 10 μs |
 | `2` | ≤ 100 μs |

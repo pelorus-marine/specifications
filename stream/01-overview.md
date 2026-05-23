@@ -30,7 +30,7 @@ A node that participates in both Core and Stream runs them as separate stacks wi
 
 ## 3. Three-Layer Architecture
 
-```
+```text
                  ┌───────────────────────────┐
                  │   Pelorus State           │  decisions, coordination
                  │                           │  prioritisation, suppression

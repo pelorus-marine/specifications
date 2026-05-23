@@ -37,7 +37,7 @@ M12 D-coded (4-pin, 100 Mbit/s, no PoE) is rejected — it cannot carry PoE.
 
 Every Class D (dual-fabric) Stream node implements **dual PoE PD** with internal power arbitration:
 
-```
+```text
 Fabric A port → PoE PD controller A → DC/DC → internal rail ─┐
                                                               ├→ Power arbiter → Node logic
 Fabric B port → PoE PD controller B → DC/DC → internal rail ─┘
@@ -83,7 +83,7 @@ These are **normative installation requirements**, not recommendations.
 
 Each populated port is allocated its PD's class maximum (Type 2 = 30 W; Type 3 = 60 W). Unpopulated ports = 0 W.
 
-```
+```text
 P_alloc = Σ PD_class_max(port_i)
 ```
 
@@ -95,7 +95,7 @@ Switch PoE budget shall be ≥ 1.2 × `P_alloc` to absorb 802.3bt transient clas
 
 Switch DC input shall be rated for continuous draw:
 
-```
+```text
 I_input = (P_alloc × 1.2) / (V_input_min × η)
 ```
 

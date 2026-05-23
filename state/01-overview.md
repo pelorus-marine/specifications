@@ -8,11 +8,11 @@ The vessel's fused world-state subsystem, layered above Pelorus Core and Pelorus
 
 Concretely, State provides:
 
-- Time-aligned fact ingestion from Core and Stream events ([`03-event-ingestion-and-time.md`](./03-event-ingestion-and-time.md))
-- A numeric world snapshot — kinematics, geometry, uncertainty — with no semantic labels ([`04-world-snapshot.md`](./04-world-snapshot.md))
-- A situation model that overlays identity on the snapshot — vessel names, track IDs, "this radar contact is that AIS target" ([`05-situation-model.md`](./05-situation-model.md))
-- Policy and intents — rules over snapshot + situation producing alerts, suppressions, behavioural intents — no I/O ([`06-policy-and-intents.md`](./06-policy-and-intents.md))
-- Optional multi-node distribution with eventual consistency ([`07-distribution-and-consistency.md`](./07-distribution-and-consistency.md))
+- Time-aligned fact ingestion from Core and Stream events (`03-event-ingestion-and-time.md`, planned)
+- A numeric world snapshot — kinematics, geometry, uncertainty — with no semantic labels (`04-world-snapshot.md`, planned)
+- A situation model that overlays identity on the snapshot — vessel names, track IDs, "this radar contact is that AIS target" (`05-situation-model.md`, planned)
+- Policy and intents — rules over snapshot + situation producing alerts, suppressions, behavioural intents — no I/O (`06-policy-and-intents.md`, planned)
+- Optional multi-node distribution with eventual consistency (`07-distribution-and-consistency.md`, planned)
 
 ## 2. Three Things Called "State"
 
@@ -37,7 +37,7 @@ State **imports** Core and Stream APIs. Core and Stream do not import State.
 
 ## 4. Pipeline
 
-```
+```text
 Core events  ─┐
               ├─▶ ingest ─▶ snapshot ─▶ situation ─▶ policy ─▶ intents
 Stream events ┘                                                  │
@@ -45,7 +45,7 @@ Stream events ┘                                                  │
                                               executors (Core, Stream, UI)
 ```
 
-Data flows left to right only. The interface that publishes intents to executors is in [`09-subsystem-interface.md`](./09-subsystem-interface.md).
+Data flows left to right only. The interface that publishes intents to executors will be in `09-subsystem-interface.md` (planned).
 
 ## 5. Design Principles
 
