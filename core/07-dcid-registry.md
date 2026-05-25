@@ -69,9 +69,21 @@ DC_ID range `0x00001`–`0x000FF` carries Pelorus-owned protocol traffic.
 
 All firmware-update DCs use priority 7. Wire layouts and protocol state machine are normative in [`12-firmware-update.md`](./12-firmware-update.md).
 
-### 1.8 Reserved
+### 1.8 Alert Bus
 
-DC_ID `0x00010`–`0x000FF` is reserved for future Pelorus protocol use. Allocation requires a pull request updating this document and the corresponding entry in [`../catalog/`](../catalog/) where applicable.
+Pelorus-native alert system, semantically aligned with IEC 61924-2 / NMEA 2000 alert PGNs but with Pelorus identifier and ack semantics. The three DCs together implement alert lifecycle (raise, acknowledge, describe). Alert events are protocol-level, not signal-level; the catalog does not project them as `Vessel.*` leaves.
+
+| DC | DC_ID | Priority | Purpose |
+| --- | --- | --- | --- |
+| `Pelorus.AlertAnnounce` | `0x00010` | 2 | Declares an alert is active. Payload: source NAME, alert_id, instance, category, severity, state, flags, trigger code. Re-transmitted at 1 Hz while in any non-`Inactive` state. |
+| `Pelorus.AlertResponse` | `0x00011` | 3 | Operator or system acknowledgement of an alert. Payload: source NAME of alerting device, alert_id, instance, responder NAME, response code (ack / silence / reset), flags. |
+| `Pelorus.AlertText` | `0x00012` | 4 | Human-readable description of an alert, multi-frame (uses `Pelorus.MultiFrameData` per [`03-data-link.md §4`](./03-data-link.md)). Sent on request via `Pelorus.Request` (DC_ID `0x00007`) or once on first announcement. Body is UTF-8 text with BCP-47 locale tag. |
+
+Alert categories, lifecycle, state machine, multi-source coordination, multi-station authority, and bridge from NMEA 2000 alert PGNs are normative in [`10-alerts.md`](./10-alerts.md). Alert history and the alarm-management UI are Stream-side concerns and out of scope here.
+
+### 1.9 Reserved
+
+DC_ID `0x00013`–`0x000FF` is reserved for future Pelorus protocol use. Allocation requires a pull request updating this document and the corresponding entry in [`../catalog/`](../catalog/) where applicable.
 
 ## 2. Compatibility Data Contracts
 
@@ -133,9 +145,19 @@ DC names describe the Pelorus payload contents; they are not derived from legacy
 | `Pelorus.EngineSpeed` | `0x00100` | 5 | J1939 PGN 61444 (EEC1, field `EngineSpeed`) | repack | `Vessel.Propulsion.Engines[*].Speed` |
 | `Pelorus.HeadingTrue` | `0x00101` | 2 | J1939 PGN 65256 (VD, field `Heading`) | repack | `Vessel.Navigation.HeadingTrue` |
 | `Pelorus.EngineCoolantTemp` | `0x00102` | 5 | J1939 PGN 65262 (ET1, field `EngineCoolantTemperature`) | repack | `Vessel.Propulsion.Engines[*].CoolantTemp` |
-| `Pelorus.Position` | `0x00103` | 2 | NMEA2000 PGN 129025 (lat/lon) + PGN 129029 (fix quality) | repack | `Vessel.Navigation.Position.{Latitude,Longitude,FixQuality}` |
+| `Pelorus.Position` | `0x00103` | 2 | NMEA2000 PGN 129025 (lat/lon) + PGN 129029 (fix quality, altitude, geoidal separation, integrity, sats-used) | repack | `Vessel.Navigation.Position.{Latitude,Longitude,Altitude,GeoidalSeparation,FixQuality,Integrity,NumSatellitesUsed}` |
 | `Pelorus.DepthBelowTransducer` | `0x00104` | 5 | NMEA2000 PGN 128267 (field `Depth`) | repack | `Vessel.Navigation.Depth.BelowTransducer` |
 | `Pelorus.DepthTransducerOffset` | `0x00105` | 6 | NMEA2000 PGN 128267 (field `Offset`) | repack | `Vessel.Navigation.Depth.TransducerOffset` |
+| `Pelorus.CourseSpeedOverGround` | `0x00106` | 2 | NMEA2000 PGN 129026 (fields `COG`, `SOG`) | repack | `Vessel.Navigation.{CourseOverGround,SpeedOverGround}` |
+| `Pelorus.SpeedThroughWater` | `0x00107` | 3 | NMEA2000 PGN 128259 (field `WaterReferencedSpeed`) | repack | `Vessel.Navigation.SpeedThroughWater` |
+| `Pelorus.HeadingMagnetic` | `0x00108` | 2 | NMEA2000 PGN 127250 (reference = magnetic) | repack | `Vessel.Navigation.HeadingMagnetic` |
+| `Pelorus.MagneticVariation` | `0x00109` | 3 | NMEA2000 PGN 127258 (field `Variation`) | repack | `Vessel.Navigation.MagneticVariation` |
+| `Pelorus.RateOfTurn` | `0x0010A` | 2 | NMEA2000 PGN 127251 (field `Rate`) | repack | `Vessel.Navigation.RateOfTurn` |
+| `Pelorus.RudderAngle` | `0x0010B` | 2 | NMEA2000 PGN 127245 (field `Position`) | repack | `Vessel.Propulsion.Rudder.Angle` |
+| `Pelorus.WindApparent` | `0x0010C` | 3 | NMEA2000 PGN 130306 (reference = apparent; fields `Speed`, `Angle`) | repack | `Vessel.Environment.Wind.Apparent.{Angle,Speed}` |
+| `Pelorus.WindTrue` | `0x0010D` | 3 | NMEA2000 PGN 130306 (reference = true-water-referenced; fields `Speed`, `Angle`) | repack | `Vessel.Environment.Wind.True.{Angle,Speed}` |
+| `Pelorus.CrossTrackError` | `0x0010E` | 3 | NMEA2000 PGN 129283 (field `XTE`) | repack | `Vessel.Navigation.Route.CrossTrackError` |
+| `Pelorus.NavigationToWaypoint` | `0x0010F` | 3 | NMEA2000 PGN 129284 (fields `BearingPositionToDestination`, `WaypointNumber`, `DistanceToWaypoint`, …) | repack | `Vessel.Navigation.Route.{NextWaypointId,BearingToWaypoint,DistanceToWaypoint,RouteActive}` |
 | `Pelorus.AISClassAPosition` | `0x00110` | 4 | NMEA2000 PGN 129038 | bit_identical | `Vessel.Navigation.AIS.TargetClassA[*].Position` |
 | `Pelorus.AISClassBPosition` | `0x00111` | 4 | NMEA2000 PGN 129039 | bit_identical | `Vessel.Navigation.AIS.TargetClassB[*].Position` |
 | `Pelorus.AISClassBExtPosition` | `0x00112` | 4 | NMEA2000 PGN 129040 | bit_identical | `Vessel.Navigation.AIS.TargetClassB[*].PositionExt` |
@@ -143,6 +165,8 @@ DC names describe the Pelorus payload contents; they are not derived from legacy
 | `Pelorus.AISClassAStatic` | `0x00114` | 4 | NMEA2000 PGN 129794 | bit_identical | `Vessel.Navigation.AIS.TargetClassA[*].Static` |
 | `Pelorus.AISClassBStaticA` | `0x00115` | 4 | NMEA2000 PGN 129809 | bit_identical | `Vessel.Navigation.AIS.TargetClassB[*].StaticA` |
 | `Pelorus.AISClassBStaticB` | `0x00116` | 4 | NMEA2000 PGN 129810 | bit_identical | `Vessel.Navigation.AIS.TargetClassB[*].StaticB` |
+| `Pelorus.GnssDOP` | `0x00120` | 3 | NMEA2000 PGN 129539 (fields `HDOP`, `VDOP`, `PDOP`, `TDOP`) | repack | `Vessel.Navigation.Position.Accuracy.{HDOP,VDOP,PDOP,TDOP}` |
+| `Pelorus.GnssDifferentialStatus` | `0x00121` | 4 | NMEA2000 PGN 129029 (fields `AgeOfDgnssCorrections`, `ReferenceStations[0].StationID`) | repack | `Vessel.Navigation.Position.Differential.{Age,ReferenceStationId}` |
 
 For bridged fields, the source standard (SAE J1939 Digital Annex; NMEA 2000 Appendix B) remains authoritative for unit, scaling, and range; the Pelorus DC inherits those semantics for the bridged field(s).
 
@@ -163,6 +187,17 @@ For bridged fields, the source standard (SAE J1939 Digital Annex; NMEA 2000 Appe
 | 8 | Simulator |
 
 **Notes on `Pelorus.DepthTransducerOffset`.** Carries the install-time signed offset (positive when transducer is mounted above the keel). Cadence is "on configuration change and periodic refresh" (≪ 1 Hz); priority 6 reflects its rare-transmission, low-criticality character. Consumers derive below-keel depth as `BelowTransducer − TransducerOffset`.
+
+**Notes on `Pelorus.Position.Integrity`.** Pelorus-native enum aligned with NMEA 2000 PGN 129029's GNSS Integrity field (and broadly compatible with GPS RAIM categorisation). Consumers shall treat `unsafe` as no-fix-equivalent for safety-of-navigation decisions.
+
+| Value | Meaning |
+| --- | --- |
+| 0 | No integrity check performed |
+| 1 | Safe — RAIM detects no fault |
+| 2 | Caution — RAIM detects degraded geometry or marginal SVs |
+| 3 | Unsafe — RAIM detects a fault; position not usable for navigation |
+
+**Notes on GNSS DC family.** `Pelorus.Position` carries the high-rate position snapshot (lat/lon/alt + summary fix info) so consumers get an atomic per-fix update. `Pelorus.GnssDOP` carries the precision-dilution figures that update at the receiver's solution rate (typically 1 Hz) — separate DC to avoid sending DOPs on every 10 Hz position update. `Pelorus.GnssDifferentialStatus` carries the rare-update DGNSS state (which reference station, how stale the corrections are) — separate DC because it doesn't change every fix. The split mirrors the natural cadence boundaries of a GNSS receiver, not the legacy PGN structure.
 
 ### 2.3 NAME Field
 

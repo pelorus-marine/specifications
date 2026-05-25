@@ -62,6 +62,35 @@ The bullets above are not independent technical failures; they are downstream ef
 
 Pelorus' technical decisions catch up to current practice. The **governance model** — CC BY 4.0 specification, free hobbyist manufacturer codes, no certification gate, public reference implementations and test fixtures — is what keeps the stack from falling behind again the next time the underlying technology moves. Closed governance is the upstream defect; the technical symptoms above are what it costs.
 
+### Data lock-in and the marine ML deficit
+
+A consequence of [**LMDE**](#lmde)'s closed specs that does not get enough attention: **vessel data is trapped per vendor**. Garmin / Raymarine / B&G data lives behind proprietary contracts; NMEA 2000 proprietary PGNs are vendor-encrypted in practice; voyage logging is bespoke per logger; there is no widely-adopted open format for cross-vessel data exchange.
+
+The downstream effect is that **marine machine learning does not have a dataset to train on**. Aviation has FAA / ADS-B Exchange; medicine has open EHR research datasets; automotive has years of public driving-corpus releases. Marine has AIS positions (coarse, position-only, via MarineTraffic / AISHub) and weather / ocean (NOAA, Copernicus). That is essentially it. No sensor data at scale. No engine data. No operator-action data. No maintenance correlations. No anomaly libraries.
+
+What it costs:
+
+- **No community improvement loop.** Each vessel's experience dies on its own boat. The aviation pattern — fleet-wide pattern detection, community-shared anomaly libraries, lessons-learned automation — is structurally unavailable.
+- **No foundation for marine machine learning.** Every prospective ML application — predictive maintenance, smarter autopilots, anchor-watch beyond geofencing, weather-aware routing, energy management — runs into the same data-scarcity wall.
+- **Owner-paid vendor moats.** When sailors do generate data, it most often flows into a vendor cloud they do not control, on terms they did not negotiate.
+
+**Pelorus posture.** The catalog is CC BY 4.0; data contracts are publicly registered; the trace format (`catalog/06-trace-format.md`) is an open ASAM MDF4 profile readable by free and commercial tools both. Owner controls where voyage data goes — local USB, NAS, opt-in community pool, or nowhere at all. This does not ship marine ML; it removes the substrate barriers that have prevented it from existing. Specific roadmap items (community voyage pool, federated learning, reference simulator, vessel-class taxonomy) are tracked in [`../ISSUES.md`](../ISSUES.md) and are post-v1.0 follow-on work.
+
+### Power-budgeted compute
+
+Marine compute operates on a bounded, intermittently-replenished power budget. A typical sailing-yacht house bank holds 2.4–19 kWh; daily generation in good conditions is 1–3 kWh from solar plus 50–300 W from a hydrogenerator. Generation is **routinely unreliable**: cloudy days, dead alternators, hydrogenerator strikes, frozen panels. The vessel that works well only when generation is healthy is the vessel that has a bad day.
+
+This shapes the architecture, not just the bullet list:
+
+- **Compute is a power-budgeted resource.** Services declare what tier they belong to; the vessel sheds non-critical tiers when energy is scarce. The safety path keeps running on what is left.
+- **Distributed many-small beats centralised one-big** for power resilience. A vessel with several MCU-class nodes degrades by count; a vessel built around one Jetson-class node degrades to zero when that node browns out.
+- **AI / ML, where it appears, is MCU-class.** Trained policies (RL controllers, anomaly classifiers) are deployable on Cortex-M with TFLite Micro or CMSIS-NN at milliwatts. Training stays on workstations; inference fits the boat. Jetson-class workloads belong on shore power.
+- **Battery state is a first-class system signal.** The Power Manager broadcasts a power state on Core; services subscribe and self-adapt; tier shedding is coordinated, not emergent.
+
+Aviation's essential-bus / normal-bus separation, NASA core-Flight-System's compute-as-power-budgeted-resource model, and hybrid car energy management are the closest commercial analogues. Pelorus inherits the pattern.
+
+The wire encoding of the power-state DC and the service-tier declaration mechanism are normative in `power-management.md` (planned, cross-subsystem document). Until that doc lands, the [criticality classes in `core/08-redundancy.md`](./core/08-redundancy.md) (Class S / D / H) capture the safety dimension of the tiering; the power-shedding dimension is being designed.
+
 ---
 
 ## 3. Subsystems

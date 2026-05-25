@@ -18,6 +18,7 @@ The protocol-agnostic `Vessel.*` semantic catalog, consumed by Core / Stream / S
 | 07 | [`07-dcid-registry.md`](./07-dcid-registry.md) | Data Contract registry — DC names, DC_ID assignments, bridges to legacy identifiers |
 | 08 | [`08-redundancy.md`](./08-redundancy.md) | Criticality classes, dual-bus, duplicate discard, Bus Health |
 | 09 | [`09-network.md`](./09-network.md) | Segmentation, scaling, LMDE gateway, repeater spec |
+| 10 | [`10-alerts.md`](./10-alerts.md) | Alert categories, lifecycle, wire encoding, ack semantics, NMEA 2000 alert bridge |
 | 11 | [`11-conformance.md`](./11-conformance.md) | Conformance test plan + self-declaration template |
 | 12 | [`12-firmware-update.md`](./12-firmware-update.md) | Open, vendor-neutral firmware update protocol |
 

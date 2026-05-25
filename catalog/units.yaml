@@ -1,0 +1,21 @@
+# Pelorus Catalog — Custom Units
+#
+# Units used by Vessel.* leaves that are not in the COVESA VSS standard
+# units file. Loaded into vss-tools via the --unit-file flag (or the
+# equivalent units config entry) per catalog/05-tooling.md.
+#
+# Pelorus extends VSS standard units only when marine convention demands
+# it; SI is preferred where it doesn't lose readability for sailors.
+#
+# Licensed under Creative Commons Attribution 4.0 International (CC BY 4.0).
+
+units:
+
+  knots:
+    definition: |
+      Speed in knots (international nautical miles per hour).
+      1 knot = 1852/3600 m/s ≈ 0.5144444 m/s.
+      Marine convention for all vessel and wind speeds.
+    unit: kn
+    quantity: speed
+    allowed-datatypes: [float, double]

@@ -12,6 +12,10 @@ Marine electronics labeled "marine grade" are too often unreliable, expensive, a
 
 The technologies needed to fix this — CAN FD frames, partial networking with selective wake-up, split termination, free hobbyist device IDs — have been industry practice elsewhere for a decade or more. They have not landed in marine networking because the governance model requires consensus among large manufacturers with no commercial incentive to obsolete their own installed base. The bill comes due as 8-byte frames, no managed sleep, certification fees that exclude hobbyists, and a members-only message catalog. Pelorus' technical decisions catch up to current practice; the open governance — CC BY 4.0 spec, free manufacturer codes, no certification gate — is what keeps it from falling behind again.
 
+Closed specs and vendor-encrypted proprietary PGNs have a second-order cost: vessel data stays trapped per vendor. There is no shared format, no community pool, no foundation for marine machine learning to build on. Open governance unlocks the substrate too — not just the protocol but the data that flows over it.
+
+Marine compute operates on bounded power that fails routinely — cloudy week, dead alternator, damaged hydrogenerator. Pelorus treats power as a first-class design constraint: services declare tier, the system gracefully sheds non-critical features when generation falters, and the safety path keeps running on what's left.
+
 Sailors deserve better. **Pelorus** exists to provide it.
 
 ---
@@ -34,7 +38,8 @@ Normative drafts live under **[`core/`](./core/)**, **[`stream/`](./stream/)**, 
 
 - **Open** — CC-licensed specs; no fee to read or implement  
 - **Sailor-first** — design choices favor offshore reality over brochure features  
-- **Power-aware** — selective sleep and wake aligned with voyage context  
+- **Power-aware** — selective sleep, wake, and graceful tiered degradation when energy is scarce  
+- **Open data substrate** — CC-licensed catalog and open trace format (ASAM MDF4) so vessel data isn't trapped behind vendor encryption  
 - **Debuggable** — transparent protocols and fixtures, not black-box gateways  
 - **Split planes** — safety-critical **Pelorus Core** (CAN FD) vs bandwidth **Pelorus Stream** (Ethernet); Stream does not carry actuator authority  
 - **Gateways, not same-wire myths** — classical [**LMDE**](./ARCHITECTURE.md#lmde) and Pelorus meet through gateways; shared-segment bit compatibility is not assumed  

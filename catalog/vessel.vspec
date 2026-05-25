@@ -28,12 +28,81 @@ Vessel:
         measured at the vessel reference point. 0 = north, 90 = east.
       data_contract: Pelorus.HeadingTrue
 
+    HeadingMagnetic:
+      type: sensor
+      datatype: float
+      unit: deg
+      min: 0
+      max: 360
+      description: |
+        Magnetic heading of the vessel in degrees clockwise from magnetic
+        north. Apply MagneticVariation to convert to true heading.
+      data_contract: Pelorus.HeadingMagnetic
+
+    MagneticVariation:
+      type: sensor
+      datatype: float
+      unit: deg
+      min: -180
+      max: 180
+      description: |
+        Local magnetic variation (declination). Signed: east positive,
+        west negative. HeadingTrue = HeadingMagnetic + MagneticVariation
+        (mod 360).
+      data_contract: Pelorus.MagneticVariation
+
+    CourseOverGround:
+      type: sensor
+      datatype: float
+      unit: deg
+      min: 0
+      max: 360
+      description: |
+        Direction of motion over the ground, degrees clockwise from true
+        north. Paired with SpeedOverGround in one DC for atomic delivery.
+      data_contract: Pelorus.CourseSpeedOverGround
+      dc-field: CourseOverGround
+
+    SpeedOverGround:
+      type: sensor
+      datatype: float
+      unit: knots
+      min: 0
+      description: |
+        Speed of motion over the ground. Paired with CourseOverGround in
+        one DC for atomic delivery.
+      data_contract: Pelorus.CourseSpeedOverGround
+      dc-field: SpeedOverGround
+
+    SpeedThroughWater:
+      type: sensor
+      datatype: float
+      unit: knots
+      min: 0
+      description: |
+        Speed of the vessel relative to the surrounding water (paddlewheel,
+        EM log, or pitot speed sensor). Differs from SpeedOverGround by
+        the current vector (set & drift).
+      data_contract: Pelorus.SpeedThroughWater
+
+    RateOfTurn:
+      type: sensor
+      datatype: float
+      unit: deg/s
+      description: |
+        Yaw rate about the vertical axis. Signed: positive turning to
+        starboard (clockwise looking down), negative to port.
+      data_contract: Pelorus.RateOfTurn
+
     Position:
       type: branch
       description: |
-        Vessel position from the primary fix source. Latitude, longitude,
-        and FixQuality are projected from one Data Contract so consumers
-        see them as a single atomic snapshot.
+        Vessel position from the primary fix source. The lat/lon/altitude
+        snapshot and its summary integrity/quality fields are projected
+        from one Data Contract so consumers see them as a single atomic
+        snapshot. DOPs and differential status update at different
+        cadences and project from their own DCs (see Accuracy and
+        Differential sub-branches).
 
       Latitude:
         type: sensor
@@ -55,6 +124,30 @@ Vessel:
         data_contract: Pelorus.Position
         dc-field: Longitude
 
+      Altitude:
+        type: sensor
+        datatype: float
+        unit: m
+        description: |
+          Antenna height above the WGS-84 reference ellipsoid (geometric
+          altitude). Subtract GeoidalSeparation to obtain altitude above
+          mean sea level (MSL). For marine bridge-clearance calculations,
+          subtract antenna-above-waterline separately.
+        data_contract: Pelorus.Position
+        dc-field: Altitude
+
+      GeoidalSeparation:
+        type: sensor
+        datatype: float
+        unit: m
+        description: |
+          Height of the WGS-84 ellipsoid above the geoid (mean sea level)
+          at the current position. Positive when the ellipsoid is above
+          the geoid. Used to convert Altitude (above ellipsoid) to
+          altitude above MSL.
+        data_contract: Pelorus.Position
+        dc-field: GeoidalSeparation
+
       FixQuality:
         type: sensor
         datatype: uint8
@@ -66,6 +159,165 @@ Vessel:
           5=RTK float, 6=estimated, 7=manual, 8=simulator.
         data_contract: Pelorus.Position
         dc-field: FixQuality
+
+      Integrity:
+        type: sensor
+        datatype: uint8
+        min: 0
+        max: 3
+        description: |
+          RAIM integrity status enum (see core/07-dcid-registry.md §2.2):
+          0=no integrity check, 1=safe, 2=caution, 3=unsafe. Consumers
+          shall treat unsafe as no-fix-equivalent for safety-of-
+          navigation decisions.
+        data_contract: Pelorus.Position
+        dc-field: Integrity
+
+      NumSatellitesUsed:
+        type: sensor
+        datatype: uint8
+        min: 0
+        max: 64
+        description: |
+          Number of satellites contributing to the current fix solution
+          (across all enabled constellations). Distinct from satellites
+          in view; see Vessel.Navigation.Position.SatellitesInView for
+          per-satellite detail (deferred — tracked in ISSUES.md).
+        data_contract: Pelorus.Position
+        dc-field: NumSatellitesUsed
+
+      Accuracy:
+        type: branch
+        description: |
+          Dilution-of-precision figures from the GNSS receiver. Updates
+          at the receiver's solution rate (typically 1 Hz) — slower than
+          the position snapshot itself, so projected from a separate DC.
+
+        HDOP:
+          type: sensor
+          datatype: float
+          min: 0
+          description: |
+            Horizontal dilution of precision. Lower is better; values
+            below 2 are excellent, 2–5 good, 5–10 moderate, above 10
+            unreliable. Multiply by GPS user-equivalent range error to
+            estimate horizontal position uncertainty.
+          data_contract: Pelorus.GnssDOP
+          dc-field: HDOP
+
+        VDOP:
+          type: sensor
+          datatype: float
+          min: 0
+          description: Vertical dilution of precision.
+          data_contract: Pelorus.GnssDOP
+          dc-field: VDOP
+
+        PDOP:
+          type: sensor
+          datatype: float
+          min: 0
+          description: |
+            Position (3D) dilution of precision. Combines HDOP and VDOP;
+            PDOP² ≈ HDOP² + VDOP².
+          data_contract: Pelorus.GnssDOP
+          dc-field: PDOP
+
+        TDOP:
+          type: sensor
+          datatype: float
+          min: 0
+          description: Time dilution of precision.
+          data_contract: Pelorus.GnssDOP
+          dc-field: TDOP
+
+      Differential:
+        type: branch
+        description: |
+          DGNSS / SBAS / RTK correction status. Updates on change and on
+          periodic refresh; not on every fix.
+
+        Age:
+          type: sensor
+          datatype: float
+          unit: s
+          min: 0
+          description: |
+            Time elapsed since the last differential correction was
+            received. Large values (above ~30 s) indicate stale or
+            absent corrections; FixQuality should fall back to plain
+            GNSS in that case.
+          data_contract: Pelorus.GnssDifferentialStatus
+          dc-field: Age
+
+        ReferenceStationId:
+          type: sensor
+          datatype: uint16
+          description: |
+            Identifier of the differential reference station providing
+            corrections (DGNSS station number or RTK base ID). Zero
+            when no correction source is active.
+          data_contract: Pelorus.GnssDifferentialStatus
+          dc-field: ReferenceStationId
+
+    Route:
+      type: branch
+      description: |
+        Per-frame guidance derived from the currently active route plan.
+        The route plan itself is distributed over Pelorus Stream
+        (`_pelorus-route._quic.local`, see stream/10-services-nav.md §6);
+        these leaves carry only the autopilot/ECDIS-relevant guidance
+        signals that need real-time Core delivery.
+
+      CrossTrackError:
+        type: sensor
+        datatype: float
+        unit: m
+        description: |
+          Perpendicular distance from the current position to the active
+          leg's great-circle line. Signed: positive when vessel is to
+          starboard of the intended track, negative to port. Zero when
+          no route is active.
+        data_contract: Pelorus.CrossTrackError
+
+      NextWaypointId:
+        type: sensor
+        datatype: uint16
+        description: |
+          0-based index of the next waypoint on the active route, matching
+          the `id` field of the waypoint in the Stream route plan. Zero
+          and no route active are distinguished via RouteActive.
+        data_contract: Pelorus.NavigationToWaypoint
+        dc-field: NextWaypointId
+
+      BearingToWaypoint:
+        type: sensor
+        datatype: float
+        unit: deg
+        min: 0
+        max: 360
+        description: True bearing from current position to the next waypoint.
+        data_contract: Pelorus.NavigationToWaypoint
+        dc-field: BearingToWaypoint
+
+      DistanceToWaypoint:
+        type: sensor
+        datatype: float
+        unit: m
+        min: 0
+        description: Great-circle distance from current position to the next waypoint.
+        data_contract: Pelorus.NavigationToWaypoint
+        dc-field: DistanceToWaypoint
+
+      RouteActive:
+        type: sensor
+        datatype: boolean
+        description: |
+          True when a route is currently being navigated. When false,
+          CrossTrackError, NextWaypointId, BearingToWaypoint, and
+          DistanceToWaypoint shall be ignored.
+        data_contract: Pelorus.NavigationToWaypoint
+        dc-field: RouteActive
 
     Depth:
       type: branch
@@ -121,3 +373,88 @@ Vessel:
         max: 215
         description: Engine coolant temperature.
         data_contract: Pelorus.EngineCoolantTemp
+
+    Rudder:
+      type: branch
+      description: |
+        Steering rudder(s). Single-rudder vessels use this directly;
+        twin-rudder vessels would extend with an indexed-array form
+        in a future revision.
+
+      Angle:
+        type: sensor
+        datatype: float
+        unit: deg
+        min: -45
+        max: 45
+        description: |
+          Rudder deflection from centred. Signed: positive starboard,
+          negative port. Range is the typical hard-over span; vessels
+          with larger throws override min/max in an overlay.
+        data_contract: Pelorus.RudderAngle
+
+  Environment:
+    type: branch
+    description: Environmental measurements (wind, water, air, weather).
+
+    Wind:
+      type: branch
+      description: |
+        Wind measurements from masthead anemometer (or equivalent).
+        Apparent and True are projected from distinct DCs because
+        a single sensor reports both at the same cadence but they
+        derive from different references (apparent = relative to vessel,
+        true = apparent compensated for vessel motion through water).
+
+      Apparent:
+        type: branch
+        description: Wind as observed at the anemometer (relative to vessel motion).
+
+        Angle:
+          type: sensor
+          datatype: float
+          unit: deg
+          min: 0
+          max: 360
+          description: |
+            Apparent wind direction relative to vessel bow, clockwise.
+            0 = dead ahead, 90 = starboard beam, 180 = astern.
+          data_contract: Pelorus.WindApparent
+          dc-field: Angle
+
+        Speed:
+          type: sensor
+          datatype: float
+          unit: knots
+          min: 0
+          description: Apparent wind speed.
+          data_contract: Pelorus.WindApparent
+          dc-field: Speed
+
+      True:
+        type: branch
+        description: |
+          Wind compensated for vessel motion through the water (water-
+          referenced true wind). Distinct from ground-referenced wind,
+          which would require SOG/COG and is left to State to derive.
+
+        Angle:
+          type: sensor
+          datatype: float
+          unit: deg
+          min: 0
+          max: 360
+          description: |
+            True wind direction relative to vessel bow, clockwise.
+            0 = dead ahead, 90 = starboard beam, 180 = astern.
+          data_contract: Pelorus.WindTrue
+          dc-field: Angle
+
+        Speed:
+          type: sensor
+          datatype: float
+          unit: knots
+          min: 0
+          description: True wind speed (water-referenced).
+          data_contract: Pelorus.WindTrue
+          dc-field: Speed

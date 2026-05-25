@@ -14,6 +14,7 @@ The catalog defines **meaning** — signal names, types, units, instance handlin
 | 03 | [`03-instances.md`](./03-instances.md) | Indexed-array canonical form; subsystem resolution of instance identities |
 | 04 | [`04-overlays.md`](./04-overlays.md) | Pelorus overlay attributes; Stream `vss` metadata linkage; LMDE bridge linkage |
 | 05 | [`05-tooling.md`](./05-tooling.md) | VSS sources, validation, code generation, runtime catalog handling |
+| 06 | [`06-trace-format.md`](./06-trace-format.md) | On-disk trace format for Core + Stream capture (ASAM MDF4 profile); reference impl is `mdf4-rs` |
 
 ## License
 
